@@ -635,6 +635,10 @@
     let markerGroup = null;
     let rouletteInterval = null;
     let rouletteWinner = null;
+    let currentSelectedRestaurant = null;
+    let currentSelectedRating = 5;
+    let uploadedImageBase64 = null;
+    let currentImageTab = 'file';
 
     function safeGetStorage(key) {
       try { return localStorage.getItem(key); } catch (e) { return null; }
@@ -973,6 +977,7 @@
     }
 
     function openDetail(r) {
+      currentSelectedRestaurant = r;
       document.getElementById('detailName').textContent = r.name;
       document.getElementById('detailCategory').textContent = r.category;
 
@@ -1006,7 +1011,187 @@
       document.getElementById('btnNaverMap').onclick = () => window.open(`https://map.naver.com/v5/search/${exactNameQuery}`, '_blank');
       document.getElementById('btnKakaoMap').onclick = () => window.open(`https://map.kakao.com/link/search/${exactNameQuery}`, '_blank');
 
+      // Initialize review UI for this restaurant
+      resetReviewForm();
+      renderReviews(r);
+
       openModal('detailModal');
+    }
+
+    function switchImageTab(type) {
+      currentImageTab = type;
+      const tabFile = document.getElementById('tabImgFile');
+      const tabUrl = document.getElementById('tabImgUrl');
+      const secFile = document.getElementById('uploadFileSection');
+      const secUrl = document.getElementById('uploadUrlSection');
+
+      if (type === 'file') {
+        tabFile.className = "flex-1 py-1.5 text-xs font-bold rounded-xl border border-orange-500 bg-orange-50 text-orange-600 transition";
+        tabUrl.className = "flex-1 py-1.5 text-xs font-bold rounded-xl border border-slate-200 bg-slate-50 text-slate-600 transition";
+        secFile.classList.remove('hidden');
+        secUrl.classList.add('hidden');
+      } else {
+        tabUrl.className = "flex-1 py-1.5 text-xs font-bold rounded-xl border border-orange-500 bg-orange-50 text-orange-600 transition";
+        tabFile.className = "flex-1 py-1.5 text-xs font-bold rounded-xl border border-slate-200 bg-slate-50 text-slate-600 transition";
+        secUrl.classList.remove('hidden');
+        secFile.classList.add('hidden');
+      }
+    }
+
+    function handleFileSelect(e) {
+      const file = e.target.files && e.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function(event) {
+        uploadedImageBase64 = event.target.result;
+        const previewImg = document.getElementById('filePreviewImg');
+        const placeholder = document.getElementById('fileUploadPlaceholder');
+        if (previewImg && placeholder) {
+          previewImg.src = uploadedImageBase64;
+          previewImg.classList.remove('hidden');
+          placeholder.classList.add('hidden');
+        }
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function resetAddModalForm() {
+      uploadedImageBase64 = null;
+      document.getElementById('addName').value = '';
+      document.getElementById('addAddress').value = '';
+      document.getElementById('addMenu').value = '';
+      document.getElementById('addPhotoUrl').value = '';
+      const previewImg = document.getElementById('filePreviewImg');
+      const placeholder = document.getElementById('fileUploadPlaceholder');
+      if (previewImg) {
+        previewImg.src = '';
+        previewImg.classList.add('hidden');
+      }
+      if (placeholder) placeholder.classList.remove('hidden');
+      const fileInput = document.getElementById('addPhotoFile');
+      if (fileInput) fileInput.value = '';
+      switchImageTab('file');
+    }
+
+    function setReviewRating(score) {
+      currentSelectedRating = score;
+      document.getElementById('starRatingText').textContent = score + '점';
+      const stars = document.querySelectorAll('#starRatingContainer .star-btn');
+      stars.forEach(star => {
+        const starVal = parseInt(star.getAttribute('data-value'), 10);
+        if (starVal <= score) {
+          star.className = "fa-solid fa-star star-btn text-amber-400";
+        } else {
+          star.className = "fa-regular fa-star star-btn text-slate-300";
+        }
+      });
+    }
+
+    function resetReviewForm() {
+      setReviewRating(5);
+      const nickEl = document.getElementById('reviewNickname');
+      const textEl = document.getElementById('reviewText');
+      if (nickEl) nickEl.value = '';
+      if (textEl) textEl.value = '';
+    }
+
+    function renderReviews(r) {
+      const listEl = document.getElementById('reviewList');
+      const countEl = document.getElementById('reviewCountBadge');
+      const avgBox = document.getElementById('reviewAvgRating');
+      const avgScoreEl = document.getElementById('reviewAvgScore');
+      if (!listEl) return;
+
+      const reviews = r.reviews || [];
+      countEl.textContent = reviews.length + '개';
+
+      if (reviews.length === 0) {
+        avgBox.classList.add('hidden');
+        listEl.innerHTML = `
+          <div class="py-6 text-center text-slate-400 bg-slate-50/60 rounded-2xl border border-dashed border-slate-200">
+            <i class="fa-regular fa-comment-dots text-2xl mb-1 text-slate-300 block"></i>
+            <p class="text-xs font-semibold text-slate-600">아직 등록된 리뷰가 없습니다.</p>
+            <p class="text-[11px] text-slate-400 mt-0.5">첫 번째 방문 후기를 남겨보세요!</p>
+          </div>
+        `;
+        return;
+      }
+
+      const totalRating = reviews.reduce((sum, rev) => sum + (rev.rating || 5), 0);
+      const avgRating = (totalRating / reviews.length).toFixed(1);
+      avgScoreEl.textContent = avgRating;
+      avgBox.classList.remove('hidden');
+
+      listEl.innerHTML = '';
+      reviews.forEach(rev => {
+        const item = document.createElement('div');
+        item.className = "p-3.5 bg-slate-50/90 rounded-2xl border border-slate-100 flex flex-col gap-1.5 transition";
+
+        let starsHtml = '';
+        for (let i = 1; i <= 5; i++) {
+          if (i <= rev.rating) {
+            starsHtml += '<i class="fa-solid fa-star text-amber-400 text-[11px]"></i>';
+          } else {
+            starsHtml += '<i class="fa-regular fa-star text-slate-300 text-[11px]"></i>';
+          }
+        }
+
+        item.innerHTML = `
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <span class="w-6 h-6 rounded-full bg-orange-100 text-orange-600 font-bold text-[10px] flex items-center justify-center shrink-0">
+                ${(rev.author || '익명').charAt(0)}
+              </span>
+              <span class="font-bold text-slate-800 text-xs">${rev.author || '익명의 미식가'}</span>
+              <div class="flex gap-0.5 ml-1">${starsHtml}</div>
+            </div>
+            <span class="text-[10px] text-slate-400">${rev.date || '최근'}</span>
+          </div>
+          <p class="text-xs text-slate-600 leading-relaxed break-keep pl-8">${rev.content}</p>
+        `;
+        listEl.appendChild(item);
+      });
+    }
+
+    function submitReview() {
+      if (!currentSelectedRestaurant) return;
+
+      const nickInput = document.getElementById('reviewNickname');
+      const textInput = document.getElementById('reviewText');
+      const content = textInput.value.trim();
+
+      if (!content) {
+        textInput.focus();
+        return;
+      }
+
+      const author = nickInput.value.trim() || '익명의 미식가';
+      const now = new Date();
+      const dateStr = `${now.getFullYear()}.${String(now.getMonth() + 1).padStart(2, '0')}.${String(now.getDate()).padStart(2, '0')}`;
+
+      const newReview = {
+        id: 'REV_' + Date.now(),
+        author,
+        rating: currentSelectedRating,
+        content,
+        date: dateStr
+      };
+
+      if (!currentSelectedRestaurant.reviews) {
+        currentSelectedRestaurant.reviews = [];
+      }
+      currentSelectedRestaurant.reviews.unshift(newReview);
+
+      // Save to global list and persistent storage
+      const idx = restaurants.findIndex(x => x.id === currentSelectedRestaurant.id);
+      if (idx !== -1) {
+        restaurants[idx] = currentSelectedRestaurant;
+      }
+      saveData();
+
+      resetReviewForm();
+      renderReviews(currentSelectedRestaurant);
     }
 
     function resetApp() {
@@ -1020,7 +1205,10 @@
       const el = document.getElementById(id);
       if (el) el.classList.remove('hidden'); 
       if (id === 'rouletteModal') resetRouletteUI();
-      if (id === 'addRestaurantModal') onAddMacroChange();
+      if (id === 'addRestaurantModal') {
+        resetAddModalForm();
+        onAddMacroChange();
+      }
     }
 
     function closeModal(id) { 
@@ -1158,9 +1346,18 @@
       const mic = document.getElementById('addMicro').value || "all";
       const addr = document.getElementById('addAddress').value.trim();
       const menu = document.getElementById('addMenu').value.trim() || '추천 메뉴';
+      const urlPhoto = document.getElementById('addPhotoUrl').value.trim();
       const saveBtn = document.getElementById('btnAddSave');
 
       if (!name || !addr) return;
+
+      // Determine final image
+      let customImg = null;
+      if (currentImageTab === 'file' && uploadedImageBase64) {
+        customImg = uploadedImageBase64;
+      } else if (currentImageTab === 'url' && urlPhoto) {
+        customImg = urlPhoto;
+      }
 
       saveBtn.disabled = true;
       saveBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-1"></i> 좌표 찾는 중...';
@@ -1175,7 +1372,9 @@
         micro: mic,
         address: addr,
         menu,
+        image: customImg,
         isUserAdded: true,
+        reviews: [],
         lat: coords.lat,
         lng: coords.lng
       };
