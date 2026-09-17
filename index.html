@@ -77,9 +77,9 @@
           </div>
           <div>
             <div class="font-extrabold text-xl tracking-tight bg-gradient-to-r from-orange-600 via-amber-600 to-rose-600 bg-clip-text text-transparent">
-              맛지도 <span class="text-xs font-semibold px-1.5 py-0.5 rounded bg-orange-100 text-orange-700 ml-1">v2.8</span>
+              맛지도 <span class="text-xs font-semibold px-1.5 py-0.5 rounded bg-orange-100 text-orange-700 ml-1">v4.0</span>
             </div>
-            <p class="text-[11px] text-slate-500 -mt-1 hidden sm:block">전국 모든 동·역 검색 & 네이버·카카오 검증 맛집</p>
+            <p class="text-[11px] text-slate-500 -mt-1 hidden sm:block">전국 동·역 검색 & 네이버·카카오 검증 맛집</p>
           </div>
         </div>
 
@@ -90,7 +90,7 @@
           </div>
           <div class="relative flex-1">
             <input type="text" id="regionSearchInput" 
-                   placeholder="지역/역 검색 (예: 모란역 멘야, 역삼동, 성수동)" 
+                   placeholder="지역/역 검색 (예: 강남역 파스타, 수원시청역, 성수동)" 
                    onkeydown="if(event.key === 'Enter') handleRegionSearch()"
                    class="w-full sm:w-64 bg-transparent text-xs sm:text-sm font-semibold text-slate-800 placeholder:text-slate-400 focus:outline-none pr-6">
             <button onclick="handleRegionSearch()" title="지역 검색" class="absolute right-0 top-1/2 -translate-y-1/2 text-orange-600 hover:text-orange-700 text-xs px-1">
@@ -101,11 +101,13 @@
           <!-- Quick Dropdown presets -->
           <select id="locationSelect" onchange="changeRegion(this.value)" class="bg-white border border-slate-200 rounded-xl font-medium text-xs text-slate-700 py-1 px-2 outline-none cursor-pointer hidden md:block">
             <option value="all">전국 전체</option>
+            <option value="suwon_all">경기 수원 전체 (시청·광교)</option>
+            <option value="gwang교">경기 수원 광교·광교중앙역</option>
             <option value="moran">경기 성남·모란역</option>
-            <option value="suwon">경기 수원시·인계동</option>
-            <option value="seongsu">서울 성수·서울숲</option>
+            <option value="gangnam">서울 강남역·신사</option>
+            <option value="seongsu">서울 성수동·서울숲</option>
             <option value="euljiro">서울 을지로·종로</option>
-            <option value="gangnam">서울 강남·신사</option>
+            <option value="hongdae">서울 홍대·연남동</option>
             <option value="busan">부산 해운대</option>
             <option value="jeju">제주 제주시</option>
           </select>
@@ -149,11 +151,12 @@
       <!-- Quick Region Chips -->
       <div class="flex items-center gap-1.5 overflow-x-auto pb-1.5 text-xs text-slate-600 custom-scrollbar">
         <span class="font-bold text-slate-400 shrink-0 text-[11px]"><i class="fa-solid fa-fire text-rose-500 mr-1"></i>핫플레이스:</span>
-        <button onclick="selectQuickRegion('moran')" class="px-2.5 py-0.5 rounded-full bg-slate-100 hover:bg-orange-50 hover:text-orange-600 border border-slate-200 transition shrink-0 font-medium text-orange-600">성남 모란역</button>
-        <button onclick="selectQuickRegion('suwon')" class="px-2.5 py-0.5 rounded-full bg-slate-100 hover:bg-orange-50 hover:text-orange-600 border border-slate-200 transition shrink-0">수원 인계동</button>
+        <button onclick="selectQuickRegion('gangnam')" class="px-2.5 py-0.5 rounded-full bg-orange-50 text-orange-600 font-semibold border border-orange-200 transition shrink-0">강남역·신사</button>
+        <button onclick="selectQuickRegion('suwon_all')" class="px-2.5 py-0.5 rounded-full bg-slate-100 hover:bg-orange-50 hover:text-orange-600 border border-slate-200 transition shrink-0">수원전체·광교</button>
         <button onclick="selectQuickRegion('seongsu')" class="px-2.5 py-0.5 rounded-full bg-slate-100 hover:bg-orange-50 hover:text-orange-600 border border-slate-200 transition shrink-0">성수동</button>
         <button onclick="selectQuickRegion('euljiro')" class="px-2.5 py-0.5 rounded-full bg-slate-100 hover:bg-orange-50 hover:text-orange-600 border border-slate-200 transition shrink-0">을지로</button>
-        <button onclick="selectQuickRegion('gangnam')" class="px-2.5 py-0.5 rounded-full bg-slate-100 hover:bg-orange-50 hover:text-orange-600 border border-slate-200 transition shrink-0">강남역</button>
+        <button onclick="selectQuickRegion('hongdae')" class="px-2.5 py-0.5 rounded-full bg-slate-100 hover:bg-orange-50 hover:text-orange-600 border border-slate-200 transition shrink-0">홍대·연남</button>
+        <button onclick="selectQuickRegion('moran')" class="px-2.5 py-0.5 rounded-full bg-slate-100 hover:bg-orange-50 hover:text-orange-600 border border-slate-200 transition shrink-0">모란역</button>
         <button onclick="selectQuickRegion('busan')" class="px-2.5 py-0.5 rounded-full bg-slate-100 hover:bg-orange-50 hover:text-orange-600 border border-slate-200 transition shrink-0">부산 해운대</button>
         <button onclick="selectQuickRegion('jeju')" class="px-2.5 py-0.5 rounded-full bg-slate-100 hover:bg-orange-50 hover:text-orange-600 border border-slate-200 transition shrink-0">제주</button>
         <button onclick="resetFilters()" class="px-2.5 py-0.5 rounded-full bg-slate-100 hover:bg-orange-50 hover:text-orange-600 border border-slate-200 transition shrink-0">전체보기</button>
@@ -163,7 +166,7 @@
       <div class="flex flex-wrap items-center justify-between gap-2.5 pt-2 border-t border-slate-100 text-xs sm:text-sm">
         <div class="relative flex-1 min-w-[200px] max-w-sm">
           <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
-          <input type="text" id="searchInput" oninput="applyFilters()" placeholder="식당 이름, 대표 메뉴 검색 (예: 라멘, 삼겹살)" 
+          <input type="text" id="searchInput" oninput="applyFilters()" placeholder="식당 이름, 대표 메뉴 검색 (예: 삼겹살, 파스타)" 
                  class="w-full pl-8 pr-3 py-1.5 text-xs bg-slate-100 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500/30">
         </div>
 
@@ -207,8 +210,8 @@
       <div class="flex items-center gap-3">
         <div class="w-8 h-8 rounded-xl bg-orange-500 text-white flex items-center justify-center font-bold text-sm shrink-0">Tip</div>
         <div>
-          <span class="font-bold text-slate-900">네이버 & 카카오맵 평점 팩트체크:</span>
-          <span class="text-slate-600 ml-1">카카오맵 <strong>4.0+</strong>은 현지인 인증 찐맛집, 네이버 <strong>4.5+</strong>는 대중적 만족도 최고점!</span>
+          <span class="font-bold text-slate-900">전국 동·역 맛집 실시간 탐색:</span>
+          <span class="text-slate-600 ml-1">상단 검색창에 <strong>"강남역"</strong>, <strong>"성수동"</strong>, <strong>"광교중앙역"</strong> 등을 검색하거나 퀵칩을 눌러보세요!</span>
         </div>
       </div>
       <div class="flex items-center gap-2 self-end md:self-auto text-xs shrink-0 font-medium">
@@ -241,7 +244,7 @@
             <i class="fa-solid fa-compass"></i>
           </div>
           <h3 class="text-base font-bold text-slate-800" id="emptyStateTitle">등록된 식당이 없습니다</h3>
-          <p class="text-xs text-slate-500 mt-1 max-w-sm mx-auto" id="emptyStateDesc">원하시는 지역이나 키워드로 다시 검색해보세요!</p>
+          <p class="text-xs text-slate-500 mt-1 max-w-sm mx-auto" id="emptyStateDesc">원하시는 지역이나 동·역 이름으로 다시 검색해보세요!</p>
           <div class="mt-4 flex flex-wrap justify-center gap-2">
             <button onclick="resetFilters()" class="px-4 py-2.5 bg-orange-500 hover:bg-orange-600 text-white rounded-xl text-xs font-bold transition">
               전체 맛집 보기
@@ -392,7 +395,7 @@
         <div class="bg-amber-50/60 p-3.5 rounded-2xl border border-amber-200">
           <label class="block font-bold text-amber-900 mb-1.5">주소 좌표 변환 테스트</label>
           <div class="flex gap-2 mb-2">
-            <input type="text" id="testAddressInput" value="성남시 중원구 성남동 3210" class="flex-1 px-3 py-2 bg-white border border-amber-300 rounded-xl text-xs font-medium text-slate-800">
+            <input type="text" id="testAddressInput" value="전북 익산시 부송동 100" class="flex-1 px-3 py-2 bg-white border border-amber-300 rounded-xl text-xs font-medium text-slate-800">
             <button onclick="testKakaoAddressGeocode()" class="px-3.5 py-2 bg-amber-500 text-white font-bold rounded-xl transition">변환</button>
           </div>
           <div id="testResultBox" class="p-3 bg-slate-900 text-slate-100 rounded-xl font-mono text-[11px] max-h-40 overflow-y-auto">
@@ -424,72 +427,71 @@
 
     const REGION_COORDS = {
       all: { lat: 37.5450, lng: 126.9950, zoom: 11, name: '전국 인기 맛집' },
+      gangnam: { lat: 37.4979, lng: 127.0276, zoom: 15, name: '서울 강남역·신사' },
+      suwon_all: { lat: 37.2636, lng: 127.0286, zoom: 13, name: '경기 수원시 전체 (인계동·광교·원천동)' },
+      gwang교: { lat: 37.2890, lng: 127.0535, zoom: 14, name: '경기 수원시 영통구 광교·광교중앙역' },
+      suwon: { lat: 37.2636, lng: 127.0286, zoom: 14, name: '경기 수원시 팔달구 인계동·수원시청역' },
       moran: { lat: 37.4328, lng: 127.1292, zoom: 15, name: '경기 성남시 중원구 모란역' },
-      suwon: { lat: 37.2636, lng: 127.0286, zoom: 15, name: '경기 수원시 (수원시청·인계동)' },
       seongsu: { lat: 37.5445, lng: 127.0560, zoom: 15, name: '서울 성수동·서울숲' },
       euljiro: { lat: 37.5662, lng: 126.9920, zoom: 15, name: '서울 을지로·종로' },
-      gangnam: { lat: 37.4979, lng: 127.0276, zoom: 15, name: '서울 강남구·신사' },
+      hongdae: { lat: 37.5563, lng: 126.9236, zoom: 15, name: '서울 홍대입구·연남동' },
       busan: { lat: 35.1587, lng: 129.1603, zoom: 14, name: '부산 해운대·광안리' },
       jeju: { lat: 33.4996, lng: 126.5312, zoom: 12, name: '제주 제주시·애월' }
     };
 
     const BUILTIN_GEO_DICT = {
-      '모란역': { lat: 37.4328, lng: 127.1292, region: 'moran', label: '경기 성남시 중원구 모란역' },
-      '모란': { lat: 37.4328, lng: 127.1292, region: 'moran', label: '경기 성남시 중원구 모란역' },
-      '성남동': { lat: 37.4350, lng: 127.1320, region: 'moran', label: '경기 성남시 중원구 성남동' },
+      '강남역': { lat: 37.4979, lng: 127.0276, region: 'gangnam', label: '서울 강남구 강남역' },
+      '신사역': { lat: 37.5160, lng: 127.0200, region: 'gangnam', label: '서울 강남구 신사역' },
+      '광교중앙역': { lat: 37.2893, lng: 127.0535, region: 'gwang교', label: '경기 수원시 영통구 광교중앙역' },
+      '광교': { lat: 37.2890, lng: 127.0535, region: 'gwang교', label: '경기 수원시 영통구 광교동' },
+      '이의동': { lat: 37.2940, lng: 127.0490, region: 'gwang교', label: '경기 수원시 영통구 이의동' },
+      '원천동': { lat: 37.2710, lng: 127.0520, region: 'gwang교', label: '경기 수원시 영통구 원천동' },
       '수원시청역': { lat: 37.2618, lng: 127.0305, region: 'suwon', label: '경기 수원시 팔달구 수원시청역' },
-      '수원시청': { lat: 37.2636, lng: 127.0286, region: 'suwon', label: '경기 수원시 팔달구 수원시청·인계동' },
-      '권선동': { lat: 37.2558, lng: 127.0295, region: 'suwon', label: '경기 수원시 권선구 권선동' },
       '인계동': { lat: 37.2642, lng: 127.0321, region: 'suwon', label: '경기 수원시 팔달구 인계동' },
+      '권선동': { lat: 37.2558, lng: 127.0295, region: 'suwon', label: '경기 수원시 권선구 권선동' },
+      '모란역': { lat: 37.4328, lng: 127.1292, region: 'moran', label: '경기 성남시 중원구 모란역' },
       '성수동': { lat: 37.5445, lng: 127.0560, region: 'seongsu', label: '서울 성동구 성수동' },
       '을지로': { lat: 37.5662, lng: 126.9920, region: 'euljiro', label: '서울 중구 을지로' },
-      '강남역': { lat: 37.4979, lng: 127.0276, region: 'gangnam', label: '서울 강남구 강남역' },
-      '해운대': { lat: 35.1587, lng: 129.1603, zoom: 14, region: 'busan', label: '부산 해운대구 해운대' }
+      '홍대입구역': { lat: 37.5563, lng: 126.9236, region: 'hongdae', label: '서울 마포구 홍대입구역' },
+      '해운대': { lat: 35.1587, lng: 129.1603, region: 'busan', label: '부산 해운대구 해운대' }
     };
 
     const RESTAURANTS = [
+      // --- 서울 강남역·신사 ---
       {
-        id: 701, region: 'moran', name: '우라멘 모란본점', category: 'japanese', categoryName: '일식·초밥',
-        summary: '진한 흑마늘 국물과 쫄깃한 생면, 입에서 살살 녹는 차슈가 일품인 모란역 정통 일본 라멘',
-        lat: 37.4332, lng: 127.1288, distance: '모란역 2번 출구 150m', distMeters: 150,
-        address: '경기 성남시 중원구 성남대로1148번길 8 (성남동)', phone: '031-752-1234', hours: '11:30 - 22:00',
-        naverRating: 4.65, naverReviews: 2310, kakaoRating: 4.3, kakaoReviews: 920, parking: false,
-        tags: ['모란역라멘', '흑마늘라멘', '일본정통라멘'],
-        image: 'https://images.unsplash.com/photo-1569718212165-3a8278d5f624?auto=format&fit=crop&w=600&q=80',
-        menus: [{ name: '돈코츠 라멘', price: '9,500원' }, { name: '흑마늘 라멘', price: '10,500원' }]
-      },
-      {
-        id: 702, region: 'moran', name: '등갈비달인 모란본점', category: 'meat', categoryName: '고기·구이',
-        summary: '부드러운 등갈비와 매콤달콤한 양념, 치즈퐁듀가 환상적인 모란역 줄서는 1위 맛집',
-        lat: 37.4320, lng: 127.1298, distance: '모란역 3번 출구 200m', distMeters: 200,
-        address: '경기 성남시 중원구 성남대로1140번길 10 (성남동)', phone: '031-753-8899', hours: '12:00 - 23:00',
-        naverRating: 4.78, naverReviews: 5410, kakaoRating: 4.5, kakaoReviews: 1840, parking: false,
-        tags: ['모란역맛집', '등갈비', '치즈퐁듀'],
+        id: 101, region: 'gangnam', name: '강남 불고기브라더스', category: 'meat', categoryName: '고기·구이',
+        summary: '육즙 가득한 서울식 전통 불고기와 신선한 채소를 맛볼 수 있는 강남역 명소',
+        lat: 37.4985, lng: 127.0270, distance: '강남역 11번 출구 150m', distMeters: 150,
+        address: '서울 강남구 강남대로 406', phone: '02-555-1234', hours: '11:00 - 22:00',
+        naverRating: 4.65, naverReviews: 3100, kakaoRating: 4.3, kakaoReviews: 1250, parking: true,
+        tags: ['강남역맛집', '불고기', '회식장소'],
         image: 'https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=600&q=80',
-        menus: [{ name: '매운등갈비 (1인)', price: '16,000원' }, { name: '메밀전', price: '6,000원' }]
+        menus: [{ name: '전통 서울식 불고기 (1인)', price: '22,000원' }, { name: '한우 등심구이', price: '45,000원' }]
       },
       {
-        id: 703, region: 'moran', name: '김과장고깃집 모란점', category: 'meat', categoryName: '고기·구이',
-        summary: '가성비 넘치는 두툼한 삼겹살과 묵은지, 볶음밥이 맛있는 모란역 고기 성지',
-        lat: 37.4335, lng: 127.1280, distance: '모란역 2번 출구 180m', distMeters: 180,
-        address: '경기 성남시 중원구 성남대로1148번길 25 (성남동)', phone: '031-757-3322', hours: '15:00 - 02:00',
-        naverRating: 4.72, naverReviews: 4120, kakaoRating: 4.4, kakaoReviews: 1290, parking: false,
-        tags: ['모란삼겹살', '가성비고기집', '모란술집'],
-        image: 'https://images.unsplash.com/photo-1603048588665-791ca8aea617?auto=format&fit=crop&w=600&q=80',
-        menus: [{ name: '소급창구이', price: '14,000원' }, { name: '명품 삼겹살', price: '13,000원' }]
+        id: 102, region: 'gangnam', name: '신사 갓덴스시', category: 'japanese', categoryName: '일식·초밥',
+        summary: '신선한 제철 활어와 다채로운 초밥을 즐길 수 있는 강남·신사 대표 스시 전문점',
+        lat: 37.5165, lng: 127.0205, distance: '신사역 3번 출구 200m', distMeters: 200,
+        address: '서울 강남구 도산대로 108', phone: '02-515-1472', hours: '11:30 - 21:30',
+        naverRating: 4.78, naverReviews: 4800, kakaoRating: 4.5, kakaoReviews: 1980, parking: true,
+        tags: ['신사역맛집', '초밥성지', '회전초밥'],
+        image: 'https://images.unsplash.com/photo-1579871494447-9811cf80d66c?auto=format&fit=crop&w=600&q=80',
+        menus: [{ name: '특선 초밥 세트', price: '24,000원' }, { name: '참치 모둠초밥', price: '29,000원' }]
       },
       {
-        id: 501, region: 'suwon', name: '유치회관 본점', category: 'korean', categoryName: '한식',
-        summary: '백종원의 3대천왕 우승! 맑고 진한 소고기 육수에 선지가 따로 나오는 45년 수원 해장국 명가',
-        lat: 37.2628, lng: 127.0315, distance: '수원시청역 250m', distMeters: 250,
-        address: '경기 수원시 팔달구 효원로292번길 67 (인계동)', phone: '031-234-5275', hours: '24시간 영업',
-        naverRating: 4.62, naverReviews: 12800, kakaoRating: 4.3, kakaoReviews: 4120, parking: true,
-        tags: ['백종원3대천왕', '24시간', '선지해장국'],
-        image: 'https://images.unsplash.com/photo-1547928576-a4a33237cbc3?auto=format&fit=crop&w=600&q=80',
-        menus: [{ name: '해장국', price: '11,000원' }, { name: '소머리 수육', price: '32,000원' }]
+        id: 103, region: 'gangnam', name: '강남 낙원테타원', category: 'western', categoryName: '양식·파스타',
+        summary: '트렌디한 분위기 속에서 즐기는 항정살 파스타와 이국적인 미쿡식 양식',
+        lat: 37.4990, lng: 127.0285, distance: '강남역 10번 출구 300m', distMeters: 300,
+        address: '서울 강남구 강남대로96길 11', phone: '02-567-8899', hours: '11:30 - 22:00',
+        naverRating: 4.71, naverReviews: 5200, kakaoRating: 4.4, kakaoReviews: 2100, parking: false,
+        tags: ['강남역파스타', '낙원테타원', '데이트맛집'],
+        image: 'https://images.unsplash.com/photo-1551504734-5ee1c4a1479b?auto=format&fit=crop&w=600&q=80',
+        menus: [{ name: '항정살 매콤 파스타', price: '19,000원' }, { name: '바질 라자냐', price: '21,000원' }]
       },
+
+      // --- 서울 성수동·서울숲 ---
       {
-        id: 101, region: 'seongsu', name: '소문난성수감자탕', category: 'korean', categoryName: '한식',
+        id: 201, region: 'seongsu', name: '소문난성수감자탕', category: 'korean', categoryName: '한식',
         summary: '백종원의 3대천왕 및 성수동을 대표하는 40년 전통의 진한 감자탕',
         lat: 37.5432, lng: 127.0573, distance: '성수역 150m', distMeters: 150,
         address: '서울 성동구 연무장길 45', phone: '02-465-6580', hours: '24시간 영업',
@@ -499,7 +501,19 @@
         menus: [{ name: '감자탕 (소)', price: '29,000원' }, { name: '감자국 식사', price: '10,000원' }]
       },
       {
-        id: 201, region: 'euljiro', name: '을지면옥', category: 'korean', categoryName: '한식',
+        id: 202, region: 'seongsu', name: '난포', category: 'korean', categoryName: '한식',
+        summary: '제철 식재료로 정갈하게 차려내는 성수동 줄서는 한식 퓨전 다이닝',
+        lat: 37.5450, lng: 127.0425, distance: '서울숲역 300m', distMeters: 300,
+        address: '서울 성동구 서울숲길 46', phone: '02-468-4520', hours: '11:30 - 21:30',
+        naverRating: 4.75, naverReviews: 8120, kakaoRating: 4.5, kakaoReviews: 2450, parking: false,
+        tags: ['서울숲맛집', '성수동한식', '강된장쌈밥'],
+        image: 'https://images.unsplash.com/photo-1540420773420-3366772f4999?auto=format&fit=crop&w=600&q=80',
+        menus: [{ name: '제철 강된장 쌈밥', price: '13,000원' }, { name: '돌미나리 전', price: '19,000원' }]
+      },
+
+      // --- 서울 을지로·종로 ---
+      {
+        id: 301, region: 'euljiro', name: '을지면옥', category: 'korean', categoryName: '한식',
         summary: '맑고 그윽한 육수의 평양냉면과 촉촉한 제육의 명가',
         lat: 37.5684, lng: 126.9942, distance: '을지로3가역 180m', distMeters: 180,
         address: '서울 중구 을지로 101', phone: '02-2266-7052', hours: '11:30 - 21:00',
@@ -507,6 +521,104 @@
         tags: ['평양냉면성지', '노포맛집', '을지로맛집'],
         image: 'https://images.unsplash.com/photo-1594998893017-36147cbcae05?auto=format&fit=crop&w=600&q=80',
         menus: [{ name: '평양냉면', price: '15,000원' }, { name: '돼지고기 제육', price: '28,000원' }]
+      },
+      {
+        id: 302, region: 'euljiro', name: '산수갑산', category: 'korean', categoryName: '한식',
+        summary: '잡내 없이 부드러운 순대와 대창순대, 진한 국밥이 일품인 을지로 노포',
+        lat: 37.5650, lng: 126.9910, distance: '을지로3가역 250m', distMeters: 250,
+        address: '서울 중구 을지로20길 24', phone: '02-2275-0362', hours: '11:30 - 21:30',
+        naverRating: 4.70, naverReviews: 4500, kakaoRating: 4.4, kakaoReviews: 1600, parking: false,
+        tags: ['대창순대', '을지로노포', '순대국밥'],
+        image: 'https://images.unsplash.com/photo-1547928576-a4a33237cbc3?auto=format&fit=crop&w=600&q=80',
+        menus: [{ name: '순대국밥', price: '10,000원' }, { name: '대창순대 모둠', price: '30,000원' }]
+      },
+
+      // --- 서울 홍대·연남동 ---
+      {
+        id: 401, region: 'hongdae', name: '연남 토리키치', category: 'japanese', categoryName: '일식·초밥',
+        summary: '오사카식 닭꼬치와 하이볼을 즐길 수 있는 홍대 연남동 핫플레이스',
+        lat: 37.5580, lng: 126.9250, distance: '홍대입구역 3번 출구 350m', distMeters: 350,
+        address: '서울 마포구 동교로 227-1', phone: '02-332-9988', hours: '16:00 - 02:00',
+        naverRating: 4.72, naverReviews: 3400, kakaoRating: 4.4, kakaoReviews: 1120, parking: false,
+        tags: ['연남동맛집', '하이볼', '야키토리'],
+        image: 'https://images.unsplash.com/photo-1569718212165-3a8278d5f624?auto=format&fit=crop&w=600&q=80',
+        menus: [{ name: '토리키치 세트', price: '32,000원' }, { name: '수제 츠쿠네', price: '7,500원' }]
+      },
+
+      // --- 수원 광교 & 원천동 & 수원시청역 ---
+      {
+        id: 501, region: 'gwang교', name: '광교 갤러리아 도제', category: 'japanese', categoryName: '일식·초밥',
+        summary: '두툼한 토핑이 올라간 대왕 유부초밥과 신선한 일식 덮밥이 인기인 광교중앙역 맛집',
+        lat: 37.2875, lng: 127.0528, distance: '광교중앙역 3번 출구 200m', distMeters: 200,
+        address: '경기 수원시 영통구 광교중앙로 124 (이의동)', phone: '031-5174-7123', hours: '10:30 - 20:30',
+        naverRating: 4.62, naverReviews: 1850, kakaoRating: 4.3, kakaoReviews: 620, parking: true,
+        tags: ['광교중앙역맛집', '대왕유부초밥', '광교갤러리아'],
+        image: 'https://images.unsplash.com/photo-1579871494447-9811cf80d66c?auto=format&fit=crop&w=600&q=80',
+        menus: [{ name: '대왕유부초밥 4종 세트', price: '12,500원' }, { name: '연고초밥 덮밥', price: '14,000원' }]
+      },
+      {
+        id: 502, region: 'suwon', name: '유치회관 본점', category: 'korean', categoryName: '한식',
+        summary: '백종원의 3대천왕 우승! 맑고 진한 소고기 육수에 선지가 따로 나오는 45년 수원 해장국 명가',
+        lat: 37.2628, lng: 127.0315, distance: '수원시청역 250m', distMeters: 250,
+        address: '경기 수원시 팔달구 효원로292번길 67 (인계동)', phone: '031-234-5275', hours: '24시간 영업',
+        naverRating: 4.62, naverReviews: 12800, kakaoRating: 4.3, kakaoReviews: 4120, parking: true,
+        tags: ['백종원3대천왕', '24시간', '선지해장국'],
+        image: 'https://images.unsplash.com/photo-1547928576-a4a33237cbc3?auto=format&fit=crop&w=600&q=80',
+        menus: [{ name: '해장국', price: '11,000원' }, { name: '소머리 수육', price: '32,000원' }]
+      },
+      {
+        id: 503, region: 'suwon', name: '가보정 1관', category: 'meat', categoryName: '고기·구이',
+        summary: '대한민국 최고 수준의 한우 생갈비와 엄선된 미국산 양념갈비의 수원 3대 갈비 성지',
+        lat: 37.2680, lng: 127.0260, distance: '수원시청역 400m', distMeters: 400,
+        address: '경기 수원시 팔달구 장다리로 282 (인계동)', phone: '1688-3889', hours: '11:30 - 21:30',
+        naverRating: 4.79, naverReviews: 14500, kakaoRating: 4.6, kakaoReviews: 4890, parking: true,
+        tags: ['수원왕갈비', '가보정', '상견례맛집'],
+        image: 'https://images.unsplash.com/photo-1603048588665-791ca8aea617?auto=format&fit=crop&w=600&q=80',
+        menus: [{ name: '한우 생갈비 (250g)', price: '118,000원' }, { name: '미국산 양념갈비 (450g)', price: '68,000원' }]
+      },
+
+      // --- 성남 모란역 ---
+      {
+        id: 601, region: 'moran', name: '우라멘 모란본점', category: 'japanese', categoryName: '일식·초밥',
+        summary: '진한 흑마늘 국물과 쫄깃한 생면, 살살 녹는 차슈가 일품인 모란역 정통 일본 라멘',
+        lat: 37.4332, lng: 127.1288, distance: '모란역 2번 출구 150m', distMeters: 150,
+        address: '경기 성남시 중원구 성남대로1148번길 8 (성남동)', phone: '031-752-1234', hours: '11:30 - 22:00',
+        naverRating: 4.65, naverReviews: 2310, kakaoRating: 4.3, kakaoReviews: 920, parking: false,
+        tags: ['모란역라멘', '흑마늘라멘', '일본정통라멘'],
+        image: 'https://images.unsplash.com/photo-1569718212165-3a8278d5f624?auto=format&fit=crop&w=600&q=80',
+        menus: [{ name: '돈코츠 라멘', price: '9,500원' }, { name: '흑마늘 라멘', price: '10,500원' }]
+      },
+      {
+        id: 602, region: 'moran', name: '등갈비달인 모란본점', category: 'meat', categoryName: '고기·구이',
+        summary: '부드러운 등갈비와 매콤달콤한 양념, 치즈퐁듀가 환상적인 모란역 줄서는 1위 맛집',
+        lat: 37.4320, lng: 127.1298, distance: '모란역 3번 출구 200m', distMeters: 200,
+        address: '경기 성남시 중원구 성남대로1140번길 10 (성남동)', phone: '031-753-8899', hours: '12:00 - 23:00',
+        naverRating: 4.78, naverReviews: 5410, kakaoRating: 4.5, kakaoReviews: 1840, parking: false,
+        tags: ['모란역맛집', '등갈비', '치즈퐁듀'],
+        image: 'https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=600&q=80',
+        menus: [{ name: '매운등갈비 (1인)', price: '16,000원' }, { name: '메밀전', price: '6,000원' }]
+      },
+
+      // --- 부산 해운대 & 제주 ---
+      {
+        id: 701, region: 'busan', name: '해운대암소갈비집', category: 'meat', categoryName: '고기·구이',
+        summary: '수십 년 전통의 부드러운 생갈비와 감자사리 쫄깃한 감동의 부산 명가',
+        lat: 35.1610, lng: 129.1630, distance: '해운대해수욕장 도보 7분', distMeters: 450,
+        address: '부산 해운대구 중동2로10번길 32', phone: '051-746-0033', hours: '11:30 - 22:00',
+        naverRating: 4.76, naverReviews: 11200, kakaoRating: 4.5, kakaoReviews: 3890, parking: true,
+        tags: ['해운대맛집', '생갈비', '부산여행'],
+        image: 'https://images.unsplash.com/photo-1603048588665-791ca8aea617?auto=format&fit=crop&w=600&q=80',
+        menus: [{ name: '생갈비 (1인)', price: '58,000원' }, { name: '양념갈비 (1인)', price: '52,000원' }]
+      },
+      {
+        id: 801, region: 'jeju', name: '숙성도 제주시본점', category: 'meat', categoryName: '고기·구이',
+        summary: '제주 흑돼지의 신세계! 교차 숙성을 통해 육즙이 가득한 제주 최고의 흑돼지 전문점',
+        lat: 33.4890, lng: 126.4980, distance: '제주시 노형동 위치', distMeters: 600,
+        address: '제주 제주시 원노형로 41', phone: '064-711-5212', hours: '12:00 - 22:00',
+        naverRating: 4.82, naverReviews: 18900, kakaoRating: 4.6, kakaoReviews: 5400, parking: true,
+        tags: ['제주흑돼지', '숙성도', '제주맛집'],
+        image: 'https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=600&q=80',
+        menus: [{ name: '뼈목살 (360g)', price: '33,000원' }, { name: '720 숙성 삼겹살', price: '22,000원' }]
       }
     ];
 
@@ -583,7 +695,6 @@
 
       const lower = query.toLowerCase();
 
-      // Check built-in dictionary with keyword order sorting or partial matches
       for (const [key, val] of Object.entries(BUILTIN_GEO_DICT)) {
         if (lower.includes(key)) {
           currentRegion = val.region || 'custom';
@@ -591,7 +702,6 @@
           document.getElementById('locationSelect').value = val.region || 'all';
           if (leafletMap) leafletMap.setView([val.lat, val.lng], 15);
           
-          // If query has additional menu keywords like '모란역 라멘', set search input
           const cleanQuery = query.replace(key, '').trim();
           if (cleanQuery) {
             document.getElementById('searchInput').value = cleanQuery;
@@ -603,7 +713,6 @@
         }
       }
 
-      // Try Kakao Address Geocoding if API key is present
       if (kakaoApiKey) {
         try {
           const res = await fetch(`https://dapi.kakao.com/v2/local/search/address.json?query=${encodeURIComponent(query)}`, {
@@ -627,7 +736,6 @@
         }
       }
 
-      // OpenStreetMap Nominatim Fallback
       showToast(`'${query}' 위치를 찾는 중...`, 'spin');
       try {
         const res = await fetch(`https://nominatim.openstreetmap.org/search?format=json&countrycodes=kr&q=${encodeURIComponent(query)}`);
@@ -647,7 +755,6 @@
         console.warn('Nominatim error:', err);
       }
 
-      // Fallback: Treat as keyword search
       document.getElementById('searchInput').value = query;
       currentRegion = 'all';
       currentRegionLabel = `"${query}" 검색 결과`;
@@ -667,7 +774,7 @@
       currentRegionLabel = data.name;
       document.getElementById('locationSelect').value = key;
       if (leafletMap) {
-        leafletMap.setView([data.lat, data.lng], data.zoom || 15);
+        leafletMap.setView([data.lat, data.lng], data.zoom || 14);
       }
       applyFilters();
       showToast(`'${data.name}' 지역으로 이동했습니다! 📍`);
@@ -701,7 +808,9 @@
       currentSort = document.getElementById('sortSelect').value;
 
       let list = RESTAURANTS;
-      if (currentRegion !== 'all' && !currentRegion.startsWith('custom')) {
+      if (currentRegion === 'suwon_all') {
+        list = list.filter(r => r.region === 'suwon' || r.region === 'gwang교');
+      } else if (currentRegion !== 'all' && !currentRegion.startsWith('custom')) {
         list = list.filter(r => r.region === currentRegion);
       }
 
@@ -758,8 +867,6 @@
       if (items.length === 0) {
         grid.innerHTML = '';
         empty.classList.remove('hidden');
-        const queryTerm = document.getElementById('regionSearchInput').value.trim() || currentRegionLabel;
-        document.getElementById('emptyStateTitle').innerText = `검색 결과가 없습니다`;
         return;
       }
       empty.classList.add('hidden');
@@ -878,7 +985,7 @@
 
       document.getElementById('modalTags').innerHTML = (r.tags || []).map(t => `<span class="px-2.5 py-1 bg-slate-100 text-slate-700 rounded-lg text-xs font-medium"># ${t}</span>`).join('');
 
-      // strictly search by restaurant name r.name
+      // strictly search by restaurant name r.name only
       const encodedName = encodeURIComponent(r.name);
       document.getElementById('btnNaverMap').href = `https://map.naver.com/p/search/${encodedName}`;
       document.getElementById('btnKakaoMap').href = `https://map.kakao.com/link/search/${encodedName}`;
@@ -903,7 +1010,11 @@
 
     function spinRoulette() {
       let list = RESTAURANTS;
-      if (currentRegion !== 'all') list = list.filter(r => r.region === currentRegion);
+      if (currentRegion === 'suwon_all') {
+        list = list.filter(r => r.region === 'suwon' || r.region === 'gwang교');
+      } else if (currentRegion !== 'all') {
+        list = list.filter(r => r.region === currentRegion);
+      }
       if (list.length === 0) list = RESTAURANTS;
 
       const spinBtn = document.getElementById('btnSpinRoulette');
