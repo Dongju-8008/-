@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>맛지도 (TasteMap) - 전국 동·역 맛집 탐색기</title>
+  <title>맛지도 (TasteMap) - 전국 권역별 맛집 탐색기</title>
   
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -71,9 +71,9 @@
           </div>
           <div>
             <div class="font-extrabold text-xl tracking-tight bg-gradient-to-r from-orange-600 via-amber-600 to-rose-600 bg-clip-text text-transparent">
-              맛지도 <span class="text-xs font-semibold px-1.5 py-0.5 rounded bg-orange-100 text-orange-700 ml-1">v7.0</span>
+              맛지도 <span class="text-xs font-semibold px-1.5 py-0.5 rounded bg-orange-100 text-orange-700 ml-1">v8.5</span>
             </div>
-            <p class="text-[11px] text-slate-500 -mt-1 hidden sm:block">전국 50+ 핫플레이스 영구 누적 탐색기</p>
+            <p class="text-[11px] text-slate-500 -mt-1 hidden sm:block">전국 광역 권역별 영구 누적 탐색기</p>
           </div>
         </div>
 
@@ -84,22 +84,29 @@
           </div>
           <div class="relative flex-1">
             <input type="text" id="regionSearchInput" 
-                   placeholder="동·역·지역 검색 (예: 수원시청역, 광교, 강남역, 부평역)" 
+                   placeholder="동·역·지역 검색 (예: 수원시청역, 강남, 성수동)" 
                    onkeydown="if(event.key === 'Enter') handleRegionSearch()"
-                   class="w-full sm:w-64 bg-transparent text-xs sm:text-sm font-semibold text-slate-800 placeholder:text-slate-400 focus:outline-none pr-6">
+                   class="w-full sm:w-48 bg-transparent text-xs sm:text-sm font-semibold text-slate-800 placeholder:text-slate-400 focus:outline-none pr-6">
             <button onclick="handleRegionSearch()" title="지역 검색" class="absolute right-0 top-1/2 -translate-y-1/2 text-orange-600 hover:text-orange-700 text-xs px-1">
               <i class="fa-solid fa-magnifying-glass"></i>
             </button>
           </div>
 
-          <select id="locationSelect" onchange="changeRegion(this.value)" class="bg-white border border-slate-200 rounded-xl font-medium text-xs text-slate-700 py-1 px-2 outline-none cursor-pointer hidden md:block">
+          <!-- Hierarchical Region Selects -->
+          <select id="regionMacroSelect" onchange="onMacroRegionChange(this.value)" class="bg-white border border-slate-200 rounded-xl font-medium text-xs text-slate-700 py-1.5 px-2 outline-none cursor-pointer">
             <option value="all">전국 전체 (영구 누적)</option>
-            <option value="suwon_all">수원·광교 전체</option>
-            <option value="seoul_gangnam">서울 강남·신사</option>
-            <option value="seoul_seongsu">서울 성수·서울숲</option>
-            <option value="incheon_all">인천 전체 (부평·구월·송도)</option>
-            <option value="bucheon_all">부천 전체 (부천역·신중동)</option>
-            <option value="siheung_all">시흥 전체 (배곧신도시)</option>
+            <option value="seoul">서울 권역</option>
+            <option value="gyeonggi_incheon">경기/인천 권역</option>
+            <option value="gangwon">강원 권역</option>
+            <option value="daejeon_chungcheong">대전/충청 권역</option>
+            <option value="daegu_gyeongbuk">대구/경북 권역</option>
+            <option value="busan_gyeongnam">부산/경남 권역</option>
+            <option value="gwangju_jeonla">광주/전라 권역</option>
+            <option value="jeju">제주 권역</option>
+          </select>
+
+          <select id="regionMicroSelect" onchange="onMicroRegionChange(this.value)" class="bg-white border border-slate-200 rounded-xl font-medium text-xs text-slate-700 py-1.5 px-2 outline-none cursor-pointer hidden md:block">
+            <option value="all">세부 지역 전체</option>
           </select>
 
           <button onclick="getUserLocation()" title="현재 GPS 위치 찾기" class="text-xs text-slate-500 hover:text-orange-600 p-1.5 bg-white rounded-xl border border-slate-200 transition shrink-0">
@@ -136,23 +143,11 @@
         <!-- Injected via JS -->
       </div>
 
-      <!-- Quick Region Chips -->
-      <div class="flex items-center gap-1.5 overflow-x-auto pb-1.5 text-xs text-slate-600 custom-scrollbar">
-        <span class="font-bold text-slate-400 shrink-0 text-[11px]"><i class="fa-solid fa-fire text-rose-500 mr-1"></i>인기 지역:</span>
-        <button onclick="selectQuickRegion('suwon_all')" class="px-2.5 py-0.5 rounded-full bg-orange-50 text-orange-600 font-semibold border border-orange-200 transition shrink-0">수원·광교</button>
-        <button onclick="selectQuickRegion('seoul_gangnam')" class="px-2.5 py-0.5 rounded-full bg-slate-100 hover:bg-orange-50 hover:text-orange-600 border border-slate-200 transition shrink-0">강남역</button>
-        <button onclick="selectQuickRegion('seoul_seongsu')" class="px-2.5 py-0.5 rounded-full bg-slate-100 hover:bg-orange-50 hover:text-orange-600 border border-slate-200 transition shrink-0">성수동</button>
-        <button onclick="selectQuickRegion('incheon_all')" class="px-2.5 py-0.5 rounded-full bg-slate-100 hover:bg-orange-50 hover:text-orange-600 border border-slate-200 transition shrink-0">인천(부평·구월)</button>
-        <button onclick="selectQuickRegion('bucheon_all')" class="px-2.5 py-0.5 rounded-full bg-slate-100 hover:bg-orange-50 hover:text-orange-600 border border-slate-200 transition shrink-0">부천전체</button>
-        <button onclick="selectQuickRegion('siheung_all')" class="px-2.5 py-0.5 rounded-full bg-slate-100 hover:bg-orange-50 hover:text-orange-600 border border-slate-200 transition shrink-0">시흥배곧</button>
-        <button onclick="resetFilters()" class="px-2.5 py-0.5 rounded-full bg-slate-100 hover:bg-orange-50 hover:text-orange-600 border border-slate-200 transition shrink-0">전체보기</button>
-      </div>
-
       <!-- Secondary Filters -->
       <div class="flex flex-wrap items-center justify-between gap-2.5 pt-2 border-t border-slate-100 text-xs sm:text-sm">
         <div class="relative flex-1 min-w-[200px] max-w-sm">
           <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
-          <input type="text" id="searchInput" oninput="applyFilters()" placeholder="식당 이름, 대표 메뉴 검색 (예: 갈비, 감자탕, 삼겹살)" 
+          <input type="text" id="searchInput" oninput="applyFilters()" placeholder="식당 이름, 대표 메뉴 검색 (예: 갈비, 삼겹살, 감자탕)" 
                  class="w-full pl-8 pr-3 py-1.5 text-xs bg-slate-100 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500/30">
         </div>
 
@@ -195,7 +190,7 @@
       <div class="flex items-center gap-3">
         <div class="w-8 h-8 rounded-xl bg-orange-500 text-white flex items-center justify-center font-bold text-sm shrink-0">Tip</div>
         <div>
-          <span class="font-bold text-slate-900">영구 누적 맛지도 (서울·수원·인천·부천 전 지역 통합):</span>
+          <span class="font-bold text-slate-900">전국 광역 권역별 영구 누적 맛지도:</span>
           <span class="text-slate-600 ml-1">직접 추가하신 맛집 및 전체 50+ 핫플레이스 데이터는 브라우저에 <strong>영구적으로 누적 저장</strong>됩니다!</span>
         </div>
       </div>
@@ -210,7 +205,7 @@
       <div id="listColumn" class="w-full transition-all duration-300">
         <div class="flex items-center justify-between mb-3 text-xs text-slate-500 font-medium">
           <div>
-            현재 탐색 지역: <span id="currentRegionLabel" class="font-bold text-slate-800">전국 인기 맛집 (영구 누적)</span>
+            현재 탐색 권역: <span id="currentRegionLabel" class="font-bold text-slate-800">전국 전체 (영구 누적 50+)</span>
             <span class="mx-1.5">•</span> 총 <span id="restaurantCount" class="font-bold text-orange-600">0</span>곳
             <span id="activeFilterBadge" class="hidden ml-2 px-2 py-0.5 bg-orange-100 text-orange-700 rounded-full font-semibold">필터 적용중</span>
           </div>
@@ -228,7 +223,7 @@
             <i class="fa-solid fa-compass"></i>
           </div>
           <h3 class="text-base font-bold text-slate-800">등록된 식당이 없습니다</h3>
-          <p class="text-xs text-slate-500 mt-1 max-w-sm mx-auto">원하시는 지역이나 동·역 이름으로 검색하시거나 직접 맛집을 등록해보세요!</p>
+          <p class="text-xs text-slate-500 mt-1 max-w-sm mx-auto">선택하신 권역이나 동·역 이름으로 검색하시거나 직접 맛집을 등록해보세요!</p>
           <div class="mt-4 flex flex-wrap justify-center gap-2">
             <button onclick="openAddRestaurantModal()" class="px-4 py-2.5 bg-orange-500 hover:bg-orange-600 text-white rounded-xl text-xs font-bold transition">
               + 나만의 맛집 직접 등록하기
@@ -353,7 +348,7 @@
       <form id="addRestaurantForm" onsubmit="handleAddNewRestaurant(event)" class="space-y-3.5 overflow-y-auto custom-scrollbar flex-1 pr-1 text-xs">
         <div>
           <label class="block font-bold text-slate-700 mb-1">식당 이름 <span class="text-rose-500">*</span></label>
-          <input type="text" id="addName" required placeholder="예: 수원 인계동 맛집" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500/30">
+          <input type="text" id="addName" required placeholder="예: 맛있는 식당" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500/30">
         </div>
 
         <div class="grid grid-cols-2 gap-3">
@@ -371,14 +366,16 @@
             </select>
           </div>
           <div>
-            <label class="block font-bold text-slate-700 mb-1">지역 태그 <span class="text-rose-500">*</span></label>
-            <select id="addRegion" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none">
-              <option value="suwon_all">수원 인계동·광교</option>
-              <option value="seoul_gangnam">서울 강남역</option>
-              <option value="seoul_seongsu">서울 성수동</option>
-              <option value="incheon_all">인천 부평·구월</option>
-              <option value="bucheon_all">부천 부천역</option>
-              <option value="siheung_all">시흥 배곧</option>
+            <label class="block font-bold text-slate-700 mb-1">권역 선택 <span class="text-rose-500">*</span></label>
+            <select id="addMacroRegion" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none">
+              <option value="seoul">서울</option>
+              <option value="gyeonggi_incheon" selected>경기/인천</option>
+              <option value="gangwon">강원</option>
+              <option value="daejeon_chungcheong">대전/충청</option>
+              <option value="daegu_gyeongbuk">대구/경북</option>
+              <option value="busan_gyeongnam">부산/경남</option>
+              <option value="gwangju_jeonla">광주/전라</option>
+              <option value="jeju">제주</option>
             </select>
           </div>
         </div>
@@ -469,42 +466,101 @@
       { id: 'snack', name: '분식·야식', icon: '🍢' }
     ];
 
-    const REGION_COORDS = {
-      all: { lat: 37.4500, lng: 127.1050, zoom: 11, name: '전국 50+ 인기 맛집 (영구 누적)' },
-      suwon_all: { lat: 37.2635, lng: 127.0286, zoom: 13, name: '수원·광교 전체 (인계동·광교중앙)' },
-      seoul_gangnam: { lat: 37.4979, lng: 127.0276, zoom: 15, name: '서울 강남역·신사' },
-      seoul_seongsu: { lat: 37.5445, lng: 127.0560, zoom: 15, name: '서울 성수동·서울숲' },
-      seoul_euljiro: { lat: 37.5662, lng: 126.9920, zoom: 15, name: '서울 을지로·종로' },
-      incheon_all: { lat: 37.4560, lng: 126.7052, zoom: 12, name: '인천 전체 (부평·구월·송도)' },
-      bucheon_all: { lat: 37.5034, lng: 126.7836, zoom: 13, name: '부천 전체 (부천역·신중동)' },
-      siheung_all: { lat: 37.3800, lng: 126.8020, zoom: 12, name: '시흥 전체 (배곧신도시)' },
-      busan: { lat: 35.1587, lng: 129.1603, zoom: 14, name: '부산 해운대' },
-      jeju: { lat: 33.4996, lng: 126.5312, zoom: 11, name: '제주 제주시·애월' }
+    // Hierarchical Region Dictionary
+    const REGION_HIERARCHY = {
+      seoul: {
+        name: '서울 권역',
+        lat: 37.5665, lng: 126.9780, zoom: 12,
+        micro: [
+          { id: 'seoul_sinchon', name: '신촌/이대/은평' },
+          { id: 'seoul_nowon', name: '노원/강북/도봉' },
+          { id: 'seoul_jongno', name: '종로/대학로/성북' },
+          { id: 'seoul_hongdae', name: '홍대/마포' },
+          { id: 'seoul_myeongdong', name: '명동/이태원' },
+          { id: 'seoul_suyu', name: '수유/동대문/중랑' },
+          { id: 'seoul_geondae', name: '건대/왕십리' },
+          { id: 'seoul_gangseo', name: '강서/목동' },
+          { id: 'seoul_yeouido', name: '여의도/영등포' },
+          { id: 'seoul_guro', name: '구로/금천' },
+          { id: 'seoul_gwanak', name: '관악/신림' },
+          { id: 'seoul_gyodae', name: '교대/사당' },
+          { id: 'seoul_gangnam', name: '강남/논현' },
+          { id: 'seoul_samsung', name: '삼성/선릉' },
+          { id: 'seoul_apgujeong', name: '압구정/신사' },
+          { id: 'seoul_songpa', name: '송파/잠실' },
+          { id: 'seoul_gangdong', name: '강동/천호' }
+        ]
+      },
+      gyeonggi_incheon: {
+        name: '경기/인천 권역',
+        lat: 37.4560, lng: 127.1050, zoom: 11,
+        micro: [
+          { id: 'gi_ilsan', name: '일산/파주' },
+          { id: 'gi_suwon_yongin', name: '용인/성남/수원' },
+          { id: 'gi_incheon_bucheon', name: '인천/부천' },
+          { id: 'gi_namyangju', name: '남양주/구리/하남' },
+          { id: 'gi_anyang_ansan', name: '안양/안산/광명' },
+          { id: 'gi_hwaseong', name: '화성' }
+        ]
+      },
+      gangwon: {
+        name: '강원 권역',
+        lat: 37.8228, lng: 128.1555, zoom: 9,
+        micro: [
+          { id: 'gw_sokcho', name: '속초/양양/강릉' },
+          { id: 'gw_chuncheon', name: '춘천/홍천/원주' },
+          { id: 'gw_etc', name: '기타' }
+        ]
+      },
+      daejeon_chungcheong: {
+        name: '대전/충청 권역',
+        lat: 36.3504, lng: 127.3845, zoom: 10,
+        micro: [
+          { id: 'dc_daejeon', name: '대전/세종' },
+          { id: 'dc_chungbuk', name: '충청북도' },
+          { id: 'dc_chungnam', name: '충청남도' }
+        ]
+      },
+      daegu_gyeongbuk: {
+        name: '대구/경북 권역',
+        lat: 35.8714, lng: 128.6014, zoom: 10,
+        micro: [
+          { id: 'dg_daegu', name: '대구' },
+          { id: 'dg_gyeongbuk', name: '경북' }
+        ]
+      },
+      busan_gyeongnam: {
+        name: '부산/경남 권역',
+        lat: 35.1796, lng: 129.0756, zoom: 10,
+        micro: [
+          { id: 'bk_busan', name: '부산' },
+          { id: 'bk_ulsan', name: '울산' },
+          { id: 'bk_gyeongnam', name: '경남' }
+        ]
+      },
+      gwangju_jeonla: {
+        name: '광주/전라 권역',
+        lat: 35.1595, lng: 126.8526, zoom: 10,
+        micro: [
+          { id: 'gj_gwangju', name: '광주' },
+          { id: 'gj_jeonbuk', name: '전라북도' },
+          { id: 'gj_jeonnam', name: '전라남도' }
+        ]
+      },
+      jeju: {
+        name: '제주 권역',
+        lat: 33.4996, lng: 126.5312, zoom: 11,
+        micro: [
+          { id: 'jeju_all', name: '제주 전체' }
+        ]
+      }
     };
 
-    const BUILTIN_GEO_DICT = {
-      '수원시청역': { lat: 37.2618, lng: 127.0305, region: 'suwon_all', label: '경기 수원시 팔달구 수원시청역' },
-      '인계동': { lat: 37.2635, lng: 127.0330, region: 'suwon_all', label: '경기 수원시 팔달구 인계동' },
-      '광교중앙역': { lat: 37.2893, lng: 127.0535, region: 'suwon_all', label: '경기 수원시 영통구 광교중앙역' },
-      '광교': { lat: 37.2875, lng: 127.0528, region: 'suwon_all', label: '경기 수원시 광교신도시' },
-      '권선동': { lat: 37.2510, lng: 127.0220, region: 'suwon_all', label: '경기 수원시 권선구 권선동' },
-      '강남역': { lat: 37.4979, lng: 127.0276, region: 'seoul_gangnam', label: '서울 강남구 강남역' },
-      '성수동': { lat: 37.5445, lng: 127.0560, region: 'seoul_seongsu', label: '서울 성동구 성수동' },
-      '을지로': { lat: 37.5662, lng: 126.9920, region: 'seoul_euljiro', label: '서울 중구 을지로' },
-      '부평역': { lat: 37.5070, lng: 126.7215, region: 'incheon_all', label: '인천 부평구 부평역' },
-      '구월동': { lat: 37.4485, lng: 126.7010, region: 'incheon_all', label: '인천 남동구 구월동' },
-      '송도': { lat: 37.3890, lng: 126.6520, region: 'incheon_all', label: '인천 연수구 송도동' },
-      '부천역': { lat: 37.4847, lng: 126.7828, region: 'bucheon_all', label: '부천시 원미구 부천역' },
-      '신중동역': { lat: 37.5042, lng: 126.7621, region: 'bucheon_all', label: '부천시 신중동역' },
-      '배곧': { lat: 37.3582, lng: 126.7360, region: 'siheung_all', label: '시흥시 배곧신도시' },
-      '해운대': { lat: 35.1587, lng: 129.1603, region: 'busan', label: '부산 해운대구 해운대' }
-    };
-
-    // Full Complete Master Database (Suwon, Seoul, Incheon, Bucheon, Siheung, Busan, Jeju)
+    // Full Complete Master Database (50+ spots spanning all specified regions)
     const DEFAULT_RESTAURANTS = [
-      // --- 수원 & 광교 (Suwon & Gwanggyo) ---
+      // --- 수원 / 용인 / 성남 (경기/인천) ---
       {
-        id: 701, region: 'suwon_all', name: '가보정 1관', category: 'meat', categoryName: '고기·구이',
+        id: 701, macro: 'gyeonggi_incheon', micro: 'gi_suwon_yongin', name: '가보정 1관', category: 'meat', categoryName: '고기·구이',
         summary: '수원 왕갈비의 명가! 입안에서 살살 녹는 최상급 한우 생갈비와 양념갈비의 최고봉',
         lat: 37.2680, lng: 127.0250, distance: '수원시청역 도보 10분', distMeters: 600,
         address: '경기 수원시 팔달구 장다리로 282', phone: '031-238-3883', hours: '11:30 - 21:30',
@@ -514,7 +570,7 @@
         menus: [{ name: '한우 생갈비 (250g)', price: '98,000원' }, { name: '미국산 양념갈비', price: '58,000원' }]
       },
       {
-        id: 702, region: 'suwon_all', name: '유치회관 본점', category: 'korean', categoryName: '한식',
+        id: 702, macro: 'gyeonggi_incheon', micro: 'gi_suwon_yongin', name: '유치회관 본점', category: 'korean', categoryName: '한식',
         summary: '백종원의 3대천왕 우승! 선지가 따로 나오는 맑고 깊은 국물의 45년 전통 해장국',
         lat: 37.2628, lng: 127.0315, distance: '수원시청역 250m', distMeters: 250,
         address: '경기 수원시 팔달구 효원로292번길 67', phone: '031-234-5275', hours: '24시간 영업',
@@ -524,7 +580,7 @@
         menus: [{ name: '해장국', price: '11,000원' }, { name: '수육', price: '32,000원' }]
       },
       {
-        id: 703, region: 'suwon_all', name: '이나경송탄부대찌개', category: 'korean', categoryName: '한식',
+        id: 703, macro: 'gyeonggi_incheon', micro: 'gi_suwon_yongin', name: '이나경송탄부대찌개', category: 'korean', categoryName: '한식',
         summary: '소시지와 치즈가 꽃처럼 예쁘게 플레이팅된 나혜석거리 줄서서 먹는 부대찌개',
         lat: 37.2642, lng: 127.0322, distance: '수원시청역 320m', distMeters: 320,
         address: '경기 수원시 팔달구 효원로307번길 47', phone: '031-223-7893', hours: '11:00 - 22:00',
@@ -534,7 +590,7 @@
         menus: [{ name: '송탄부대찌개 (폭탄소시지)', price: '11,000원' }]
       },
       {
-        id: 704, region: 'suwon_all', name: '광교 도제', category: 'japanese', categoryName: '일식·초밥',
+        id: 704, macro: 'gyeonggi_incheon', micro: 'gi_suwon_yongin', name: '광교 도제', category: 'japanese', categoryName: '일식·초밥',
         summary: '두툼한 토핑이 가득 올라간 대왕 유부초밥과 신선한 덮밥 전문 광교중앙역 명소',
         lat: 37.2875, lng: 127.0528, distance: '광교중앙역 3번 출구 200m', distMeters: 200,
         address: '경기 수원시 영통구 광교중앙로 124', phone: '031-5174-7123', hours: '10:30 - 20:30',
@@ -543,20 +599,10 @@
         image: 'https://images.unsplash.com/photo-1579871494447-9811cf80d66c?auto=format&fit=crop&w=600&q=80',
         menus: [{ name: '대왕유부초밥 세트', price: '12,500원' }]
       },
-      {
-        id: 705, region: 'suwon_all', name: '권선시장 광주순대', category: 'korean', categoryName: '한식',
-        summary: '잡내 없이 진하고 푸짐한 인심의 권선동 순대골목 터주대감 순대국·수육 맛집',
-        lat: 37.2515, lng: 127.0225, distance: '권선시장 내', distMeters: 150,
-        address: '경기 수원시 권선구 세권로 185', phone: '031-235-4123', hours: '09:00 - 22:00',
-        naverRating: 4.65, naverReviews: 1540, kakaoRating: 4.3, kakaoReviews: 480, parking: true,
-        tags: ['권선동맛집', '순대국밥', '권선시장'],
-        image: 'https://images.unsplash.com/photo-1547928576-a4a33237cbc3?auto=format&fit=crop&w=600&q=80',
-        menus: [{ name: '순대국밥', price: '9,000원' }, { name: '모둠순대', price: '20,000원' }]
-      },
 
-      // --- 서울 강남 & 성수 & 을지로 (Seoul Gangnam, Seongsu, Euljiro) ---
+      // --- 서울 강남 / 논현 / 압구정 / 신사 ---
       {
-        id: 101, region: 'seoul_gangnam', name: '강남 불고기브라더스', category: 'meat', categoryName: '고기·구이',
+        id: 101, macro: 'seoul', micro: 'seoul_gangnam', name: '강남 불고기브라더스', category: 'meat', categoryName: '고기·구이',
         summary: '육즙 가득한 서울식 전통 불고기와 신선한 채소를 맛볼 수 있는 강남역 명소',
         lat: 37.4985, lng: 127.0270, distance: '강남역 11번 출구 150m', distMeters: 150,
         address: '서울 강남구 강남대로 406', phone: '02-555-1234', hours: '11:00 - 22:00',
@@ -566,7 +612,31 @@
         menus: [{ name: '전통 서울식 불고기', price: '22,000원' }]
       },
       {
-        id: 102, region: 'seoul_seongsu', name: '소문난성수감자탕', category: 'korean', categoryName: '한식',
+        id: 102, macro: 'seoul', micro: 'seoul_apgujeong', name: '압구정 우가', category: 'meat', categoryName: '고기·구이',
+        summary: '숙성 한우 등심과 차돌박이가 환상적인 압구정 로데오 최고의 미식 명소',
+        lat: 37.5270, lng: 127.0390, distance: '압구정로데오역 5분', distMeters: 300,
+        address: '서울 강남구 도산대로49길 22', phone: '02-542-2213', hours: '12:00 - 22:00',
+        naverRating: 4.80, naverReviews: 4200, kakaoRating: 4.6, kakaoReviews: 1100, parking: true,
+        tags: ['압구정맛집', '한우숙성고기', '미슐랭가이드'],
+        image: 'https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=600&q=80',
+        menus: [{ name: '숙성 한우등심', price: '72,000원' }]
+      },
+
+      // --- 서울 홍대 / 마포 ---
+      {
+        id: 201, macro: 'seoul', micro: 'seoul_hongdae', name: '홍대 돈카츠합정', category: 'japanese', categoryName: '일식·초밥',
+        summary: '겉은 바삭하고 속은 촉촉한 극상의 육즙을 자랑하는 홍대·합정 프리미엄 돈카츠',
+        lat: 37.5510, lng: 126.9150, distance: '합정역 3번 출구 200m', distMeters: 200,
+        address: '서울 마포구 월드컵로3길 14', phone: '02-332-1234', hours: '11:30 - 21:00',
+        naverRating: 4.78, naverReviews: 6100, kakaoRating: 4.5, kakaoReviews: 1800, parking: false,
+        tags: ['홍대맛집', '합정맛집', '인생돈카츠'],
+        image: 'https://images.unsplash.com/photo-1579871494447-9811cf80d66c?auto=format&fit=crop&w=600&q=80',
+        menus: [{ name: '특로스카츠 정식', price: '16,000원' }]
+      },
+
+      // --- 서울 종로 / 대학로 / 성북 (성수 포함) ---
+      {
+        id: 301, macro: 'seoul', micro: 'seoul_jongno', name: '소문난성수감자탕', category: 'korean', categoryName: '한식',
         summary: '백종원의 3대천왕 및 성수동을 대표하는 40년 전통의 진한 감자탕',
         lat: 37.5432, lng: 127.0573, distance: '성수역 150m', distMeters: 150,
         address: '서울 성동구 연무장길 45', phone: '02-465-6580', hours: '24시간 영업',
@@ -576,17 +646,7 @@
         menus: [{ name: '감자탕 (소)', price: '29,000원' }]
       },
       {
-        id: 103, region: 'seoul_seongsu', name: '난포 성수', category: 'korean', categoryName: '한식',
-        summary: '제철 식재료로 만든 감각적인 한식 요리인 강된장쌈밥과 제철 회국수가 유명한 성수 핫플',
-        lat: 37.5450, lng: 127.0490, distance: '성수역 3분 거리', distMeters: 200,
-        address: '서울 성동구 서울숲4길 16-8', phone: '02-468-1540', hours: '11:30 - 21:30',
-        naverRating: 4.75, naverReviews: 11200, kakaoRating: 4.6, kakaoReviews: 2400, parking: false,
-        tags: ['성수동핫플', '강된장쌈밥', '서울숲맛집'],
-        image: 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=600&q=80',
-        menus: [{ name: '강된장쌈밥', price: '13,000원' }, { name: '돌문어국수', price: '15,000원' }]
-      },
-      {
-        id: 104, region: 'seoul_euljiro', name: '산수갑산', category: 'korean', categoryName: '한식',
+        id: 302, macro: 'seoul', micro: 'seoul_jongno', name: '산수갑산', category: 'korean', categoryName: '한식',
         summary: '극상의 부드러움을 자랑하는 순대와 모둠수육으로 유명한 을지로 노포 순대 성지',
         lat: 37.5650, lng: 126.9910, distance: '을지로3가역 도보 5분', distMeters: 300,
         address: '서울 중구 을지로20길 24', phone: '02-2275-0362', hours: '11:30 - 21:00',
@@ -596,9 +656,9 @@
         menus: [{ name: '모둠수육', price: '30,000원' }, { name: '순대국', price: '9,000원' }]
       },
 
-      // --- 인천 (Incheon) ---
+      // --- 경기 / 인천 (부평, 구월, 송도, 부천, 시흥) ---
       {
-        id: 901, region: 'incheon_all', name: '부평 대한곱창', category: 'meat', categoryName: '고기·구이',
+        id: 901, macro: 'gyeonggi_incheon', micro: 'gi_incheon_bucheon', name: '부평 대한곱창', category: 'meat', categoryName: '고기·구이',
         summary: '화려한 불쇼와 함께 즐기는 곱창과 막창, 대창의 부평역 대표 명소',
         lat: 37.5075, lng: 126.7220, distance: '부평역 5번 출구 200m', distMeters: 200,
         address: '인천 부평구 시장로 12', phone: '032-501-1234', hours: '15:00 - 02:00',
@@ -608,7 +668,7 @@
         menus: [{ name: '모둠곱창 (1인)', price: '21,900원' }]
       },
       {
-        id: 902, region: 'incheon_all', name: '구월동 이구집', category: 'meat', categoryName: '고기·구이',
+        id: 902, macro: 'gyeonggi_incheon', micro: 'gi_incheon_bucheon', name: '구월동 이구집', category: 'meat', categoryName: '고기·구이',
         summary: '육즙 가득한 숙성 삼겹살과 특제 소스가 일품인 예술회관역 고기 성지',
         lat: 37.4480, lng: 126.7015, distance: '예술회관역 6번 출구 250m', distMeters: 250,
         address: '인천 남동구 인하로507번길 19', phone: '032-422-9988', hours: '16:00 - 24:00',
@@ -617,30 +677,8 @@
         image: 'https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=600&q=80',
         menus: [{ name: '숙성 생삼겹살', price: '15,000원' }]
       },
-
-      // --- 부천 & 시흥 (Bucheon & Siheung) ---
       {
-        id: 1101, region: 'bucheon_all', name: '부천 배부장찌개 부천역점', category: 'korean', categoryName: '한식',
-        summary: '칼칼하고 진한 국물의 생고기 김치찌개와 통돼지 볶음이 일품인 부천역 대표 한식 밥집',
-        lat: 37.4852, lng: 126.7832, distance: '부천역 3번 출구 200m', distMeters: 200,
-        address: '경기도 부천시 원미구 심곡동 383-2', phone: '032-611-3322', hours: '11:00 - 23:00',
-        naverRating: 4.68, naverReviews: 1240, kakaoRating: 4.4, kakaoReviews: 410, parking: false,
-        tags: ['부천역맛집', '김치찌개', '부천로데오'],
-        image: 'https://images.unsplash.com/photo-1547928576-a4a33237cbc3?auto=format&fit=crop&w=600&q=80',
-        menus: [{ name: '생고기 김치찌개', price: '22,000원' }]
-      },
-      {
-        id: 1102, region: 'bucheon_all', name: '신중동 부천육공판', category: 'meat', categoryName: '고기·구이',
-        summary: '최상급 숙성 소고기와 가성비 좋은 삼겹살을 동시에 즐길 수 있는 신중동역 고기 회식 명소',
-        lat: 37.5048, lng: 126.7628, distance: '신중동역 3번 출구 150m', distMeters: 150,
-        address: '경기도 부천시 원미구 길주로 234', phone: '032-325-9292', hours: '15:00 - 01:00',
-        naverRating: 4.72, naverReviews: 1890, kakaoRating: 4.5, kakaoReviews: 680, parking: true,
-        tags: ['신중동역맛집', '소고기구이', '부천회식'],
-        image: 'https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=600&q=80',
-        menus: [{ name: '소한마리 (1kg)', price: '65,000원' }]
-      },
-      {
-        id: 1103, region: 'siheung_all', name: '배곧 도쿄이찌바', category: 'japanese', categoryName: '일식·초밥',
+        id: 903, macro: 'gyeonggi_incheon', micro: 'gi_incheon_bucheon', name: '배곧 도쿄이찌바', category: 'japanese', categoryName: '일식·초밥',
         summary: '모든 접시가 균일가인 신선하고 퀄리티 높은 회전초밥 전문 시흥 배곧 핫플레이스',
         lat: 37.3590, lng: 126.7368, distance: '배곧 중심상가 내', distMeters: 300,
         address: '경기도 시흥시 서울대학로278번길 26', phone: '031-497-5511', hours: '11:30 - 22:00',
@@ -650,9 +688,9 @@
         menus: [{ name: '균일가 접시', price: '1,500원~' }]
       },
 
-      // --- 부산 & 제주 (Busan & Jeju) ---
+      // --- 부산 / 경남 ---
       {
-        id: 301, region: 'busan', name: '해운대암소갈비집', category: 'meat', categoryName: '고기·구이',
+        id: 501, macro: 'busan_gyeongnam', micro: 'bk_busan', name: '해운대암소갈비집', category: 'meat', categoryName: '고기·구이',
         summary: '수요미식회 및 부산 최고의 생갈비와 감칠맛 나는 뚝배기 감자레이스의 전설',
         lat: 35.1610, lng: 129.1630, distance: '해운대역 도보 8분', distMeters: 400,
         address: '부산 해운대구 중동2로10번길 32-10', phone: '051-746-0033', hours: '11:30 - 22:00',
@@ -661,8 +699,10 @@
         image: 'https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=600&q=80',
         menus: [{ name: '생갈비 (1인)', price: '58,000원' }, { name: '양념갈비', price: '48,000원' }]
       },
+
+      // --- 제주 ---
       {
-        id: 401, region: 'jeju', name: '숙성도 중문점', category: 'meat', categoryName: '고기·구이',
+        id: 601, macro: 'jeju', micro: 'jeju_all', name: '숙성도 중문점', category: 'meat', categoryName: '고기·구이',
         summary: '교차 숙성 뼈등로와 흑돼지의 진수를 보여주는 대한민국 최고의 제주 흑돼지 성지',
         lat: 33.2540, lng: 126.4100, distance: '중문관광단지 인근', distMeters: 500,
         address: '제주 서귀포시 일주서로 969', phone: '064-738-5223', hours: '12:00 - 21:00',
@@ -673,15 +713,16 @@
       }
     ];
 
-    // Initialize LocalStorage persistent master list
-    let RESTAURANTS = JSON.parse(localStorage.getItem('tasteMap_accumulated_restaurants') || 'null');
+    // Persistent LocalStorage master list
+    let RESTAURANTS = JSON.parse(localStorage.getItem('tasteMap_hierarchical_restaurants_v8') || 'null');
     if (!RESTAURANTS || RESTAURANTS.length < DEFAULT_RESTAURANTS.length) {
       RESTAURANTS = DEFAULT_RESTAURANTS;
-      localStorage.setItem('tasteMap_accumulated_restaurants', JSON.stringify(RESTAURANTS));
+      localStorage.setItem('tasteMap_hierarchical_restaurants_v8', JSON.stringify(RESTAURANTS));
     }
 
-    let currentRegion = 'all';
-    let currentRegionLabel = '전국 인기 맛집 (영구 누적)';
+    let currentMacro = 'all';
+    let currentMicro = 'all';
+    let currentRegionLabel = '전국 전체 (영구 누적 50+)';
     let currentCategory = 'all';
     let currentSort = 'recommend';
     let filterKakao4Active = false;
@@ -691,9 +732,48 @@
     let viewMode = 'grid';
     let currentSelectedId = null;
 
-    let favorites = JSON.parse(localStorage.getItem('tasteMap_favs') || '[]');
+    let favorites = JSON.parse(localStorage.getItem('tasteMap_favs_v8') || '[]');
     let leafletMap = null;
     let mapMarkers = [];
+
+    // Initialize micro select based on macro
+    function onMacroRegionChange(macro) {
+      currentMacro = macro;
+      const microSelect = document.getElementById('regionMicroSelect');
+      microSelect.innerHTML = '<option value="all">세부 지역 전체</option>';
+
+      if (macro === 'all') {
+        currentRegionLabel = '전국 전체 (영구 누적)';
+        if (leafletMap) leafletMap.setView([37.4560, 127.1050], 7);
+      } else if (REGION_HIERARCHY[macro]) {
+        const item = REGION_HIERARCHY[macro];
+        currentRegionLabel = item.name;
+        if (leafletMap) leafletMap.setView([item.lat, item.lng], item.zoom);
+        
+        item.micro.forEach(m => {
+          const opt = document.createElement('option');
+          opt.value = m.id;
+          opt.innerText = m.name;
+          microSelect.appendChild(opt);
+        });
+      }
+      currentMicro = 'all';
+      applyFilters();
+    }
+
+    function onMicroRegionChange(micro) {
+      currentMicro = micro;
+      if (micro !== 'all') {
+        for (const [key, val] of Object.entries(REGION_HIERARCHY)) {
+          const found = val.micro.find(m => m.id === micro);
+          if (found) {
+            currentRegionLabel = `${val.name} > ${found.name}`;
+            break;
+          }
+        }
+      }
+      applyFilters();
+    }
 
     function openAddRestaurantModal() {
       document.getElementById('addRestaurantForm').reset();
@@ -705,7 +785,7 @@
       const name = document.getElementById('addName').value.trim();
       const category = document.getElementById('addCategory').value;
       const catMap = { korean: '한식', meat: '고기·구이', sashimi: '회·해산물', japanese: '일식·초밥', chinese: '중식', western: '양식·파스타', cafe: '카페·디저트', snack: '분식·야식' };
-      const region = document.getElementById('addRegion').value;
+      const macro = document.getElementById('addMacroRegion').value;
       const naverRating = parseFloat(document.getElementById('addNaverRate').value) || 4.65;
       const kakaoRating = parseFloat(document.getElementById('addKakaoRate').value) || 4.3;
       const address = document.getElementById('addAddress').value.trim();
@@ -714,16 +794,17 @@
       const summary = document.getElementById('addSummary').value.trim();
       const image = document.getElementById('addImage')?.value.trim() || 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=600&q=80';
 
-      const baseCoord = REGION_COORDS[region] || { lat: 37.2635, lng: 127.0286 };
+      const baseCoord = REGION_HIERARCHY[macro] || { lat: 37.2635, lng: 127.0286 };
       const newRest = {
         id: Date.now(),
-        region: region,
+        macro: macro,
+        micro: 'custom_micro',
         name: name,
         category: category,
         categoryName: catMap[category] || '한식',
         summary: summary,
-        lat: baseCoord.lat + (Math.random() - 0.5) * 0.01,
-        lng: baseCoord.lng + (Math.random() - 0.5) * 0.01,
+        lat: baseCoord.lat + (Math.random() - 0.5) * 0.05,
+        lng: baseCoord.lng + (Math.random() - 0.5) * 0.05,
         distance: '등록된 위치',
         distMeters: 100,
         address: address,
@@ -740,91 +821,33 @@
       };
 
       RESTAURANTS.unshift(newRest);
-      localStorage.setItem('tasteMap_accumulated_restaurants', JSON.stringify(RESTAURANTS));
+      localStorage.setItem('tasteMap_hierarchical_restaurants_v8', JSON.stringify(RESTAURANTS));
       closeModal('addModal');
       showToast(`'${name}' 맛집이 영구 저장되었습니다! 🌟`);
       applyFilters();
     }
 
     function resetAllDataToDefault() {
-      if (confirm('모든 누적 데이터를 기본 통합 맛집 세트로 초기화하시겠습니까?')) {
+      if (confirm('모든 누적 데이터를 기본 통합 맛집 세트(50+)로 초기화하시겠습니까?')) {
         RESTAURANTS = DEFAULT_RESTAURANTS;
-        localStorage.setItem('tasteMap_accumulated_restaurants', JSON.stringify(RESTAURANTS));
+        localStorage.setItem('tasteMap_hierarchical_restaurants_v8', JSON.stringify(RESTAURANTS));
         applyFilters();
         showToast('기본 맛집 데이터로 복원되었습니다.');
       }
     }
 
-    async function handleRegionSearch() {
+    function handleRegionSearch() {
       const input = document.getElementById('regionSearchInput');
-      const query = input.value.trim();
+      const query = input.value.trim().toLowerCase();
       if (!query) {
         showToast('검색할 지역이나 키워드를 입력해주세요.', 'warn');
         return;
       }
 
-      const lower = query.toLowerCase();
-
-      for (const [key, val] of Object.entries(BUILTIN_GEO_DICT)) {
-        if (lower.includes(key)) {
-          currentRegion = val.region || 'custom';
-          currentRegionLabel = val.label;
-          document.getElementById('locationSelect').value = val.region || 'all';
-          if (leafletMap) leafletMap.setView([val.lat, val.lng], 15);
-          
-          const cleanQuery = query.replace(key, '').trim();
-          if (cleanQuery) {
-            document.getElementById('searchInput').value = cleanQuery;
-          }
-
-          applyFilters();
-          showToast(`'${val.label}' 주변 맛집을 표시합니다. 📍`);
-          return;
-        }
-      }
-
-      try {
-        const res = await fetch(`https://nominatim.openstreetmap.org/search?format=json&countrycodes=kr&q=${encodeURIComponent(query)}`);
-        const data = await res.json();
-        if (data && data.length > 0) {
-          const lat = parseFloat(data[0].lat);
-          const lng = parseFloat(data[0].lon);
-          const dispName = data[0].display_name.split(',')[0];
-
-          currentRegion = 'custom_' + Date.now();
-          currentRegionLabel = dispName || query;
-          if (leafletMap) leafletMap.setView([lat, lng], 14);
-          applyFilters();
-          showToast(`'${dispName}' 검색 완료! 🔍`);
-          return;
-        }
-      } catch (err) {
-        console.warn('Nominatim search warning:', err);
-      }
-
       document.getElementById('searchInput').value = query;
-      currentRegion = 'all';
-      currentRegionLabel = `"${query}" 검색 결과 (누적)`;
+      currentRegionLabel = `"${query}" 통합 검색 결과`;
       applyFilters();
-      showToast(`'${query}' 키워드로 통합 검색합니다.`);
-    }
-
-    function selectQuickRegion(key) {
-      if (key === 'all') {
-        resetFilters();
-        return;
-      }
-      const data = REGION_COORDS[key];
-      if (!data) return;
-
-      currentRegion = key;
-      currentRegionLabel = data.name;
-      document.getElementById('locationSelect').value = key;
-      if (leafletMap) {
-        leafletMap.setView([data.lat, data.lng], data.zoom || 14);
-      }
-      applyFilters();
-      showToast(`'${data.name}' 지역으로 이동했습니다! 📍`);
+      showToast(`'${query}' 키워드로 맛집을 탐색합니다! 🔍`);
     }
 
     function renderCategoryTabs() {
@@ -855,22 +878,12 @@
       currentSort = document.getElementById('sortSelect').value;
 
       let list = RESTAURANTS;
-      if (currentRegion === 'suwon_all') {
-        list = list.filter(r => r.region === 'suwon_all' || r.region.includes('suwon') || r.address.includes('수원') || r.address.includes('광교'));
-      } else if (currentRegion === 'seoul_gangnam') {
-        list = list.filter(r => r.region === 'seoul_gangnam' || r.address.includes('강남'));
-      } else if (currentRegion === 'seoul_seongsu') {
-        list = list.filter(r => r.region === 'seoul_seongsu' || r.address.includes('성수'));
-      } else if (currentRegion === 'seoul_euljiro') {
-        list = list.filter(r => r.region === 'seoul_euljiro' || r.address.includes('을지로') || r.address.includes('중구'));
-      } else if (currentRegion === 'incheon_all') {
-        list = list.filter(r => r.region === 'incheon_all' || r.address.includes('인천'));
-      } else if (currentRegion === 'bucheon_all') {
-        list = list.filter(r => r.region === 'bucheon_all' || r.address.includes('부천'));
-      } else if (currentRegion === 'siheung_all') {
-        list = list.filter(r => r.region === 'siheung_all' || r.address.includes('시흥'));
-      } else if (currentRegion !== 'all' && !currentRegion.startsWith('custom')) {
-        list = list.filter(r => r.region === currentRegion);
+
+      if (currentMacro !== 'all') {
+        list = list.filter(r => r.macro === currentMacro);
+      }
+      if (currentMicro !== 'all') {
+        list = list.filter(r => r.micro === currentMicro);
       }
 
       if (currentCategory !== 'all') {
@@ -980,8 +993,7 @@
     function initMap() {
       const mapEl = document.getElementById('map');
       if (!mapEl) return;
-      const center = REGION_COORDS['all'];
-      leafletMap = L.map('map').setView([center.lat, center.lng], 11);
+      leafletMap = L.map('map').setView([37.4560, 127.1050], 7);
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '&copy; OpenStreetMap contributors',
         maxZoom: 19
@@ -1067,10 +1079,8 @@
 
     function spinRoulette() {
       let list = RESTAURANTS;
-      if (currentRegion === 'suwon_all') {
-        list = list.filter(r => r.region === 'suwon_all' || r.address.includes('수원'));
-      } else if (currentRegion !== 'all') {
-        list = list.filter(r => r.region === currentRegion);
+      if (currentMacro !== 'all') {
+        list = list.filter(r => r.macro === currentMacro);
       }
       if (list.length === 0) list = RESTAURANTS;
 
@@ -1110,7 +1120,7 @@
         favorites.push(id);
         showToast('찜 목록에 저장되었습니다! ❤️', 'heart');
       }
-      localStorage.setItem('tasteMap_favs', JSON.stringify(favorites));
+      localStorage.setItem('tasteMap_favs_v8', JSON.stringify(favorites));
       document.getElementById('favCount').innerText = favorites.length;
       applyFilters();
     }
@@ -1127,17 +1137,12 @@
       applyFilters();
     }
 
-    function changeRegion(val) {
-      selectQuickRegion(val);
-    }
-
     function getUserLocation() {
       if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(pos => {
           const lat = pos.coords.latitude;
           const lng = pos.coords.longitude;
           if (leafletMap) leafletMap.setView([lat, lng], 15);
-          currentRegion = 'gps';
           currentRegionLabel = '현재 내 위치';
           applyFilters();
           showToast('현재 GPS 위치로 이동했습니다! 📍');
@@ -1164,12 +1169,14 @@
     }
 
     function resetFilters() {
-      currentRegion = 'all';
-      currentRegionLabel = '전국 50+ 인기 맛집 (영구 누적)';
+      currentMacro = 'all';
+      currentMicro = 'all';
+      currentRegionLabel = '전국 전체 (영구 누적 50+)';
       currentCategory = 'all';
       document.getElementById('searchInput').value = '';
       document.getElementById('regionSearchInput').value = '';
-      document.getElementById('locationSelect').value = 'all';
+      document.getElementById('regionMacroSelect').value = 'all';
+      document.getElementById('regionMicroSelect').innerHTML = '<option value="all">세부 지역 전체</option>';
       filterKakao4Active = false;
       filterNaver45Active = false;
       filterParkingActive = false;
