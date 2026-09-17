@@ -1,4 +1,4 @@
-!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
@@ -91,7 +91,7 @@
             </div>
             <div class="min-w-0">
               <div class="font-extrabold text-lg sm:text-xl tracking-tight bg-gradient-to-r from-orange-600 via-amber-600 to-rose-600 bg-clip-text text-transparent truncate">
-                맛지도 <span class="text-[10px] font-semibold px-1.5 py-0.5 rounded bg-orange-100 text-orange-700 ml-1">v11</span>
+                맛지도 <span class="text-[10px] font-semibold px-1.5 py-0.5 rounded bg-orange-100 text-orange-700 ml-1">200+</span>
               </div>
               <p class="text-[10px] sm:text-[11px] text-slate-500 -mt-0.5 truncate hidden sm:block">전국 핫플 맛집 탐색기</p>
             </div>
@@ -275,7 +275,7 @@
   <div id="addRestaurantModal" class="fixed inset-0 z-[1002] hidden bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
     <div class="bg-white rounded-3xl p-6 max-w-md w-full relative max-h-[90vh] overflow-y-auto custom-scrollbar shadow-2xl">
       <h3 class="text-lg font-bold text-slate-800 mb-1">내 찐맛집 추가하기</h3>
-      <p class="text-[11px] text-slate-500 mb-5">나만의 숨겨진 맛집을 지도에 직접 등록해보세요.</p>
+      <p class="text-[11px] text-slate-500 mb-5">나만의 숨겨진 맛집을 주소와 함께 등록하면 지도에 실시간으로 표시됩니다.</p>
       
       <div class="space-y-4 text-sm">
         <div>
@@ -288,12 +288,12 @@
             <select id="addCategory" class="w-full border border-slate-200 rounded-xl p-2.5 bg-slate-50 outline-none">
               <option value="한식">한식</option><option value="고기/구이">고기/구이</option><option value="일식/초밥">일식/초밥</option>
               <option value="회/해산물">회/해산물</option><option value="중식">중식</option><option value="양식">양식</option>
-              <option value="카페">카페</option><option value="분식">분식</option><option value="기타">기타</option>
+              <option value="카페">카페</option><option value="분식">분식</option><option value="치킨">치킨</option><option value="기타">기타</option>
             </select>
           </div>
           <div>
             <label class="block text-xs font-bold text-slate-600 mb-1.5">지역(대분류) *</label>
-            <select id="addMacro" class="w-full border border-slate-200 rounded-xl p-2.5 bg-slate-50 outline-none">
+            <select id="addMacro" onchange="onAddMacroChange()" class="w-full border border-slate-200 rounded-xl p-2.5 bg-slate-50 outline-none">
               <option value="seoul">서울</option><option value="gyeonggi_incheon">경기/인천</option>
               <option value="gangwon">강원</option><option value="daejeon_chungcheong">대전/충청</option>
               <option value="daegu_gyeongbuk">대구/경북</option><option value="busan_gyeongnam">부산/경남</option>
@@ -302,33 +302,329 @@
           </div>
         </div>
         <div>
-          <label class="block text-xs font-bold text-slate-600 mb-1.5">주소 또는 위치 *</label>
-          <input type="text" id="addAddress" class="w-full border border-slate-200 rounded-xl p-2.5 outline-none focus:border-orange-500 bg-slate-50" placeholder="예: 수원시 팔달구 인계동">
+          <label class="block text-xs font-bold text-slate-600 mb-1.5">세부 권역(소분류) *</label>
+          <select id="addMicro" class="w-full border border-slate-200 rounded-xl p-2.5 bg-slate-50 outline-none">
+            <!-- populated dynamically -->
+          </select>
         </div>
         <div>
-          <label class="block text-xs font-bold text-slate-600 mb-1.5">추천 메뉴</label>
-          <input type="text" id="addMenu" class="w-full border border-slate-200 rounded-xl p-2.5 outline-none focus:border-orange-500 bg-slate-50" placeholder="예: 선지해장국">
+          <label class="block text-xs font-bold text-slate-600 mb-1.5">주소 또는 동 명칭 *</label>
+          <input type="text" id="addAddress" class="w-full border border-slate-200 rounded-xl p-2.5 outline-none focus:border-orange-500 bg-slate-50" placeholder="예: 경기 수원시 팔달구 효원로292번길 67">
+          <p class="text-[10px] text-slate-400 mt-1">도로명 또는 지번 주소를 입력하시면 지도 위에 정확한 핀이 꽂힙니다.</p>
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-600 mb-1.5">대표 메뉴</label>
+          <input type="text" id="addMenu" class="w-full border border-slate-200 rounded-xl p-2.5 outline-none focus:border-orange-500 bg-slate-50" placeholder="예: 선지해장국, 수육">
         </div>
         <div class="grid grid-cols-2 gap-3">
           <div>
             <label class="block text-xs font-bold text-slate-600 mb-1.5">네이버 평점 (선택)</label>
-            <input type="number" id="addNaver" step="0.1" class="w-full border border-slate-200 rounded-xl p-2.5 bg-slate-50" placeholder="예: 4.5">
+            <input type="number" id="addNaver" step="0.1" class="w-full border border-slate-200 rounded-xl p-2.5 bg-slate-50" placeholder="예: 4.6">
           </div>
           <div>
             <label class="block text-xs font-bold text-slate-600 mb-1.5">카카오 평점 (선택)</label>
-            <input type="number" id="addKakao" step="0.1" class="w-full border border-slate-200 rounded-xl p-2.5 bg-slate-50" placeholder="예: 4.0">
+            <input type="number" id="addKakao" step="0.1" class="w-full border border-slate-200 rounded-xl p-2.5 bg-slate-50" placeholder="예: 4.3">
           </div>
         </div>
       </div>
-      <div class="mt-8 flex gap-3">
+      <div class="mt-7 flex gap-3">
         <button onclick="closeModal('addRestaurantModal')" class="flex-1 py-3 bg-slate-100 hover:bg-slate-200 rounded-xl text-slate-600 font-bold transition">취소</button>
-        <button onclick="saveCustomRestaurant()" class="flex-1 py-3 bg-orange-500 hover:bg-orange-600 rounded-xl text-white font-bold shadow-lg shadow-orange-500/30 transition">저장하기</button>
+        <button id="btnAddSave" onclick="saveCustomRestaurant()" class="flex-1 py-3 bg-orange-500 hover:bg-orange-600 rounded-xl text-white font-bold shadow-lg shadow-orange-500/30 transition">지도에 등록하기</button>
       </div>
     </div>
   </div>
 
   <script>
-    const DB_VERSION = "4.0.0";
+    const DB_VERSION = "5.0.0";
+
+    const categories = [
+      '전체', '한식', '고기/구이', '일식/초밥', '회/해산물', '중식', '양식', '카페', '분식', '치킨', '기타'
+    ];
+
+    const categoryImages = {
+      '한식': 'https://images.unsplash.com/photo-1590301157890-4810ed352733?auto=format&fit=crop&w=600&q=80',
+      '고기/구이': 'https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=600&q=80',
+      '일식/초밥': 'https://images.unsplash.com/photo-1579871494447-9811cf80d66c?auto=format&fit=crop&w=600&q=80',
+      '회/해산물': 'https://images.unsplash.com/photo-1615141982883-c7ad0e69fd62?auto=format&fit=crop&w=600&q=80',
+      '중식': 'https://images.unsplash.com/photo-1563245372-f21724e3856d?auto=format&fit=crop&w=600&q=80',
+      '양식': 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=600&q=80',
+      '카페': 'https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?auto=format&fit=crop&w=600&q=80',
+      '분식': 'https://images.unsplash.com/photo-1593504049359-74330189a345?auto=format&fit=crop&w=600&q=80',
+      '치킨': 'https://images.unsplash.com/photo-1626082927389-6cd097cdc6ec?auto=format&fit=crop&w=600&q=80',
+      '기타': 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=600&q=80'
+    };
+
+    const seedData = [
+      // ================= 서울: 강남/논현/신사/서초 (15) =================
+      { id: "S1", name: "농민백암순대 본점", category: "한식", macro: "seoul", micro: "gangnam", address: "서울 강남구 역삼로3길 20-4", ratingNaver: 4.67, ratingKakao: 4.4, menu: "국밥, 모듬수육", lat: 37.4952, lng: 127.0321 },
+      { id: "S2", name: "진미평양냉면", category: "한식", macro: "seoul", micro: "gangnam", address: "서울 강남구 학동로 305-3", ratingNaver: 4.54, ratingKakao: 4.2, menu: "평양냉면, 제육, 만두", lat: 37.5161, lng: 127.0360 },
+      { id: "S3", name: "영동소금구이 논현본점", category: "고기/구이", macro: "seoul", micro: "gangnam", address: "서울 강남구 강남대로124길 10", ratingNaver: 4.59, ratingKakao: 4.3, menu: "한우 소금구이, 키조개관자", lat: 37.5098, lng: 127.0242 },
+      { id: "S4", name: "땀땀 강남본점", category: "기타", macro: "seoul", micro: "gangnam", address: "서울 강남구 강남대로98길 12-5", ratingNaver: 4.61, ratingKakao: 4.2, menu: "매운 소곱창 쌀국수", lat: 37.5002, lng: 127.0278 },
+      { id: "S5", name: "신사전", category: "한식", macro: "seoul", micro: "gangnam", address: "서울 강남구 도산대로11길 18", ratingNaver: 4.52, ratingKakao: 4.1, menu: "치즈감자전, 벌집꿀막걸리", lat: 37.5186, lng: 127.0215 },
+      { id: "S6", name: "새벽집 청담본점", category: "고기/구이", macro: "seoul", micro: "gangnam", address: "서울 강남구 도산대로101길 6", ratingNaver: 4.52, ratingKakao: 4.0, menu: "육회비빔밥, 한우 꽃등심", lat: 37.5252, lng: 127.0514 },
+      { id: "S7", name: "오복수산 도산점", category: "일식/초밥", macro: "seoul", micro: "gangnam", address: "서울 강남구 도산대로53길 14", ratingNaver: 4.58, ratingKakao: 4.1, menu: "카이센동, 우니동", lat: 37.5262, lng: 127.0371 },
+      { id: "S8", name: "대가원 신사점", category: "고기/구이", macro: "seoul", micro: "gangnam", address: "서울 서초구 강남대로 605", ratingNaver: 4.56, ratingKakao: 4.3, menu: "한우 생등심, 깍두기볶음밥", lat: 37.5147, lng: 127.0189 },
+      { id: "S9", name: "돝고기506", category: "고기/구이", macro: "seoul", micro: "gangnam", address: "서울 강남구 역삼로17길 53", ratingNaver: 4.63, ratingKakao: 4.2, menu: "숙성 삼겹살, 크림볶음밥", lat: 37.4988, lng: 127.0372 },
+      { id: "S10", name: "청류벽", category: "한식", macro: "seoul", micro: "gangnam", address: "서울 서초구 서초대로53길 7", ratingNaver: 4.57, ratingKakao: 4.1, menu: "들기름막국수, 제복쟁반", lat: 37.4958, lng: 127.0225 },
+      { id: "S11", name: "도산분식 압구정점", category: "분식", macro: "seoul", micro: "gangnam", address: "서울 강남구 도산대로49길 10-6", ratingNaver: 4.49, ratingKakao: 4.0, menu: "돈까스샌드, 떡볶이, 육회김밥", lat: 37.5242, lng: 127.0361 },
+      { id: "S12", name: "갓포아키 압구정점", category: "일식/초밥", macro: "seoul", micro: "gangnam", address: "서울 강남구 도산대로45길 8-7", ratingNaver: 4.65, ratingKakao: 4.3, menu: "제철 모듬사시미, 후토마키", lat: 37.5238, lng: 127.0345 },
+      { id: "S13", name: "보르고한남", category: "양식", macro: "seoul", micro: "gangnam", address: "서울 서초구 사평대로26길 48", ratingNaver: 4.69, ratingKakao: 4.5, menu: "정통 이탈리안 파스타, 티라미수", lat: 37.5025, lng: 127.0042 },
+      { id: "S14", name: "한성돈까스", category: "일식/초밥", macro: "seoul", micro: "gangnam", address: "서울 서초구 강남대로99길 10", ratingNaver: 4.51, ratingKakao: 4.1, menu: "돈까스, 히레까스, 비후까스", lat: 37.5141, lng: 127.0179 },
+      { id: "S15", name: "다운타우너 청담점", category: "양식", macro: "seoul", micro: "gangnam", address: "서울 강남구 도산대로53길 14", ratingNaver: 4.58, ratingKakao: 4.2, menu: "아보카도버거, 갈릭버터프라이즈", lat: 37.5264, lng: 127.0374 },
+
+      // ================= 서울: 송파/잠실/방이 (12) =================
+      { id: "S16", name: "멘야하나비 본점", category: "일식/초밥", macro: "seoul", micro: "songpa", address: "서울 송파구 백제고분로45길 38", ratingNaver: 4.55, ratingKakao: 4.3, menu: "마제소바, 도니쿠마제소바", lat: 37.5098, lng: 127.1082 },
+      { id: "S17", name: "군산오징어 본점", category: "한식", macro: "seoul", micro: "songpa", address: "서울 송파구 삼학사로 101", ratingNaver: 4.51, ratingKakao: 4.0, menu: "오징어불고기, 오징어튀김", lat: 37.5042, lng: 127.0988 },
+      { id: "S18", name: "방이옥 본점", category: "고기/구이", macro: "seoul", micro: "songpa", address: "서울 송파구 올림픽로32길 28", ratingNaver: 4.63, ratingKakao: 4.4, menu: "수비드 매운 우대갈비, 돈마호크", lat: 37.5135, lng: 127.1089 },
+      { id: "S19", name: "갓잇 송리단길점", category: "양식", macro: "seoul", micro: "songpa", address: "서울 송파구 백제고분로45길 4-14", ratingNaver: 4.68, ratingKakao: 4.3, menu: "타코 파히타 세트, 엔칠라다", lat: 37.5091, lng: 127.1085 },
+      { id: "S20", name: "해주냉면 본점", category: "분식", macro: "seoul", micro: "songpa", address: "서울 송파구 백제고분로7길 8-16", ratingNaver: 4.48, ratingKakao: 4.1, menu: "매운 비빔냉면, 물냉면", lat: 37.5085, lng: 127.0825 },
+      { id: "S21", name: "토리지 잠실본점", category: "일식/초밥", macro: "seoul", micro: "songpa", address: "서울 송파구 올림픽로34길 27-23", ratingNaver: 4.62, ratingKakao: 4.3, menu: "야키토리 오마카세, 꼬치구이", lat: 37.5161, lng: 127.1124 },
+      { id: "S22", name: "벽제갈비 방이본점", category: "고기/구이", macro: "seoul", micro: "songpa", address: "서울 송파구 양재대로71길 1-4", ratingNaver: 4.60, ratingKakao: 4.2, menu: "설화 한우생갈비, 평양냉면", lat: 37.5088, lng: 127.1265 },
+      { id: "S23", name: "배키욘방", category: "일식/초밥", macro: "seoul", micro: "songpa", address: "서울 송파구 올림픽로32길 22-23", ratingNaver: 4.59, ratingKakao: 4.2, menu: "야키도리동, 후쿠오카식 우동", lat: 37.5138, lng: 127.1095 },
+      { id: "S24", name: "청와옥 본점", category: "한식", macro: "seoul", micro: "songpa", address: "서울 송파구 위례성대로 48", ratingNaver: 4.69, ratingKakao: 4.5, menu: "청와옥 순대국, 편백정식", lat: 37.5168, lng: 127.1172 },
+      { id: "S25", name: "미자식당", category: "한식", macro: "seoul", micro: "songpa", address: "서울 송파구 오금로18길 14", ratingNaver: 4.50, ratingKakao: 4.1, menu: "명란돈까스, 게살시금치카레", lat: 37.5095, lng: 127.1105 },
+      { id: "S26", name: "돈이찌", category: "일식/초밥", macro: "seoul", micro: "songpa", address: "서울 송파구 올림픽로 300 롯데월드몰 6층", ratingNaver: 4.56, ratingKakao: 4.1, menu: "프리미엄 스테이크덮밥, 돈카츠", lat: 37.5138, lng: 127.1042 },
+      { id: "S27", name: "다운타우너 잠실점", category: "양식", macro: "seoul", micro: "songpa", address: "서울 송파구 백제고분로45길 3", ratingNaver: 4.59, ratingKakao: 4.2, menu: "베이컨치즈버거, 갈릭프라이즈", lat: 37.5088, lng: 127.1091 },
+
+      // ================= 서울: 홍대/연남/마포 (12) =================
+      { id: "S28", name: "을밀대 마포본점", category: "한식", macro: "seoul", micro: "hongdae", address: "서울 마포구 숭문길 24", ratingNaver: 4.52, ratingKakao: 4.2, menu: "물냉면, 녹두전, 수육", lat: 37.5457, lng: 126.9452 },
+      { id: "S29", name: "소이연남", category: "기타", macro: "seoul", micro: "hongdae", address: "서울 마포구 동교로 267", ratingNaver: 4.58, ratingKakao: 4.2, menu: "소고기 국수, 뽀삐아", lat: 37.5627, lng: 126.9248 },
+      { id: "S30", name: "연하동", category: "일식/초밥", macro: "seoul", micro: "hongdae", address: "서울 마포구 연남로 6", ratingNaver: 4.64, ratingKakao: 4.3, menu: "꼬꼬동, 연어국수", lat: 37.5611, lng: 126.9242 },
+      { id: "S31", name: "산왕반점", category: "중식", macro: "seoul", micro: "hongdae", address: "서울 마포구 성미산로29길 35", ratingNaver: 4.51, ratingKakao: 4.3, menu: "멘보샤, 샤오기, 오향장육", lat: 37.5663, lng: 126.9231 },
+      { id: "S32", name: "툭툭누들타이", category: "기타", macro: "seoul", micro: "hongdae", address: "서울 마포구 성미산로 161-8", ratingNaver: 4.54, ratingKakao: 4.1, menu: "똠얌꿍, 뿌님팟퐁커리", lat: 37.5645, lng: 126.9212 },
+      { id: "S33", name: "조복남 연남본점", category: "카페", macro: "seoul", micro: "hongdae", address: "서울 마포구 동교로 257", ratingNaver: 4.70, ratingKakao: 4.4, menu: "수제 인절미, 팥빙수", lat: 37.5618, lng: 126.9240 },
+      { id: "S34", name: "카와카츠 본점", category: "일식/초밥", macro: "seoul", micro: "hongdae", address: "서울 마포구 동교로 126", ratingNaver: 4.71, ratingKakao: 4.5, menu: "특로스카츠, 히레카츠", lat: 37.5552, lng: 126.9189 },
+      { id: "S35", name: "윤씨밀방", category: "양식", macro: "seoul", micro: "hongdae", address: "서울 마포구 와우산로15길 15", ratingNaver: 4.55, ratingKakao: 4.2, menu: "함박스테이크정식, 머쉬룸파스타", lat: 37.5498, lng: 126.9221 },
+      { id: "S36", name: "조박집", category: "고기/구이", macro: "seoul", micro: "hongdae", address: "서울 마포구 토정로 313-1", ratingNaver: 4.60, ratingKakao: 4.3, menu: "국내산 돼지갈비, 동치미국수", lat: 37.5408, lng: 126.9458 },
+      { id: "S37", name: "우동카덴 합정본점", category: "일식/초밥", macro: "seoul", micro: "hongdae", address: "서울 마포구 양화로7안길 2-1", ratingNaver: 4.52, ratingKakao: 4.1, menu: "붓카케우동, 에비텐우동", lat: 37.5505, lng: 126.9158 },
+      { id: "S38", name: "연남토마 본점", category: "일식/초밥", macro: "seoul", micro: "hongdae", address: "서울 마포구 월드컵북로6길 61", ratingNaver: 4.59, ratingKakao: 4.2, menu: "명란바질오일파스타, 가츠덮밥", lat: 37.5598, lng: 126.9215 },
+      { id: "S39", name: "진진 본점", category: "중식", macro: "seoul", micro: "hongdae", address: "서울 마포구 잔다리로 123", ratingNaver: 4.58, ratingKakao: 4.3, menu: "멘보샤, 칭찡우럭, 깐풍기", lat: 37.5558, lng: 126.9142 },
+
+      // ================= 서울: 성수/건대/서울숲 (12) =================
+      { id: "S40", name: "소문난성수감자탕", category: "한식", macro: "seoul", micro: "seongsu", address: "서울 성동구 연무장길 45", ratingNaver: 4.63, ratingKakao: 4.3, menu: "감자탕, 뼈해장국", lat: 37.5428, lng: 127.0545 },
+      { id: "S41", name: "난포 성수점", category: "한식", macro: "seoul", micro: "seongsu", address: "서울 성동구 서울숲4길 18-8", ratingNaver: 4.59, ratingKakao: 4.1, menu: "강된장쌈밥, 묵은지회말이", lat: 37.5471, lng: 127.0426 },
+      { id: "S42", name: "대성갈비", category: "고기/구이", macro: "seoul", micro: "seongsu", address: "서울 성동구 서울숲4길 27", ratingNaver: 4.50, ratingKakao: 4.2, menu: "돼지갈비, 양념게장", lat: 37.5469, lng: 127.0435 },
+      { id: "S43", name: "죠죠 성수점", category: "일식/초밥", macro: "seoul", micro: "seongsu", address: "서울 성동구 연무장17길 7", ratingNaver: 4.66, ratingKakao: 4.4, menu: "오코노미야키, 야키소바", lat: 37.5421, lng: 127.0601 },
+      { id: "S44", name: "송화산시도삭면 본점", category: "중식", macro: "seoul", micro: "seongsu", address: "서울 광진구 뚝섬로27길 48", ratingNaver: 4.62, ratingKakao: 4.3, menu: "도삭면, 쇼롱포오, 꿔바로우", lat: 37.5379, lng: 127.0688 },
+      { id: "S45", name: "중앙감속기", category: "중식", macro: "seoul", micro: "seongsu", address: "서울 성동구 성원정길 3", ratingNaver: 4.59, ratingKakao: 4.2, menu: "발사믹 꿔바로우, 마라크림짬뽕", lat: 37.5451, lng: 127.0558 },
+      { id: "S46", name: "카밀로 한남/성수", category: "양식", macro: "seoul", micro: "seongsu", address: "서울 성동구 서울숲2길 19", ratingNaver: 4.65, ratingKakao: 4.3, menu: "생면 라자냐, 화덕피자", lat: 37.5465, lng: 127.0421 },
+      { id: "S47", name: "온량", category: "양식", macro: "seoul", micro: "seongsu", address: "서울 성동구 서울숲4길 26-10", ratingNaver: 4.61, ratingKakao: 4.2, menu: "토마호크 포크커틀렛, 봉골레", lat: 37.5475, lng: 127.0438 },
+      { id: "S48", name: "할머니의레시피", category: "한식", macro: "seoul", micro: "seongsu", address: "서울 성동구 서울숲2길 44-12", ratingNaver: 4.51, ratingKakao: 4.0, menu: "쌈밥정식, 강릉비빔밥", lat: 37.5482, lng: 127.0415 },
+      { id: "S49", name: "어니언 성수", category: "카페", macro: "seoul", micro: "seongsu", address: "서울 성동구 아차산로9길 8", ratingNaver: 4.53, ratingKakao: 4.1, menu: "팡도르, 플랫화이트", lat: 37.5442, lng: 127.0568 },
+      { id: "S50", name: "소바식당 성수점", category: "일식/초밥", macro: "seoul", micro: "seongsu", address: "서울 성동구 연무장7가길 6", ratingNaver: 4.56, ratingKakao: 4.1, menu: "전복단새우냉소바, 게딱지장덮밥", lat: 37.5432, lng: 127.0531 },
+      { id: "S51", name: "꿉당 성수점", category: "고기/구이", macro: "seoul", micro: "seongsu", address: "서울 성동구 성수이로20길 10", ratingNaver: 4.67, ratingKakao: 4.4, menu: "KOKUMI 목살, 삼겹살, 코쿠미쌀밥", lat: 37.5448, lng: 127.0582 },
+
+      // ================= 서울: 종로/을지로/명동/용산 (12) =================
+      { id: "S52", name: "몽탄", category: "고기/구이", macro: "seoul", micro: "jongro", address: "서울 용산구 백범로99길 50", ratingNaver: 4.68, ratingKakao: 4.3, menu: "짚불구이 우대갈비, 양파볶음밥", lat: 37.5347, lng: 126.9734 },
+      { id: "S53", name: "명동교자 본점", category: "한식", macro: "seoul", micro: "jongro", address: "서울 중구 명동10길 29", ratingNaver: 4.61, ratingKakao: 4.2, menu: "칼국수, 만두, 비빔국수", lat: 37.5625, lng: 126.9856 },
+      { id: "S54", name: "산수갑산", category: "한식", macro: "seoul", micro: "jongro", address: "서울 중구 을지로20길 24", ratingNaver: 4.51, ratingKakao: 4.2, menu: "순대모듬, 순대국밥", lat: 37.5662, lng: 126.9934 },
+      { id: "S55", name: "필동면옥", category: "한식", macro: "seoul", micro: "jongro", address: "서울 중구 서애로 26", ratingNaver: 4.54, ratingKakao: 4.1, menu: "평양냉면, 제육, 접시만두", lat: 37.5604, lng: 126.9969 },
+      { id: "S56", name: "순희네빈대떡 종로본점", category: "분식", macro: "seoul", micro: "jongro", address: "서울 종로구 종로32길 5", ratingNaver: 4.52, ratingKakao: 4.1, menu: "녹두빈대떡, 고기완자", lat: 37.5702, lng: 126.9998 },
+      { id: "S57", name: "을지면옥", category: "한식", macro: "seoul", micro: "jongro", address: "서울 종로구 삼일대로 428", ratingNaver: 4.55, ratingKakao: 4.2, menu: "평양냉면, 편육, 불고기", lat: 37.5721, lng: 126.9882 },
+      { id: "S58", name: "우래옥", category: "한식", macro: "seoul", micro: "jongro", address: "서울 중구 창경궁로 62-29", ratingNaver: 4.60, ratingKakao: 4.3, menu: "순면 평양냉면, 불고기", lat: 37.5681, lng: 126.9985 },
+      { id: "S59", name: "만선호프 본점", category: "치킨", macro: "seoul", micro: "jongro", address: "서울 중구 을지로13길 19", ratingNaver: 4.45, ratingKakao: 4.0, menu: "노가리, 마늘치킨, 골뱅이", lat: 37.5665, lng: 126.9912 },
+      { id: "S60", name: "용동옥", category: "한식", macro: "seoul", micro: "jongro", address: "서울 종로구 청계천로 71", ratingNaver: 4.56, ratingKakao: 4.2, menu: "양지설렁탕, 도가니수육", lat: 37.5691, lng: 126.9868 },
+      { id: "S61", name: "토속촌 삼계탕", category: "한식", macro: "seoul", micro: "jongro", address: "서울 종로구 자하문로5길 5", ratingNaver: 4.58, ratingKakao: 4.2, menu: "토속촌 삼계탕, 오골계", lat: 37.5778, lng: 126.9718 },
+      { id: "S62", name: "오레노라멘 본점", category: "일식/초밥", macro: "seoul", micro: "jongro", address: "서울 종로구 율곡로 49-4", ratingNaver: 4.68, ratingKakao: 4.4, menu: "토리빠이탄 라멘, 카라빠이탄", lat: 37.5762, lng: 126.9852 },
+      { id: "S63", name: "동원집", category: "한식", macro: "seoul", micro: "jongro", address: "서울 중구 퇴계로27길 48", ratingNaver: 4.53, ratingKakao: 4.2, menu: "감자국, 머리고기, 순대", lat: 37.5621, lng: 126.9954 },
+
+      // ================= 경기: 수원(인계/권선/세류/곡반정) (16) =================
+      { id: "SW1", name: "가보정 1관", category: "고기/구이", macro: "gyeonggi_incheon", micro: "suwon", address: "경기 수원시 팔달구 장다리로 282", ratingNaver: 4.72, ratingKakao: 4.4, menu: "한우 생갈비, 한우 양념갈비 정식", lat: 37.2758, lng: 127.0298 },
+      { id: "SW2", name: "유치회관 본점", category: "한식", macro: "gyeonggi_incheon", micro: "suwon", address: "경기 수원시 팔달구 효원로292번길 67", ratingNaver: 4.64, ratingKakao: 4.3, menu: "선지해장국, 수육, 수육무침", lat: 37.2625, lng: 127.0305 },
+      { id: "SW3", name: "이나경송탄부대찌개", category: "한식", macro: "gyeonggi_incheon", micro: "suwon", address: "경기 수원시 팔달구 효원로307번길 47", ratingNaver: 4.61, ratingKakao: 4.2, menu: "스페셜 부대찌개 (소시지 폭탄)", lat: 37.2612, lng: 127.0321 },
+      { id: "SW4", name: "광주족발순대 권선시장점", category: "한식", macro: "gyeonggi_incheon", micro: "suwon", address: "경기 수원시 권선구 세권로 185", ratingNaver: 4.58, ratingKakao: 4.4, menu: "왕족발, 순대국밥, 모듬순대 서비스", lat: 37.2568, lng: 127.0245 },
+      { id: "SW5", name: "입주집", category: "고기/구이", macro: "gyeonggi_incheon", micro: "suwon", address: "경기 수원시 팔달구 팔달문로 3", ratingNaver: 4.55, ratingKakao: 4.2, menu: "소곱창구이, 막창구이, 볶음밥", lat: 37.2775, lng: 127.0182 },
+      { id: "SW6", name: "진미통닭", category: "치킨", macro: "gyeonggi_incheon", micro: "suwon", address: "경기 수원시 팔달구 정조로800번길 21", ratingNaver: 4.60, ratingKakao: 4.1, menu: "가마솥 후라이드, 통닭", lat: 37.2801, lng: 127.0169 },
+      { id: "SW7", name: "용성통닭 본점", category: "치킨", macro: "gyeonggi_incheon", micro: "suwon", address: "경기 수원시 팔달구 정조로800번길 15", ratingNaver: 4.57, ratingKakao: 4.2, menu: "후라이드, 닭발/모래집 튀김", lat: 37.2798, lng: 127.0165 },
+      { id: "SW8", name: "보영만두 본점", category: "분식", macro: "gyeonggi_incheon", micro: "suwon", address: "경기 수원시 장안구 팔달로 271", ratingNaver: 4.62, ratingKakao: 4.1, menu: "군만두, 매운쫄면, 찐만두", lat: 37.2872, lng: 127.0145 },
+      { id: "SW9", name: "장터설렁탕 세류본점", category: "한식", macro: "gyeonggi_incheon", micro: "suwon", address: "경기 수원시 권선구 정조로 441", ratingNaver: 4.53, ratingKakao: 4.3, menu: "가마솥 설렁탕, 도가니탕, 모듬수육", lat: 37.2482, lng: 127.0156 },
+      { id: "SW10", name: "구들짱황소곱창 곡반정점", category: "고기/구이", macro: "gyeonggi_incheon", micro: "suwon", address: "경기 수원시 권선구 곡반정로65번길 23", ratingNaver: 4.65, ratingKakao: 4.3, menu: "불쇼 한우곱창, 대창구이", lat: 37.2405, lng: 127.0341 },
+      { id: "SW11", name: "본수원갈비 본점", category: "고기/구이", macro: "gyeonggi_incheon", micro: "suwon", address: "경기 수원시 팔달구 중부대로223번길 41", ratingNaver: 4.68, ratingKakao: 4.3, menu: "생갈비, 양념갈비, 된장찌개", lat: 37.2812, lng: 127.0425 },
+      { id: "SW12", name: "아줌마왕족발 권선시장점", category: "한식", macro: "gyeonggi_incheon", micro: "suwon", address: "경기 수원시 권선구 세권로 185", ratingNaver: 4.57, ratingKakao: 4.3, menu: "야들야들 온족발, 순댓국", lat: 37.2565, lng: 127.0242 },
+      { id: "SW13", name: "운멜로 1호점 (행궁동)", category: "양식", macro: "gyeonggi_incheon", micro: "suwon", address: "경기 수원시 팔달구 행궁로 71", ratingNaver: 4.66, ratingKakao: 4.3, menu: "풍기크레마 파스타, 스테이크", lat: 37.2825, lng: 127.0125 },
+      { id: "SW14", name: "존앤진피자펍 행궁점", category: "양식", macro: "gyeonggi_incheon", micro: "suwon", address: "경기 수원시 팔달구 신풍로 47", ratingNaver: 4.63, ratingKakao: 4.2, menu: "존앤진 피자, 하와이안 피자", lat: 37.2842, lng: 127.0138 },
+      { id: "SW15", name: "고기원칙 인계점", category: "고기/구이", macro: "gyeonggi_incheon", micro: "suwon", address: "경기 수원시 팔달구 효원로265번길 44", ratingNaver: 4.60, ratingKakao: 4.2, menu: "항아리 숙성삼겹, 황제덧살", lat: 37.2618, lng: 127.0285 },
+      { id: "SW16", name: "장안통닭", category: "치킨", macro: "gyeonggi_incheon", micro: "suwon", address: "경기 수원시 팔달구 팔달문로3번길 42", ratingNaver: 4.54, ratingKakao: 4.1, menu: "바삭 통닭, 똥집마늘구이", lat: 37.2805, lng: 127.0172 },
+
+      // ================= 경기: 광교(이의/하동/원천) (13) =================
+      { id: "GG1", name: "세상의모든아침 광교점", category: "양식", macro: "gyeonggi_incheon", micro: "gwanggyo", address: "경기 수원시 영통구 광교호수공원로 80", ratingNaver: 4.62, ratingKakao: 4.1, menu: "트러플 리조또, 스테이크", lat: 37.2842, lng: 127.0589 },
+      { id: "GG2", name: "백년화로 광교이의점", category: "고기/구이", macro: "gyeonggi_incheon", micro: "gwanggyo", address: "경기 수원시 영통구 대학1로 54", ratingNaver: 4.69, ratingKakao: 4.5, menu: "이베리코 꽃목살, 숯불 소갈비살", lat: 37.2995, lng: 127.0435 },
+      { id: "GG3", name: "정돈 갤러리아광교점", category: "일식/초밥", macro: "gyeonggi_incheon", micro: "gwanggyo", address: "경기 수원시 영통구 광교중앙로 124 갤러리아 지하1층", ratingNaver: 4.65, ratingKakao: 4.3, menu: "프리미엄 안심돈카츠, 등심돈카츠", lat: 37.2885, lng: 127.0562 },
+      { id: "GG4", name: "도쿄등심 앨리웨이광교점", category: "일식/초밥", macro: "gyeonggi_incheon", micro: "gwanggyo", address: "경기 수원시 영통구 광교호수공원로 80 앨리웨이 3층", ratingNaver: 4.68, ratingKakao: 4.4, menu: "한우 스키야키, 워터에이징 한우", lat: 37.2839, lng: 127.0592 },
+      { id: "GG5", name: "지동관 광교아브뉴프랑점", category: "중식", macro: "gyeonggi_incheon", micro: "gwanggyo", address: "경기 수원시 영통구 센트럴타운로 85", ratingNaver: 4.52, ratingKakao: 4.0, menu: "70년 전통 삼선짬뽕, 탕수육", lat: 37.2915, lng: 127.0498 },
+      { id: "GG6", name: "몽린 앨리웨이광교점", category: "고기/구이", macro: "gyeonggi_incheon", micro: "gwanggyo", address: "경기 수원시 영통구 광교호수공원로 80", ratingNaver: 4.63, ratingKakao: 4.3, menu: "짚불 볏짚 우대갈비, 된장찌개", lat: 37.2835, lng: 127.0585 },
+      { id: "GG7", name: "어울림 횟집 광교원천점", category: "회/해산물", macro: "gyeonggi_incheon", micro: "gwanggyo", address: "경기 수원시 영통구 매영로 310", ratingNaver: 4.59, ratingKakao: 4.2, menu: "제철 모듬활어회, 매운탕", lat: 37.2721, lng: 127.0612 },
+      { id: "GG8", name: "형훈텐동 앨리웨이광교점", category: "일식/초밥", macro: "gyeonggi_incheon", micro: "gwanggyo", address: "경기 수원시 영통구 광교호수공원로 80", ratingNaver: 4.56, ratingKakao: 4.1, menu: "스페셜텐동, 에비텐동", lat: 37.2838, lng: 127.0588 },
+      { id: "GG9", name: "화포식당 광교카페거리점", category: "고기/구이", macro: "gyeonggi_incheon", micro: "gwanggyo", address: "경기 수원시 영통구 센트럴파크로127번길 16", ratingNaver: 4.64, ratingKakao: 4.3, menu: "숙성 통삼겹살, 목살스테이크", lat: 37.2972, lng: 127.0515 },
+      { id: "GG10", name: "풍성식당 원천점", category: "한식", macro: "gyeonggi_incheon", micro: "gwanggyo", address: "경기 수원시 영통구 원천동 29-62", ratingNaver: 4.51, ratingKakao: 4.2, menu: "묵은지 생삼겹살 김치찌개, 제육볶음", lat: 37.2715, lng: 127.0585 },
+      { id: "GG11", name: "노티드 광교갤러리아", category: "카페", macro: "gyeonggi_incheon", micro: "gwanggyo", address: "경기 수원시 영통구 광교중앙로 124 지하1층", ratingNaver: 4.62, ratingKakao: 4.2, menu: "우유생크림도넛, 바닐라크림도넛", lat: 37.2884, lng: 127.0560 },
+      { id: "GG12", name: "오이탈리안 광교점", category: "양식", macro: "gyeonggi_incheon", micro: "gwanggyo", address: "경기 수원시 영통구 센트럴타운로 85 2층", ratingNaver: 4.60, ratingKakao: 4.3, menu: "갓구운 식전빵 무한제공, 바질파스타", lat: 37.2918, lng: 127.0502 },
+      { id: "GG13", name: "라벤치 광교점", category: "양식", macro: "gyeonggi_incheon", micro: "gwanggyo", address: "경기 수원시 영통구 센트럴파크로127번길 147", ratingNaver: 4.58, ratingKakao: 4.2, menu: "목살 스테이크 샐러드, 게살 크림리조또", lat: 37.2965, lng: 127.0538 },
+
+      // ================= 경기: 성남/분당/판교/모란 (13) =================
+      { id: "SN1", name: "윤밀원", category: "한식", macro: "gyeonggi_incheon", micro: "seongnam", address: "경기 성남시 분당구 불정로 420", ratingNaver: 4.68, ratingKakao: 4.4, menu: "양지칼국수, 평양냉면, 족발", lat: 37.3712, lng: 127.1354 },
+      { id: "SN2", name: "능라도 분당본점", category: "한식", macro: "gyeonggi_incheon", micro: "seongnam", address: "경기 성남시 분당구 산운로32번길 12", ratingNaver: 4.56, ratingKakao: 4.2, menu: "평양냉면, 어복쟁반, 녹두지짐이", lat: 37.3875, lng: 127.0982 },
+      { id: "SN3", name: "등갈비달인 모란본점", category: "고기/구이", macro: "gyeonggi_incheon", micro: "seongnam", address: "경기 성남시 중원구 제일로35번길 52", ratingNaver: 4.66, ratingKakao: 4.4, menu: "매운 김치치즈등갈비, 날치알주먹밥", lat: 37.4328, lng: 127.1294 },
+      { id: "SN4", name: "서현실비 본점", category: "고기/구이", macro: "gyeonggi_incheon", micro: "seongnam", address: "경기 성남시 분당구 황새울로311번길 14", ratingNaver: 4.61, ratingKakao: 4.3, menu: "두툼 생오겹살, 갈매기살", lat: 37.3842, lng: 127.1205 },
+      { id: "SN5", name: "리스카페 정자본점", category: "양식", macro: "gyeonggi_incheon", micro: "seongnam", address: "경기 성남시 분당구 정자일로 210", ratingNaver: 4.74, ratingKakao: 4.5, menu: "라자냐, 클램차우더", lat: 37.3621, lng: 127.1085 },
+      { id: "SN6", name: "김과장고깃집 모란본점", category: "고기/구이", macro: "gyeonggi_incheon", micro: "seongnam", address: "경기 성남시 중원구 광명로32번길 8", ratingNaver: 4.62, ratingKakao: 4.3, menu: "소고기 스페셜 모듬, 묵사발", lat: 37.4335, lng: 127.1305 },
+      { id: "SN7", name: "우라멘 모란점", category: "일식/초밥", macro: "seoul", micro: "seongnam", address: "경기 성남시 중원구 성남대로1148번길 10", ratingNaver: 4.58, ratingKakao: 4.3, menu: "돈코츠라멘, 차슈덮밥", lat: 37.4321, lng: 127.1285 },
+      { id: "SN8", name: "판교 긴자", category: "일식/초밥", macro: "gyeonggi_incheon", micro: "seongnam", address: "경기 성남시 분당구 판교백현로 57", ratingNaver: 4.60, ratingKakao: 4.2, menu: "사시미 코스, 주말가족정식", lat: 37.3882, lng: 127.1145 },
+      { id: "SN9", name: "정선흥부네 판교점", category: "한식", macro: "gyeonggi_incheon", micro: "seongnam", address: "경기 성남시 분당구 운중로137번길 14", ratingNaver: 4.57, ratingKakao: 4.3, menu: "곤드레정식, 더덕구이", lat: 37.3912, lng: 127.0852 },
+      { id: "SN10", name: "정자동 야키토리 잔잔", category: "일식/초밥", macro: "gyeonggi_incheon", micro: "seongnam", address: "경기 성남시 분당구 정자일로 156", ratingNaver: 4.63, ratingKakao: 4.3, menu: "모듬꼬치 7종, 나가사키나베", lat: 37.3645, lng: 127.1068 },
+      { id: "SN11", name: "장군보쌈 야탑점", category: "한식", macro: "gyeonggi_incheon", micro: "seongnam", address: "경기 성남시 분당구 야탑로105번길 17", ratingNaver: 4.55, ratingKakao: 4.2, menu: "모듬보쌈, 쟁반막국수", lat: 37.4118, lng: 127.1289 },
+      { id: "SN12", name: "분당 장어사랑", category: "한식", macro: "gyeonggi_incheon", micro: "seongnam", address: "경기 성남시 분당구 대왕판교로 266", ratingNaver: 4.62, ratingKakao: 4.3, menu: "풍천 민물장어 참숯구이", lat: 37.3705, lng: 127.1012 },
+      { id: "SN13", name: "하츠베이커리 판교점", category: "카페", macro: "gyeonggi_incheon", micro: "seongnam", address: "경기 성남시 분당구 판교역로146번길 20", ratingNaver: 4.65, ratingKakao: 4.3, menu: "공주밤팥빵, 소금빵, 시그니처 라떼", lat: 37.3948, lng: 127.1115 },
+
+      // ================= 경기: 인천(부평/구월/송도/신포) (14) =================
+      { id: "IC1", name: "부암갈비", category: "고기/구이", macro: "gyeonggi_incheon", micro: "incheon", address: "인천 남동구 용천로 149", ratingNaver: 4.60, ratingKakao: 4.3, menu: "생돼지갈비, 젓갈볶음밥", lat: 37.4589, lng: 126.7082 },
+      { id: "IC2", name: "청실홍실 본점", category: "분식", macro: "gyeonggi_incheon", micro: "incheon", address: "인천 중구 우현로35번길 23-1", ratingNaver: 4.58, ratingKakao: 4.3, menu: "모밀국수, 통만두", lat: 37.4735, lng: 126.6265 },
+      { id: "IC3", name: "신복관 송도본점", category: "한식", macro: "gyeonggi_incheon", micro: "incheon", address: "인천 연수구 인천타워대로132번길 9", ratingNaver: 4.63, ratingKakao: 4.2, menu: "우쭈(우삼겹 쭈꾸미구이), 치즈볶음밥", lat: 37.3912, lng: 126.6435 },
+      { id: "IC4", name: "신포순대 본점", category: "한식", macro: "gyeonggi_incheon", micro: "incheon", address: "인천 중구 제물량로166번길 33", ratingNaver: 4.51, ratingKakao: 4.1, menu: "찹쌀야채순대, 순대국밥", lat: 37.4718, lng: 126.6241 },
+      { id: "IC5", name: "신포닭강정 본점", category: "치킨", macro: "gyeonggi_incheon", micro: "incheon", address: "인천 중구 우현로49번길 3", ratingNaver: 4.52, ratingKakao: 4.0, menu: "원조 닭강정, 후라이드", lat: 37.4725, lng: 126.6278 },
+      { id: "IC6", name: "공화춘", category: "중식", macro: "gyeonggi_incheon", micro: "incheon", address: "인천 중구 차이나타운로 43", ratingNaver: 4.54, ratingKakao: 4.1, menu: "공화춘짜장면, 멘보샤", lat: 37.4752, lng: 126.6178 },
+      { id: "IC7", name: "송도 쉐프부랑제", category: "카페", macro: "gyeonggi_incheon", micro: "incheon", address: "인천 연수구 컨벤시아대로 130번길 12", ratingNaver: 4.67, ratingKakao: 4.4, menu: "천연발효 몽블랑, 소금빵", lat: 37.3932, lng: 126.6475 },
+      { id: "IC8", name: "부평 고향손칼국수", category: "분식", macro: "gyeonggi_incheon", micro: "incheon", address: "인천 부평구 부평문화로 53", ratingNaver: 4.58, ratingKakao: 4.3, menu: "손칼국수, 수제비, 김치만두", lat: 37.4925, lng: 126.7242 },
+      { id: "IC9", name: "화선식당 구월점", category: "회/해산물", macro: "gyeonggi_incheon", micro: "incheon", address: "인천 남동구 인하로507번길 18", ratingNaver: 4.61, ratingKakao: 4.3, menu: "민어회, 밴댕이회무침", lat: 37.4445, lng: 126.7018 },
+      { id: "IC10", name: "부평 아웃닭", category: "치킨", macro: "gyeonggi_incheon", micro: "incheon", address: "인천 부평구 시장로12번길 7", ratingNaver: 4.62, ratingKakao: 4.3, menu: "린드버그 후라이드, 어니언치킨", lat: 37.4912, lng: 126.7235 },
+      { id: "IC11", name: "송도 솟구쳐차기", category: "일식/초밥", macro: "gyeonggi_incheon", micro: "incheon", address: "인천 연수구 센트럴로 160", ratingNaver: 4.66, ratingKakao: 4.4, menu: "돈코츠라멘, 매운미소라멘", lat: 37.3945, lng: 126.6385 },
+      { id: "IC12", name: "청라 경복궁", category: "고기/구이", macro: "gyeonggi_incheon", micro: "incheon", address: "인천 서구 청라커낼로260번길 15", ratingNaver: 4.64, ratingKakao: 4.2, menu: "생갈비 코스, 한우 양념불고기", lat: 37.5328, lng: 126.6542 },
+      { id: "IC13", name: "차이나타운 만다복", category: "중식", macro: "gyeonggi_incheon", micro: "incheon", address: "인천 중구 차이나타운로 36", ratingNaver: 4.53, ratingKakao: 4.1, menu: "백년짜장, 하얀백년짜장", lat: 37.4748, lng: 126.6185 },
+      { id: "IC14", name: "동인천 개항로통닭", category: "치킨", macro: "gyeonggi_incheon", micro: "incheon", address: "인천 중구 참외전로 164", ratingNaver: 4.59, ratingKakao: 4.3, menu: "전기구이 통닭, 치즈콘통닭", lat: 37.4721, lng: 126.6328 },
+
+      // ================= 경기: 부천/시흥 (13) =================
+      { id: "BC1", name: "투파인드피터 배곧점", category: "양식", macro: "gyeonggi_incheon", micro: "bucheon", address: "경기 시흥시 서울대학로278번길 61", ratingNaver: 4.70, ratingKakao: 4.3, menu: "스파이시 크래브 파스타, 살치살 스테이크", lat: 37.3685, lng: 126.7265 },
+      { id: "BC2", name: "조박사냉면 부천본점", category: "한식", macro: "gyeonggi_incheon", micro: "bucheon", address: "경기 부천시 원미구 신흥로 190", ratingNaver: 4.55, ratingKakao: 4.2, menu: "함흥냉면, 수육, 개성왕만두", lat: 37.5021, lng: 126.7725 },
+      { id: "BC3", name: "짱이네 돈가스냉면", category: "분식", macro: "gyeonggi_incheon", micro: "bucheon", address: "경기 부천시 원미구 부천로9번길 24", ratingNaver: 4.59, ratingKakao: 4.3, menu: "매콤 돈가스 물냉면, 불돈가스", lat: 37.4852, lng: 126.7825 },
+      { id: "BC4", name: "본가만두전골 시흥물왕점", category: "한식", macro: "gyeonggi_incheon", micro: "bucheon", address: "경기 시흥시 동서로 209", ratingNaver: 4.62, ratingKakao: 4.2, menu: "굴림만두 야채육수 전골, 찐만두", lat: 37.3821, lng: 126.8325 },
+      { id: "BC5", name: "팽오리농장 본점", category: "한식", macro: "gyeonggi_incheon", micro: "bucheon", address: "경기 부천시 오정구 대장로118번길 7", ratingNaver: 4.65, ratingKakao: 4.4, menu: "뼈없는 오리도리탕, 볶음밥", lat: 37.5312, lng: 126.7645 },
+      { id: "BC6", name: "미소복원조양평해장국 부천점", category: "한식", macro: "gyeonggi_incheon", micro: "bucheon", address: "경기 부천시 원미구 길주로 86", ratingNaver: 4.58, ratingKakao: 4.3, menu: "양평해장국, 내장탕, 우거지국", lat: 37.5065, lng: 126.7558 },
+      { id: "BC7", name: "스시하마 부천신중동점", category: "일식/초밥", macro: "gyeonggi_incheon", micro: "bucheon", address: "경기 부천시 원미구 부흥로 307번길 23", ratingNaver: 4.66, ratingKakao: 4.4, menu: "하마스시 코스, 생연어초밥", lat: 37.4988, lng: 126.7745 },
+      { id: "BC8", name: "배곧 청초수물회", category: "회/해산물", macro: "gyeonggi_incheon", micro: "bucheon", address: "경기 시흥시 서울대학로264번길 7", ratingNaver: 4.61, ratingKakao: 4.2, menu: "해전물회, 섭국, 오징어순대", lat: 37.3712, lng: 126.7248 },
+      { id: "BC9", name: "물왕버섯불고기", category: "한식", macro: "gyeonggi_incheon", micro: "bucheon", address: "경기 시흥시 물왕수변로 34", ratingNaver: 4.56, ratingKakao: 4.2, menu: "버섯생불고기전골, 돌솥밥", lat: 37.3852, lng: 126.8358 },
+      { id: "BC10", name: "부천역 심곡동 부천장", category: "중식", macro: "gyeonggi_incheon", micro: "bucheon", address: "경기 부천시 원미구 부천로39번길 11", ratingNaver: 4.54, ratingKakao: 4.1, menu: "간짜장, 고추잡채, 탕수육", lat: 37.4885, lng: 126.7812 },
+      { id: "BC11", name: "상동역 육가공장", category: "고기/구이", macro: "gyeonggi_incheon", micro: "bucheon", address: "경기 부천시 원미구 소향로 13번길 14-11", ratingNaver: 4.63, ratingKakao: 4.3, menu: "당산오겹살, 멜젓 삼겹", lat: 37.5058, lng: 126.7535 },
+      { id: "BC12", name: "시흥 정왕동 본가닭한마리", category: "한식", macro: "gyeonggi_incheon", micro: "bucheon", address: "경기 시흥시 중심상가로 19", ratingNaver: 4.57, ratingKakao: 4.3, menu: "맑은 닭한마리, 칼국수 사리", lat: 37.3485, lng: 126.7352 },
+      { id: "BC13", name: "부천 릴리프커피", category: "카페", macro: "gyeonggi_incheon", micro: "bucheon", address: "경기 부천시 소사구 범안로 221", ratingNaver: 4.68, ratingKakao: 4.5, menu: "핸드드립 스페셜티, 피치에이드", lat: 37.4765, lng: 126.8125 },
+
+      // ================= 경기: 일산/파주 (11) =================
+      { id: "IS1", name: "일산칼국수 본점", category: "한식", macro: "gyeonggi_incheon", micro: "ilsan", address: "경기 고양시 일산동구 경의로 467", ratingNaver: 4.67, ratingKakao: 4.3, menu: "닭칼국수, 바지락칼국수", lat: 37.6651, lng: 126.7865 },
+      { id: "IS2", name: "만돈 일산웨스턴돔점", category: "일식/초밥", macro: "gyeonggi_incheon", micro: "ilsan", address: "경기 고양시 일산동구 정발산로 24", ratingNaver: 4.71, ratingKakao: 4.5, menu: "미식가 등심 돈카츠, 특안심 돈카츠", lat: 37.6568, lng: 126.7712 },
+      { id: "IS3", name: "파주 뼈칼국수 교하제면소", category: "한식", macro: "gyeonggi_incheon", micro: "ilsan", address: "경기 파주시 탄현면 평화로 885-18", ratingNaver: 4.64, ratingKakao: 4.3, menu: "돼지목뼈 맑은 칼국수, 고기만두", lat: 37.7852, lng: 126.6895 },
+      { id: "IS4", name: "밤가시버거", category: "양식", macro: "gyeonggi_incheon", micro: "ilsan", address: "경기 고양시 일산동구 일산로372번길 46", ratingNaver: 4.69, ratingKakao: 4.4, menu: "밤가시오리지널버거, 쉬림프버거", lat: 37.6712, lng: 126.7845 },
+      { id: "IS5", name: "통일동산 두부마을", category: "한식", macro: "gyeonggi_incheon", micro: "ilsan", address: "경기 파주시 탄현면 필승로 480", ratingNaver: 4.58, ratingKakao: 4.2, menu: "장단콩 청국장, 콩비지정식", lat: 37.7885, lng: 126.6912 },
+      { id: "IS6", name: "가나안덕 일산본점", category: "고기/구이", macro: "gyeonggi_incheon", micro: "ilsan", address: "경기 고양시 일산동구 애니골길 52", ratingNaver: 4.62, ratingKakao: 4.2, menu: "참숯 오리생구이, 녹두죽", lat: 37.6728, lng: 126.7958 },
+      { id: "IS7", name: "일산 춘식당", category: "한식", macro: "gyeonggi_incheon", micro: "ilsan", address: "경기 고양시 일산동구 무궁화로 32-34", ratingNaver: 4.59, ratingKakao: 4.3, menu: "한우 육사시미, 미나리전", lat: 37.6612, lng: 126.7685 },
+      { id: "IS8", name: "파주 더티트렁크", category: "카페", macro: "gyeonggi_incheon", micro: "ilsan", address: "경기 파주시 지목로 114", ratingNaver: 4.54, ratingKakao: 4.1, menu: "빅풋버거, 내슈빌치킨, 시그니처 베이커리", lat: 37.7125, lng: 126.7185 },
+      { id: "IS9", name: "을밀대 일산점", category: "한식", macro: "gyeonggi_incheon", micro: "ilsan", address: "경기 고양시 일산서구 일산로 803번길 82-10", ratingNaver: 4.55, ratingKakao: 4.2, menu: "물냉면, 녹두전, 수육", lat: 37.6785, lng: 126.7582 },
+      { id: "IS10", name: "파주 삼고집", category: "고기/구이", macro: "gyeonggi_incheon", micro: "ilsan", address: "경기 파주시 탄현면 새오리로 106", ratingNaver: 4.57, ratingKakao: 4.2, menu: "고기말이 구이, 말이비빔국수", lat: 37.7865, lng: 126.6958 },
+      { id: "IS11", name: "일산 양지미식당", category: "양식", macro: "gyeonggi_incheon", micro: "ilsan", address: "경기 고양시 일산동구 일산로380번길 35", ratingNaver: 4.65, ratingKakao: 4.4, menu: "오징어 먹물 리조또, 트러플 감자튀김", lat: 37.6705, lng: 126.7862 },
+
+      // ================= 강원 (14) =================
+      { id: "GW1", name: "만석닭강정 속초본점", category: "치킨", macro: "gangwon", micro: "sokcho", address: "강원 속초시 청초호반로 72", ratingNaver: 4.62, ratingKakao: 4.1, menu: "화끈한맛 닭강정, 뼈닭강정", lat: 38.1912, lng: 128.5835 },
+      { id: "GW2", name: "동화가든 본점", category: "한식", macro: "gangwon", micro: "sokcho", address: "강원 강릉시 초당순두부길77번길 15", ratingNaver: 4.58, ratingKakao: 4.1, menu: "원조 짬순(짬뽕순두부), 초두부", lat: 37.7912, lng: 128.9152 },
+      { id: "GW3", name: "엄지네포장마차 본점", category: "한식", macro: "gangwon", micro: "sokcho", address: "강원 강릉시 경강로2255번길 21", ratingNaver: 4.65, ratingKakao: 4.2, menu: "꼬막무침비빔밥, 육사시미", lat: 37.7712, lng: 128.9056 },
+      { id: "GW4", name: "통나무집닭갈비 춘천본점", category: "고기/구이", macro: "gangwon", micro: "sokcho", address: "강원 춘천시 신북읍 신샘밭로 763", ratingNaver: 4.61, ratingKakao: 4.3, menu: "철판 닭갈비, 막국수, 볶음밥", lat: 37.9254, lng: 127.7654 },
+      { id: "GW5", name: "영광정메밀국수 양양점", category: "한식", macro: "gangwon", micro: "sokcho", address: "강원 양양군 강현면 진미로 446", ratingNaver: 4.58, ratingKakao: 4.2, menu: "동치미 메밀국수, 감자전, 수육", lat: 38.1325, lng: 128.5612 },
+      { id: "GW6", name: "봉포머구리집 속초점", category: "회/해산물", macro: "gangwon", micro: "sokcho", address: "강원 속초시 영랑해안길 223", ratingNaver: 4.57, ratingKakao: 4.1, menu: "모둠물회, 성게알밥, 섭국", lat: 38.2212, lng: 128.5985 },
+      { id: "GW7", name: "강릉 테라로사 커피공장", category: "카페", macro: "gangwon", micro: "sokcho", address: "강원 강릉시 구정면 현천길 7", ratingNaver: 4.68, ratingKakao: 4.4, menu: "핸드드립 드립커피, 레몬치즈케이크", lat: 37.6985, lng: 128.9125 },
+      { id: "GW8", name: "88생선구이 속초점", category: "회/해산물", macro: "gangwon", micro: "sokcho", address: "강원 속초시 중앙부두길 71", ratingNaver: 4.52, ratingKakao: 4.0, menu: "생선구이 모듬정식 (숯불구이)", lat: 38.2045, lng: 128.5912 },
+      { id: "GW9", name: "춘천 우성닭갈비 본점", category: "고기/구이", macro: "gangwon", micro: "sokcho", address: "강원 춘천시 동면 만천양지길 87", ratingNaver: 4.64, ratingKakao: 4.4, menu: "원조 닭갈비, 우동사리, 볶음밥", lat: 37.8825, lng: 127.7612 },
+      { id: "GW10", name: "강릉 장칼국수 현대칼국수", category: "한식", macro: "gangwon", micro: "sokcho", address: "강원 강릉시 임영로182번길 7-1", ratingNaver: 4.56, ratingKakao: 4.1, menu: "얼큰 장칼국수, 맑은 칼국수", lat: 37.7558, lng: 128.8925 },
+      { id: "GW11", name: "원주 진미양념치킨", category: "치킨", macro: "gangwon", micro: "sokcho", address: "강원 원주시 우산초교길 31", ratingNaver: 4.60, ratingKakao: 4.3, menu: "가마솥 양념치킨, 후라이드", lat: 37.3685, lng: 127.9352 },
+      { id: "GW12", name: "속초 감나무집감자옹심이", category: "한식", macro: "gangwon", micro: "sokcho", address: "강원 속초시 중앙시장로 110-8", ratingNaver: 4.54, ratingKakao: 4.2, menu: "감자옹심이 항아리 단일메뉴", lat: 38.2038, lng: 128.5895 },
+      { id: "GW13", name: "평창 납작식당", category: "고기/구이", macro: "gangwon", micro: "sokcho", address: "강원 평창군 대관령면 올림픽로 35", ratingNaver: 4.53, ratingKakao: 4.1, menu: "오삼불고기 구이, 된장찌개", lat: 37.6742, lng: 128.7125 },
+      { id: "GW14", name: "속초 흰다정", category: "카페", macro: "gangwon", micro: "sokcho", address: "강원 속초시 수복로 248", ratingNaver: 4.69, ratingKakao: 4.5, menu: "말차빙수, 호지차블랑, 커스터드푸딩", lat: 38.2012, lng: 128.5842 },
+
+      // ================= 대전/충청 (14) =================
+      { id: "DJ1", name: "성심당 본점", category: "카페", macro: "daejeon_chungcheong", micro: "daejeon", address: "대전 중구 대종로480번길 15", ratingNaver: 4.81, ratingKakao: 4.6, menu: "튀김소보로, 부추빵, 망고시루케익", lat: 36.3276, lng: 127.4272 },
+      { id: "DJ2", name: "오씨칼국수 본점", category: "한식", macro: "daejeon_chungcheong", micro: "daejeon", address: "대전 동구 옛신탄진로 13", ratingNaver: 4.59, ratingKakao: 4.2, menu: "물총칼국수(동죽), 조개탕, 파전", lat: 36.3402, lng: 127.4285 },
+      { id: "DJ3", name: "태평소국밥 본점", category: "한식", macro: "daejeon_chungcheong", micro: "daejeon", address: "대전 유성구 온천동로65번길 50", ratingNaver: 4.63, ratingKakao: 4.3, menu: "소국밥, 육사시미, 매운갈비찜", lat: 36.3578, lng: 127.3489 },
+      { id: "DJ4", name: "병천 충남집순대", category: "한식", macro: "daejeon_chungcheong", micro: "daejeon", address: "충남 천안시 동남구 병천면 충절로 1748", ratingNaver: 4.60, ratingKakao: 4.3, menu: "병천 순대국밥, 순대접시", lat: 36.7625, lng: 127.2985 },
+      { id: "DJ5", name: "광천식당 대전점", category: "한식", macro: "daejeon_chungcheong", micro: "daejeon", address: "대전 중구 대종로505번길 29", ratingNaver: 4.55, ratingKakao: 4.1, menu: "두부두루치기, 오징어두루치기, 칼국수", lat: 36.3305, lng: 127.4258 },
+      { id: "DJ6", name: "청주 쫄쫄호떡", category: "분식", macro: "daejeon_chungcheong", micro: "daejeon", address: "충북 청주시 상당구 상당로55번길 40-1", ratingNaver: 4.58, ratingKakao: 4.2, menu: "즉석 쫄쫄호떡, 떡볶이", lat: 36.6342, lng: 127.4912 },
+      { id: "DJ7", name: "대전 진로집", category: "한식", macro: "daejeon_chungcheong", micro: "daejeon", address: "대전 중구 중교로 45-5", ratingNaver: 4.52, ratingKakao: 4.2, menu: "원조 두부두루치기, 수육", lat: 36.3268, lng: 127.4245 },
+      { id: "DJ8", name: "천안 이고집만두", category: "한식", macro: "daejeon_chungcheong", micro: "daejeon", address: "충남 천안시 동남구 태조산길 258", ratingNaver: 4.66, ratingKakao: 4.4, menu: "만두전골 샤브샤브, 군만두", lat: 36.8212, lng: 127.1852 },
+      { id: "DJ9", name: "공주 고마나루명품백제밥상", category: "한식", macro: "daejeon_chungcheong", micro: "daejeon", address: "충남 공주시 백제큰길 5-9", ratingNaver: 4.59, ratingKakao: 4.3, menu: "황태구이 정식, 연잎밥, 제육", lat: 36.4685, lng: 127.1125 },
+      { id: "DJ10", name: "세종 산장가든", category: "고기/구이", macro: "daejeon_chungcheong", micro: "daejeon", address: "세종 연서면 도신고복로 1131-7", ratingNaver: 4.61, ratingKakao: 4.2, menu: "원조 숯불갈비, 동치미메밀국수", lat: 36.5812, lng: 127.2412 },
+      { id: "DJ11", name: "대전 바라던육꼬", category: "고기/구이", macro: "daejeon_chungcheong", micro: "daejeon", address: "대전 서구 대덕대로185번길 58", ratingNaver: 4.64, ratingKakao: 4.3, menu: "숙성 통삼겹, 구워주는 꽃목살", lat: 36.3528, lng: 127.3785 },
+      { id: "DJ12", name: "단양 마늘석갈비막국수", category: "고기/구이", macro: "daejeon_chungcheong", micro: "daejeon", address: "충북 단양군 단양읍 단양로 510", ratingNaver: 4.56, ratingKakao: 4.1, menu: "마늘돼지석갈비, 비빔막국수", lat: 36.9852, lng: 128.3685 },
+      { id: "DJ13", name: "대전 스시쿠마", category: "일식/초밥", macro: "daejeon_chungcheong", micro: "daejeon", address: "대전 서구 둔산로51번길 66", ratingNaver: 4.67, ratingKakao: 4.4, menu: "쿠마 특선스시 세트, 장어초밥", lat: 36.3535, lng: 127.3742 },
+      { id: "DJ14", name: "청주 서문우동", category: "분식", macro: "daejeon_chungcheong", micro: "daejeon", address: "충북 청주시 상당구 무심동로392번길 6", ratingNaver: 4.53, ratingKakao: 4.2, menu: "서문우동, 야채고로케, 단팥빵", lat: 36.6328, lng: 127.4862 },
+
+      // ================= 대구/경북 (14) =================
+      { id: "DG1", name: "왕거미식당", category: "고기/구이", macro: "daegu_gyeongbuk", micro: "daegu", address: "대구 중구 국채보상로 696-8", ratingNaver: 4.66, ratingKakao: 4.4, menu: "생고기(뭉티기), 오드레기 연탄구이", lat: 35.8698, lng: 128.6045 },
+      { id: "DG2", name: "걸리버막창 본점", category: "고기/구이", macro: "daegu_gyeongbuk", micro: "daegu", address: "대구 북구 옥산로 53", ratingNaver: 4.69, ratingKakao: 4.4, menu: "초벌 돼지생막창, 버섯된장찌개", lat: 35.8852, lng: 128.5835 },
+      { id: "DG3", name: "경주 함양집 보문점", category: "한식", macro: "daegu_gyeongbuk", micro: "daegu", address: "경북 경주시 보불로 287", ratingNaver: 4.54, ratingKakao: 4.1, menu: "한우 전통물회, 육회비빔밥, 치즈불고기", lat: 35.8345, lng: 129.2785 },
+      { id: "DG4", name: "포항 환여횟집 본점", category: "회/해산물", macro: "daegu_gyeongbuk", micro: "daegu", address: "경북 포항시 북구 해안로 189-1", ratingNaver: 4.56, ratingKakao: 4.2, menu: "영일대 물회국수, 매운탕 세트", lat: 36.0568, lng: 129.3812 },
+      { id: "DG5", name: "중앙떡볶이 대구본점", category: "분식", macro: "daegu_gyeongbuk", micro: "daegu", address: "대구 중구 동성로2길 81", ratingNaver: 4.53, ratingKakao: 4.1, menu: "쌀떡볶이, 납작만두", lat: 35.8685, lng: 128.5982 },
+      { id: "DG6", name: "안지랑 곱창골목 안지곱창", category: "고기/구이", macro: "daegu_gyeongbuk", micro: "daegu", address: "대구 남구 대명로36길 63", ratingNaver: 4.62, ratingKakao: 4.3, menu: "양념곱창 한바가지, 치즈막창", lat: 35.8365, lng: 128.5812 },
+      { id: "DG7", name: "대구 삼송빵집 본점", category: "카페", macro: "daegu_gyeongbuk", micro: "daegu", address: "대구 중구 중앙대로 395", ratingNaver: 4.57, ratingKakao: 4.2, menu: "통옥수수빵(마약빵), 오븐고로케", lat: 35.8692, lng: 128.5938 },
+      { id: "DG8", name: "대구 신서문통닭", category: "치킨", macro: "daegu_gyeongbuk", micro: "daegu", address: "대구 중구 큰장로26길 25", ratingNaver: 4.60, ratingKakao: 4.3, menu: "야채통닭, 가마솥 양념치킨", lat: 35.8688, lng: 128.5815 },
+      { id: "DG9", name: "경주 황남아덴", category: "카페", macro: "daegu_gyeongbuk", micro: "daegu", address: "경북 경주시 사정로57번길 11", ratingNaver: 4.65, ratingKakao: 4.4, menu: "첨성대커피, 경주달빛빵, 크루아상", lat: 35.8368, lng: 129.2085 },
+      { id: "DG10", name: "포항 마라도회식당", category: "회/해산물", macro: "daegu_gyeongbuk", micro: "daegu", address: "경북 포항시 북구 해안로 203", ratingNaver: 4.58, ratingKakao: 4.2, menu: "달인 물회, 자연산 모듬회", lat: 36.0582, lng: 129.3825 },
+      { id: "DG11", name: "안동 맘모스베이커리", category: "카페", macro: "daegu_gyeongbuk", micro: "daegu", address: "경북 안동시 문화광장길 34", ratingNaver: 4.67, ratingKakao: 4.4, menu: "크림치즈빵, 유자파운드", lat: 36.5652, lng: 128.7305 },
+      { id: "DG12", name: "안동 김대감안동찜닭", category: "한식", macro: "daegu_gyeongbuk", micro: "daegu", address: "경북 안동시 번영길 11", ratingNaver: 4.59, ratingKakao: 4.3, menu: "안동찜닭, 쪼림닭, 당면사리", lat: 36.5668, lng: 128.7295 },
+      { id: "DG13", name: "대구 국일따로국밥", category: "한식", macro: "daegu_gyeongbuk", micro: "daegu", address: "대구 중구 국채보상로 571", ratingNaver: 4.51, ratingKakao: 4.1, menu: "특따로국밥, 선지해장국", lat: 35.8715, lng: 128.5925 },
+      { id: "DG14", name: "대구 미진분식 본점", category: "분식", macro: "daegu_gyeongbuk", micro: "daegu", address: "대구 중구 동성로 6-1", ratingNaver: 4.55, ratingKakao: 4.2, menu: "김밥, 쫄면, 냄비우동", lat: 35.8675, lng: 128.5958 },
+
+      // ================= 부산/경남 (15) =================
+      { id: "BS1", name: "해운대암소갈비집", category: "고기/구이", macro: "busan_gyeongnam", micro: "busan", address: "부산 해운대구 중동2로10번길 325", ratingNaver: 4.65, ratingKakao: 4.3, menu: "생갈비, 양념갈비, 감자사리", lat: 35.1632, lng: 129.1668 },
+      { id: "BS2", name: "이재모피자 본점", category: "양식", macro: "busan_gyeongnam", micro: "busan", address: "부산 중구 광복중앙로 31", ratingNaver: 4.78, ratingKakao: 4.6, menu: "크러스트 치즈피자, 오븐스파게티", lat: 35.1018, lng: 129.0305 },
+      { id: "BS3", name: "쌍둥이돼지국밥 대연본점", category: "한식", macro: "busan_gyeongnam", micro: "busan", address: "부산 남구 유엔평화로 35-1", ratingNaver: 4.57, ratingKakao: 4.2, menu: "수육백반, 돼지국밥", lat: 35.1325, lng: 129.0912 },
+      { id: "BS4", name: "밀레니엄회센타 민락점", category: "회/해산물", macro: "busan_gyeongnam", micro: "busan", address: "부산 수영구 민락수변로 103", ratingNaver: 4.55, ratingKakao: 4.2, menu: "광안대교 뷰 모듬 활어회, 물회", lat: 35.1558, lng: 129.1285 },
+      { id: "BS5", name: "기장 칠암사계", category: "카페", macro: "busan_gyeongnam", micro: "busan", address: "부산 기장군 일광읍 칠암1길 7-10", ratingNaver: 4.72, ratingKakao: 4.5, menu: "소금빵, 칠암블렌드 드립커피", lat: 35.2952, lng: 129.2612 },
+      { id: "BS6", name: "해운대 가야밀면", category: "한식", macro: "busan_gyeongnam", micro: "busan", address: "부산 해운대구 좌동순환로 27", ratingNaver: 4.58, ratingKakao: 4.2, menu: "물밀면, 비빔밀면, 만두", lat: 35.1725, lng: 129.1725 },
+      { id: "BS7", name: "부산 초량밀면", category: "한식", macro: "busan_gyeongnam", micro: "busan", address: "부산 동구 중앙대로 225", ratingNaver: 4.52, ratingKakao: 4.0, menu: "물밀면, 비빔밀면, 왕만두", lat: 35.1168, lng: 129.0395 },
+      { id: "BS8", name: "광안리 톤쇼우", category: "일식/초밥", macro: "busan_gyeongnam", micro: "busan", address: "부산 수영구 광안해변로279번길 13", ratingNaver: 4.82, ratingKakao: 4.7, menu: "버크셔K 로스카츠, 히레카츠", lat: 35.1542, lng: 129.1215 },
+      { id: "BS9", name: "해운대 속씨원한대구탕", category: "한식", macro: "busan_gyeongnam", micro: "busan", address: "부산 해운대구 달맞이길62번길 28", ratingNaver: 4.56, ratingKakao: 4.1, menu: "맑은 대구탕, 알말이(계란말이)", lat: 35.1585, lng: 129.1752 },
+      { id: "BS10", name: "자갈치시장 백화양곱창", category: "고기/구이", macro: "busan_gyeongnam", micro: "busan", address: "부산 중구 자갈치로23번길 6", ratingNaver: 4.63, ratingKakao: 4.4, menu: "양곱창 연탄구이, 볶음밥", lat: 35.0975, lng: 129.0285 },
+      { id: "BS11", name: "서면 삼광보리밥", category: "한식", macro: "busan_gyeongnam", micro: "busan", address: "부산 부산진구 부전로66번길 16", ratingNaver: 4.54, ratingKakao: 4.2, menu: "김치전골, 두루치기, 보리밥", lat: 35.1582, lng: 129.0558 },
+      { id: "BS12", name: "기장 해녀촌 연화리 해물포차", category: "회/해산물", macro: "busan_gyeongnam", micro: "busan", address: "부산 기장군 기장읍 연화1길 184", ratingNaver: 4.61, ratingKakao: 4.3, menu: "해물 모듬한상, 전복죽", lat: 35.2215, lng: 129.2285 },
+      { id: "BS13", name: "통영 동진충무김밥", category: "분식", macro: "busan_gyeongnam", micro: "busan", address: "경남 통영시 통영해안로 325", ratingNaver: 4.53, ratingKakao: 4.1, menu: "원조 충무김밥, 오징어어묵무침", lat: 34.8452, lng: 128.4235 },
+      { id: "BS14", name: "창원 임진각식당", category: "고기/구이", macro: "busan_gyeongnam", micro: "busan", address: "경남 창원시 의창구 팔용로 438", ratingNaver: 4.62, ratingKakao: 4.3, menu: "석쇠소불고기, 소국밥", lat: 35.2512, lng: 128.6185 },
+      { id: "BS15", name: "옵스 해운대점", category: "카페", macro: "busan_gyeongnam", micro: "busan", address: "부산 해운대구 중동1로 31", ratingNaver: 4.64, ratingKakao: 4.3, menu: "슈크림빵, 학원전, 키쉬", lat: 35.1618, lng: 129.1625 },
+
+      // ================= 광주/전라 (14) =================
+      { id: "GJ1", name: "영미오리탕 본점", category: "한식", macro: "gwangju_jeonla", micro: "gwangju", address: "광주 북구 유동로 1", ratingNaver: 4.64, ratingKakao: 4.3, menu: "들깨오리탕, 신선 미나리 무한리필", lat: 35.1612, lng: 126.9025 },
+      { id: "GJ2", name: "현대옥 전주본점", category: "한식", macro: "gwangju_jeonla", micro: "gwangju", address: "전북 전주시 완산구 화산천변2길 7-4", ratingNaver: 4.62, ratingKakao: 4.3, menu: "남부시장식 콩나물국밥, 오징어사리", lat: 35.8115, lng: 127.1215 },
+      { id: "GJ3", name: "여수 꽃돌게장1번가", category: "회/해산물", macro: "gwangju_jeonla", micro: "gwangju", address: "전남 여수시 봉산2로 36", ratingNaver: 4.68, ratingKakao: 4.4, menu: "꽃게장 정식, 돌게장 무한리필바", lat: 34.7312, lng: 127.7285 },
+      { id: "GJ4", name: "광주 송정떡갈비 1호점", category: "고기/구이", macro: "gwangju_jeonla", micro: "gwangju", address: "광주 광산구 광산로29번길 1", ratingNaver: 4.59, ratingKakao: 4.2, menu: "원조 떡갈비, 뼛국 무한리필", lat: 35.1385, lng: 126.7915 },
+      { id: "GJ5", name: "전주 베테랑분식 본점", category: "분식", macro: "gwangju_jeonla", micro: "gwangju", address: "전북 전주시 완산구 경기전길 135", ratingNaver: 4.56, ratingKakao: 4.1, menu: "들깨칼국수, 쫄면, 고기만두", lat: 35.8142, lng: 127.1518 },
+      { id: "GJ6", name: "군산 복성루", category: "중식", macro: "gwangju_jeonla", micro: "gwangju", address: "전북 군산시 월명로 382", ratingNaver: 4.52, ratingKakao: 4.0, menu: "고기짬뽕, 물짜장, 볶음밥", lat: 35.9812, lng: 126.7215 },
+      { id: "GJ7", name: "군산 이성당 본점", category: "카페", macro: "gwangju_jeonla", micro: "gwangju", address: "전북 군산시 중앙로 177", ratingNaver: 4.69, ratingKakao: 4.5, menu: "단팥빵, 야채빵, 생크림앙금빵", lat: 35.9875, lng: 126.7112 },
+      { id: "GJ8", name: "군산 한일옥", category: "한식", macro: "gwangju_jeonla", micro: "gwangju", address: "전북 군산시 구영3길 63", ratingNaver: 4.60, ratingKakao: 4.3, menu: "맑은 소고기무국, 육회비빔밥", lat: 35.9852, lng: 126.7085 },
+      { id: "GJ9", name: "여수 두꺼비게장", category: "회/해산물", macro: "gwangju_jeonla", micro: "gwangju", address: "전남 여수시 봉산남3길 12", ratingNaver: 4.58, ratingKakao: 4.2, menu: "갈치조림 정식, 간장게장", lat: 34.7305, lng: 127.7295 },
+      { id: "GJ10", name: "여수 이순신수제버거", category: "양식", macro: "gwangju_jeonla", micro: "gwangju", address: "전남 여수시 중앙로 73", ratingNaver: 4.55, ratingKakao: 4.1, menu: "이순신버거, 베이컨토마토치즈버거", lat: 34.7412, lng: 127.7375 },
+      { id: "GJ11", name: "전주 조점례남문피순대", category: "한식", macro: "gwangju_jeonla", micro: "gwangju", address: "전북 전주시 완산구 풍남문2길 39", ratingNaver: 4.57, ratingKakao: 4.2, menu: "피순대, 암뽕순대국밥", lat: 35.8128, lng: 127.1472 },
+      { id: "GJ12", name: "광주 궁전제과 충장점", category: "카페", macro: "gwangju_jeonla", micro: "gwangju", address: "광주 동구 충장로 93-6", ratingNaver: 4.65, ratingKakao: 4.4, menu: "공룡알빵, 나비파이", lat: 35.1482, lng: 126.9185 },
+      { id: "GJ13", name: "순천 건봉국밥", category: "한식", macro: "gwangju_jeonla", micro: "gwangju", address: "전남 순천시 장평로 65", ratingNaver: 4.61, ratingKakao: 4.3, menu: "머리고기국밥, 순대수육세트", lat: 34.9458, lng: 127.4985 },
+      { id: "GJ14", name: "담양 쌍교숯불갈비 본점", category: "고기/구이", macro: "gwangju_jeonla", micro: "gwangju", address: "전남 담양군 봉산면 송강정로 212", ratingNaver: 4.64, ratingKakao: 4.3, menu: "돼지갈비 숯불구이, 들깨수제비", lat: 35.2585, lng: 126.9685 },
+
+      // ================= 제주 (14) =================
+      { id: "JJ1", name: "숙성도 노형본점", category: "고기/구이", macro: "jeju", micro: "jeju", address: "제주 제주시 원노형로 41", ratingNaver: 4.74, ratingKakao: 4.5, menu: "720 숙성 뼈등심, 숙성 삼겹살", lat: 33.4862, lng: 126.4885 },
+      { id: "JJ2", name: "우진해장국", category: "한식", macro: "jeju", micro: "jeju", address: "제주 제주시 서사로 11", ratingNaver: 4.61, ratingKakao: 4.2, menu: "제주 고사리육개장, 몸국", lat: 33.5115, lng: 126.5202 },
+      { id: "JJ3", name: "서귀포 오는정김밥", category: "분식", macro: "jeju", micro: "jeju", address: "제주 서귀포시 동문동로 2", ratingNaver: 4.59, ratingKakao: 4.3, menu: "원조 오는정김밥, 떡갈비김밥", lat: 33.2498, lng: 126.5658 },
+      { id: "JJ4", name: "춘심이네 본점", category: "회/해산물", macro: "jeju", micro: "jeju", address: "제주 서귀포시 안덕면 창천중앙로24번길 16", ratingNaver: 4.62, ratingKakao: 4.2, menu: "통갈치구이 정식, 통갈치조림", lat: 33.2652, lng: 126.3685 },
+      { id: "JJ5", name: "자매국수 본점", category: "한식", macro: "jeju", micro: "jeju", address: "제주 제주시 항골남길 46", ratingNaver: 4.58, ratingKakao: 4.1, menu: "고기국수, 비빔국수, 돔베고기", lat: 33.5065, lng: 126.5412 },
+      { id: "JJ6", name: "제주 돈사돈 본점", category: "고기/구이", macro: "jeju", micro: "jeju", address: "제주 제주시 우평로 19", ratingNaver: 4.65, ratingKakao: 4.3, menu: "근고기 흑돼지 참숯연탄구이", lat: 33.4812, lng: 126.4685 },
+      { id: "JJ7", name: "명진전복", category: "회/해산물", macro: "jeju", micro: "jeju", address: "제주 제주시 구좌읍 해맞이해안로 1282", ratingNaver: 4.54, ratingKakao: 4.1, menu: "전복돌솥밥, 전복구이, 전복죽", lat: 33.5358, lng: 126.8525 },
+      { id: "JJ8", name: "연돈", category: "일식/초밥", macro: "jeju", micro: "jeju", address: "제주 서귀포시 색달로 10", ratingNaver: 4.79, ratingKakao: 4.6, menu: "치즈까스, 등심돈까스, 수제카레", lat: 33.2585, lng: 126.4245 },
+      { id: "JJ9", name: "제주 솔지식당 본점", category: "고기/구이", macro: "jeju", micro: "jeju", address: "제주 제주시 원노형로 36", ratingNaver: 4.63, ratingKakao: 4.4, menu: "가브리살, 오겹살, 멜조림 뚝배기", lat: 33.4868, lng: 126.4878 },
+      { id: "JJ10", name: "은희네해장국 제주본점", category: "한식", macro: "jeju", micro: "jeju", address: "제주 제주시 고마로13길 8", ratingNaver: 4.60, ratingKakao: 4.3, menu: "소고기 해장국, 내장탕", lat: 33.5085, lng: 126.5432 },
+      { id: "JJ11", name: "랜디스도넛 제주애월점", category: "카페", macro: "jeju", micro: "jeju", address: "제주 제주시 애월읍 애월로 27-1", ratingNaver: 4.62, ratingKakao: 4.2, menu: "버터크럼도넛, 글레이즈도넛", lat: 33.4625, lng: 126.3115 },
+      { id: "JJ12", name: "제주 미영이네식당", category: "회/해산물", macro: "jeju", micro: "jeju", address: "제주 서귀포시 대정읍 하모항구로 42", ratingNaver: 4.66, ratingKakao: 4.4, menu: "고등어회 + 뚝배기탕, 쌈야채", lat: 33.2185, lng: 126.2512 },
+      { id: "JJ13", name: "우도 블랑로쉐", category: "카페", macro: "jeju", micro: "jeju", address: "제주 제주시 우도면 우도해안길 783", ratingNaver: 4.68, ratingKakao: 4.5, menu: "우도땅콩아이스크림, 땅콩크림라떼", lat: 33.5185, lng: 126.9558 },
+      { id: "JJ14", name: "만민식당", category: "회/해산물", macro: "jeju", micro: "jeju", address: "제주 제주시 한림읍 한림상로 15-1", ratingNaver: 4.57, ratingKakao: 4.2, menu: "해물탕, 옥돔구이, 전복뚝배기", lat: 33.4112, lng: 126.2652 }
+    ];
+
+    let restaurants = [];
+    let currentCategory = '전체';
+    let currentRatingFilter = null;
+    let map = null;
+    let markerGroup = null;
+    let rouletteInterval = null;
+    let rouletteWinner = null;
 
     function safeGetStorage(key) {
       try { return localStorage.getItem(key); } catch (e) { return null; }
@@ -336,7 +632,7 @@
     function safeSetStorage(key, val) {
       try { localStorage.setItem(key, val); } catch (e) {}
     }
-    
+
     const regionConfig = {
       "seoul": [
         { id: "all", name: "전체" },
@@ -381,301 +677,24 @@
       ]
     };
 
-    const seedData = [
-      // ==========================================
-      // 1. 서울: 강남/논현/신사/서초 (12개)
-      // ==========================================
-      { id:'SN1', name:"농민백암순대 본점", macro:"seoul", micro:"gangnam", category:"한식", ratingNaver:4.8, ratingKakao:4.6, address:"서울 강남구 선릉로86길 40-4", lat:37.5034, lng:127.0505, menu:"순대국밥, 모듬수육" },
-      { id:'SN2', name:"진미평양냉면", macro:"seoul", micro:"gangnam", category:"한식", ratingNaver:4.6, ratingKakao:4.2, address:"서울 강남구 학동로 305-3", lat:37.5161, lng:127.0360, menu:"평양냉면, 어복쟁반" },
-      { id:'SN3', name:"영동소금구이 논현본점", macro:"seoul", micro:"gangnam", category:"고기/구이", ratingNaver:4.6, ratingKakao:4.3, address:"서울 강남구 강남대로124길 10", lat:37.5098, lng:127.0245, menu:"영동소금구이, 키조개관자" },
-      { id:'SN4', name:"땀땀 강남본점", macro:"seoul", micro:"gangnam", category:"기타", ratingNaver:4.7, ratingKakao:4.4, address:"서울 강남구 강남대로98길 12-5", lat:37.4996, lng:127.0282, menu:"매운 소곱창 쌀국수, 우삼겹 쌀국수" },
-      { id:'SN5', name:"신사전", macro:"seoul", micro:"gangnam", category:"한식", ratingNaver:4.7, ratingKakao:4.5, address:"서울 강남구 도산대로11길 18", lat:37.5186, lng:127.0218, menu:"치즈감자채전, 벌집꿀막걸리" },
-      { id:'SN6', name:"우텐더 압구정본점", macro:"seoul", micro:"gangnam", category:"고기/구이", ratingNaver:4.8, ratingKakao:4.6, address:"서울 강남구 압구정로42길 25-10", lat:37.5273, lng:127.0345, menu:"한우 안심 숯불구이, 규카츠샌드" },
-      { id:'SN7', name:"새벽집 청담본점", macro:"seoul", micro:"gangnam", category:"한식", ratingNaver:4.6, ratingKakao:4.1, address:"서울 강남구 도산대로101길 6", lat:37.5249, lng:127.0513, menu:"꽃등심, 육회비빔밥, 선지해장국" },
-      { id:'SN8', name:"피양옥 논현본점", macro:"seoul", micro:"gangnam", category:"한식", ratingNaver:4.6, ratingKakao:4.3, address:"서울 강남구 강남대로132길 28", lat:37.5123, lng:127.0238, menu:"어복쟁반, 평양냉면, 녹두전" },
-      { id:'SN9', name:"해목 논현점", macro:"seoul", micro:"gangnam", category:"일식/초밥", ratingNaver:4.7, ratingKakao:4.5, address:"서울 강남구 선릉로145길 14", lat:37.5218, lng:127.0392, menu:"히츠마부시(나고야식 장어덮밥), 카이센동" },
-      { id:'SN10', name:"보름쇠 삼성점", macro:"seoul", micro:"gangnam", category:"고기/구이", ratingNaver:4.7, ratingKakao:4.4, address:"서울 강남구 테헤란로81길 36", lat:37.5098, lng:127.0581, menu:"미쉐린 흑우 특수부위구이, 흑우보양탕" },
-      { id:'SN11', name:"카츠바이콘반", macro:"seoul", micro:"gangnam", category:"일식/초밥", ratingNaver:4.7, ratingKakao:4.5, address:"서울 강남구 선릉로153길 36", lat:37.5248, lng:127.0369, menu:"상로스카츠, 히레카츠 정식" },
-      { id:'SN12', name:"대성정육식당 논현", macro:"seoul", micro:"gangnam", category:"고기/구이", ratingNaver:4.5, ratingKakao:4.2, address:"서울 강남구 강남대로128길 21", lat:37.5108, lng:127.0251, menu:"급랭 삼겹살, 차돌된장찌개" },
-
-      // ==========================================
-      // 2. 서울: 송파/잠실/방이 (12개)
-      // ==========================================
-      { id:'SP1', name:"멘야하나비 본점", macro:"seoul", micro:"songpa", category:"일식/초밥", ratingNaver:4.6, ratingKakao:4.2, address:"서울 송파구 백제고분로45길 38", lat:37.5103, lng:127.1098, menu:"마제소바, 도니쿠마제소바" },
-      { id:'SP2', name:"군산오징어 본점", macro:"seoul", micro:"songpa", category:"한식", ratingNaver:4.5, ratingKakao:4.1, address:"서울 송파구 삼학사로 101", lat:37.5042, lng:127.0984, menu:"오징어불고기, 오징어튀김" },
-      { id:'SP3', name:"해주냉면 본점", macro:"seoul", micro:"songpa", category:"한식", ratingNaver:4.4, ratingKakao:4.0, address:"서울 송파구 백제고분로7길 8-16", lat:37.5092, lng:127.0825, menu:"매운 비빔냉면, 물냉면" },
-      { id:'SP4', name:"갓잇(GOD EAT) 송리단길점", macro:"seoul", micro:"songpa", category:"양식", ratingNaver:4.8, ratingKakao:4.5, address:"서울 송파구 백제고분로45길 4-14", lat:37.5107, lng:127.1102, menu:"갓 파히타 세트, 타코" },
-      { id:'SP5', name:"방이옥 본점", macro:"seoul", micro:"songpa", category:"고기/구이", ratingNaver:4.7, ratingKakao:4.4, address:"서울 송파구 올림픽로32길 21-8", lat:37.5141, lng:127.1082, menu:"수비드 후라이드 우대갈비" },
-      { id:'SP6', name:"청와옥 석촌호수직영점", macro:"seoul", micro:"songpa", category:"한식", ratingNaver:4.8, ratingKakao:4.6, address:"서울 송파구 삼학사로 96", lat:37.5039, lng:127.0978, menu:"청와옥 순대국밥, 편백정식, 육회" },
-      { id:'SP7', name:"고도식 송리단길점", macro:"seoul", micro:"songpa", category:"고기/구이", ratingNaver:4.7, ratingKakao:4.4, address:"서울 송파구 백제고분로45길 28", lat:37.5108, lng:127.1089, menu:"지리산 알등심, 천겹살, 청어알볶음밥" },
-      { id:'SP8', name:"오레노라멘 송파점", macro:"seoul", micro:"songpa", category:"일식/초밥", ratingNaver:4.8, ratingKakao:4.6, address:"서울 송파구 백제고분로45길 17-3", lat:37.5105, lng:127.1082, menu:"토리빠이탄 라멘, 카라빠이탄 라멘" },
-      { id:'SP9', name:"다운타우너 잠실점", macro:"seoul", micro:"songpa", category:"양식", ratingNaver:4.6, ratingKakao:4.3, address:"서울 송파구 백제고분로45길 3", lat:37.5101, lng:127.1075, menu:"아보카도 버거, 갈릭버터 프라이즈" },
-      { id:'SP10', name:"일만당 잠실", macro:"seoul", micro:"songpa", category:"한식", ratingNaver:4.6, ratingKakao:4.3, address:"서울 송파구 올림픽로35가길 10", lat:37.5167, lng:127.1012, menu:"만두전골, 수제 손만두, 칼국수" },
-      { id:'SP11', name:"바이킹스워프 롯데월드몰점", macro:"seoul", micro:"songpa", category:"회/해산물", ratingNaver:4.6, ratingKakao:4.1, address:"서울 송파구 올림픽로 300 4층", lat:37.5139, lng:127.1042, menu:"무제한 보일드 랍스터, 그릴 해산물" },
-      { id:'SP12', name:"토리키치 잠실새내점", macro:"seoul", micro:"songpa", category:"일식/초밥", ratingNaver:4.7, ratingKakao:4.4, address:"서울 송파구 백제고분로9길 53", lat:37.5109, lng:127.0838, menu:"야키토리 숯불 닭꼬치 모듬, 기린 생맥주" },
-
-      // ==========================================
-      // 3. 서울: 홍대/연남/마포/합정 (12개)
-      // ==========================================
-      { id:'HD1', name:"을밀대 마포본점", macro:"seoul", micro:"hongdae", category:"한식", ratingNaver:4.6, ratingKakao:4.2, address:"서울 마포구 숭문길 24", lat:37.5458, lng:126.9458, menu:"물냉면, 녹두전, 수육" },
-      { id:'HD2', name:"소이연남", macro:"seoul", micro:"hongdae", category:"기타", ratingNaver:4.6, ratingKakao:4.2, address:"서울 마포구 동교로 267", lat:37.5631, lng:126.9248, menu:"소고기국수, 소이뽀삐아" },
-      { id:'HD3', name:"연하동", macro:"seoul", micro:"hongdae", category:"일식/초밥", ratingNaver:4.7, ratingKakao:4.4, address:"서울 마포구 연남로 6", lat:37.5614, lng:126.9252, menu:"꼬꼬동, 대왕연어초밥, 연어국수" },
-      { id:'HD4', name:"툭툭누들타이", macro:"seoul", micro:"hongdae", category:"기타", ratingNaver:4.6, ratingKakao:4.1, address:"서울 마포구 성미산로 161-8", lat:37.5654, lng:126.9241, menu:"똠얌꿍, 팟타이" },
-      { id:'HD5', name:"산왕반점", macro:"seoul", micro:"hongdae", category:"중식", ratingNaver:4.5, ratingKakao:4.3, address:"서울 마포구 성미산로29길 35", lat:37.5668, lng:126.9212, menu:"멘보샤, 탕수육, 짜장면" },
-      { id:'HD6', name:"진미식당 마포본점", macro:"seoul", micro:"hongdae", category:"한식", ratingNaver:4.7, ratingKakao:4.5, address:"서울 마포구 마포대로 186-6", lat:37.5469, lng:126.9535, menu:"미쉐린 간장게장 정식, 계란찜" },
-      { id:'HD7', name:"조박집 본점", macro:"seoul", micro:"hongdae", category:"고기/구이", ratingNaver:4.6, ratingKakao:4.3, address:"서울 마포구 토정로 313-1", lat:37.5408, lng:126.9451, menu:"원조 돼지양념갈비, 동치미국수" },
-      { id:'HD8', name:"하카타분코", macro:"seoul", micro:"hongdae", category:"일식/초밥", ratingNaver:4.6, ratingKakao:4.3, address:"서울 마포구 독막로19길 43", lat:37.5489, lng:126.9238, menu:"인라멘, 청라멘, 극라멘" },
-      { id:'HD9', name:"우동카덴 합정점", macro:"seoul", micro:"hongdae", category:"일식/초밥", ratingNaver:4.6, ratingKakao:4.2, address:"서울 마포구 양화로7안길 2-1", lat:37.5512, lng:126.9158, menu:"붓가케우동, 명란크림우동, 텐뿌라" },
-      { id:'HD10', name:"카와카츠 연남점", macro:"seoul", micro:"hongdae", category:"일식/초밥", ratingNaver:4.8, ratingKakao:4.6, address:"서울 마포구 동교로 258-1", lat:37.5627, lng:126.9242, menu:"특로스카츠, 히레카츠, 트러플오일" },
-      { id:'HD11', name:"망원떡갈비", macro:"seoul", micro:"hongdae", category:"한식", ratingNaver:4.7, ratingKakao:4.4, address:"서울 마포구 포은로8길 25 망원시장", lat:37.5559, lng:126.9064, menu:"육즙수제떡갈비, 매운맛 떡갈비" },
-      { id:'HD12', name:"망원동 티라미수 본점", macro:"seoul", micro:"hongdae", category:"카페", ratingNaver:4.5, ratingKakao:4.1, address:"서울 마포구 포은로 87", lat:37.5551, lng:126.9068, menu:"오리지널 컵티라미수, 망원홍차" },
-
-      // ==========================================
-      // 4. 서울: 성수/건대/서울숲 (12개)
-      // ==========================================
-      { id:'SS1', name:"소문난성수감자탕", macro:"seoul", micro:"seongsu", category:"한식", ratingNaver:4.6, ratingKakao:4.1, address:"서울 성동구 연무장길 45", lat:37.5424, lng:127.0544, menu:"감자탕, 수제비사리" },
-      { id:'SS2', name:"난포 성수점", macro:"seoul", micro:"seongsu", category:"한식", ratingNaver:4.6, ratingKakao:4.3, address:"서울 성동구 서울숲4길 18-8", lat:37.5471, lng:127.0429, menu:"강된장쌈밥, 제철회국수" },
-      { id:'SS3', name:"대성갈비", macro:"seoul", micro:"seongsu", category:"고기/구이", ratingNaver:4.5, ratingKakao:4.0, address:"서울 성동구 서울숲4길 27", lat:37.5463, lng:127.0441, menu:"돼지갈비, 김치찌개" },
-      { id:'SS4', name:"죠죠 성수점", macro:"seoul", micro:"seongsu", category:"일식/초밥", ratingNaver:4.7, ratingKakao:4.4, address:"서울 성동구 연무장17길 7", lat:37.5428, lng:127.0601, menu:"죠죠 오코노미야키, 야키소바" },
-      { id:'SS5', name:"송화산시도삭면 본점", macro:"seoul", micro:"seongsu", category:"중식", ratingNaver:4.7, ratingKakao:4.5, address:"서울 광진구 뚝섬로27길 48", lat:37.5365, lng:127.0664, menu:"도삭면, 쇼룽포오, 꿔바로우" },
-      { id:'SS6', name:"팩피 (FAGP)", macro:"seoul", micro:"seongsu", category:"양식", ratingNaver:4.7, ratingKakao:4.5, address:"서울 성동구 왕십리로 136", lat:37.5465, lng:127.0468, menu:"미쉐린 오징어 리가토니, 고수파스타" },
-      { id:'SS7', name:"호호식당 성수", macro:"seoul", micro:"seongsu", category:"일식/초밥", ratingNaver:4.6, ratingKakao:4.2, address:"서울 성동구 서울숲4길 25", lat:37.5461, lng:127.0438, menu:"사케동, 가츠나베정식, 우니파스타" },
-      { id:'SS8', name:"꿉당 성수점", macro:"seoul", micro:"seongsu", category:"고기/구이", ratingNaver:4.7, ratingKakao:4.4, address:"서울 성동구 성수이로20길 10", lat:37.5441, lng:127.0589, menu:"코쿠미 목살, 가브리살, 코쿠미쌀밥" },
-      { id:'SS9', name:"성수다락", macro:"seoul", micro:"seongsu", category:"양식", ratingNaver:4.7, ratingKakao:4.3, address:"서울 성동구 뚝섬로9길 20", lat:37.5419, lng:127.0531, menu:"다락오므라이스, 매콤크림파스타" },
-      { id:'SS10', name:"대림국수 성수점", macro:"seoul", micro:"seongsu", category:"한식", ratingNaver:4.6, ratingKakao:4.3, address:"서울 성동구 연무장7길 5-1", lat:37.5432, lng:127.0549, menu:"꼬치온면, 비빔국수, 숯불모듬꼬치" },
-      { id:'SS11', name:"송계옥 성수점", macro:"seoul", micro:"seongsu", category:"고기/구이", ratingNaver:4.8, ratingKakao:4.5, address:"서울 성동구 아차산로11길 11", lat:37.5468, lng:127.0602, menu:"닭 특수부위 모듬구이, 얼그레이하이볼" },
-      { id:'SS12', name:"중앙감속기", macro:"seoul", micro:"seongsu", category:"중식", ratingNaver:4.6, ratingKakao:4.2, address:"서울 성동구 성수일로6길 7-1", lat:37.5448, lng:127.0498, menu:"바질새우춘권, 차돌마라크림짬뽕" },
-
-      // ==========================================
-      // 5. 서울: 종로/을지로/명동/용산 (12개)
-      // ==========================================
-      { id:'JR1', name:"몽탄", macro:"seoul", micro:"jongro", category:"고기/구이", ratingNaver:4.7, ratingKakao:4.3, address:"서울 용산구 백범로99길 50", lat:37.5342, lng:126.9731, menu:"우대갈비, 짚불삼겹살" },
-      { id:'JR2', name:"명동교자 본점", macro:"seoul", micro:"jongro", category:"한식", ratingNaver:4.7, ratingKakao:4.2, address:"서울 중구 명동10길 29", lat:37.5625, lng:126.9856, menu:"칼국수, 만두, 비빔국수" },
-      { id:'JR3', name:"순희네빈대떡 광장시장점", macro:"seoul", micro:"jongro", category:"분식", ratingNaver:4.5, ratingKakao:4.1, address:"서울 종로구 종로32길 5", lat:37.5701, lng:126.9998, menu:"녹두빈대떡, 고기완자" },
-      { id:'JR4', name:"산수갑산", macro:"seoul", micro:"jongro", category:"한식", ratingNaver:4.6, ratingKakao:4.3, address:"서울 중구 을지로20길 24", lat:37.5662, lng:126.9942, menu:"순대모듬, 순대국밥" },
-      { id:'JR5', name:"필동면옥", macro:"seoul", micro:"jongro", category:"한식", ratingNaver:4.5, ratingKakao:4.2, address:"서울 중구 서애로 26", lat:37.5604, lng:126.9972, menu:"냉면, 제육, 수육" },
-      { id:'JR6', name:"을지면옥", macro:"seoul", micro:"jongro", category:"한식", ratingNaver:4.6, ratingKakao:4.3, address:"서울 종로구 낙원동 288", lat:37.5721, lng:126.9882, menu:"원조 평양냉면, 편육, 소고기수육" },
-      { id:'JR7', name:"남영돈", macro:"seoul", micro:"jongro", category:"고기/구이", ratingNaver:4.8, ratingKakao:4.5, address:"서울 용산구 한강대로80길 17", lat:37.5422, lng:126.9729, menu:"참숯 항정살, 가브리살, 쫄면" },
-      { id:'JR8', name:"토속촌삼계탕", macro:"seoul", micro:"jongro", category:"한식", ratingNaver:4.6, ratingKakao:4.2, address:"서울 종로구 자하문로5길 5", lat:37.5779, lng:126.9715, menu:"토속촌 삼계탕, 옻계탕, 해물파전" },
-      { id:'JR9', name:"이문설농탕", macro:"seoul", micro:"jongro", category:"한식", ratingNaver:4.5, ratingKakao:4.1, address:"서울 종로구 우정국로 38-13", lat:37.5728, lng:126.9842, menu:"100년 전통 설농탕, 도가니탕, 소머리수육" },
-      { id:'JR10', name:"오장동흥남집 본점", macro:"seoul", micro:"jongro", category:"한식", ratingNaver:4.6, ratingKakao:4.2, address:"서울 중구 마른내로 114", lat:37.5648, lng:127.0018, menu:"회비빔냉면, 고기비빔냉면, 수육" },
-      { id:'JR11', name:"용호낙지 종로점", macro:"seoul", micro:"jongro", category:"한식", ratingNaver:4.5, ratingKakao:4.1, address:"서울 종로구 종로 19", lat:37.5709, lng:126.9798, menu:"낙곱새, 낙차새, 새우튀김" },
-      { id:'JR12', name:"하노이의아침 용산점", macro:"seoul", micro:"jongro", category:"기타", ratingNaver:4.5, ratingKakao:4.1, address:"서울 용산구 이태원로 179", lat:37.5348, lng:126.9939, menu:"차돌양지 쌀국수, 분짜, 넴" },
-
-      // ==========================================
-      // 6. 경기: 수원(인계/권선/세류/곡반정) (13개)
-      // ==========================================
-      { id:'SW1', name:"가보정 1관", macro:"gyeonggi_incheon", micro:"suwon", category:"고기/구이", ratingNaver:4.7, ratingKakao:4.3, address:"경기 수원시 팔달구 장다리로 282", lat:37.2741, lng:127.0305, menu:"한우 생갈비, 양념갈비 정식" },
-      { id:'SW2', name:"유치회관 본점", macro:"gyeonggi_incheon", micro:"suwon", category:"한식", ratingNaver:4.6, ratingKakao:4.2, address:"경기 수원시 팔달구 효원로292번길 67", lat:37.2642, lng:127.0315, menu:"선지해장국, 수육" },
-      { id:'SW3', name:"이나경송탄부대찌개", macro:"gyeonggi_incheon", micro:"suwon", category:"한식", ratingNaver:4.6, ratingKakao:4.3, address:"경기 수원시 팔달구 효원로307번길 47", lat:37.2638, lng:127.0349, menu:"스페셜 부대찌개" },
-      { id:'SW4', name:"광주족발순대 권선시장점", macro:"gyeonggi_incheon", micro:"suwon", category:"한식", ratingNaver:4.7, ratingKakao:4.5, address:"경기 수원시 권선구 세권로 185", lat:37.2584, lng:127.0261, menu:"왕족발, 순대국밥, 모듬순대" },
-      { id:'SW5', name:"입주집", macro:"gyeonggi_incheon", micro:"suwon", category:"고기/구이", ratingNaver:4.6, ratingKakao:4.4, address:"경기 수원시 팔달구 팔달문로 3", lat:37.2768, lng:127.0182, menu:"소곱창구이, 막창, 볶음밥" },
-      { id:'SW6', name:"진미통닭", macro:"gyeonggi_incheon", micro:"suwon", category:"치킨", ratingNaver:4.6, ratingKakao:4.2, address:"경기 수원시 팔달구 정조로800번길 21", lat:37.2801, lng:127.0175, menu:"가마솥 후라이드, 옛날통닭, 닭똥집" },
-      { id:'SW7', name:"용성통닭 본점", macro:"gyeonggi_incheon", micro:"suwon", category:"치킨", ratingNaver:4.6, ratingKakao:4.2, address:"경기 수원시 팔달구 정조로800번길 15", lat:37.2798, lng:127.0171, menu:"가마솥 양념통닭, 왕갈비통닭" },
-      { id:'SW8', name:"보영만두 본점", macro:"gyeonggi_incheon", micro:"suwon", category:"분식", ratingNaver:4.6, ratingKakao:4.3, address:"경기 수원시 장안구 팔달로 271", lat:37.2872, lng:127.0152, menu:"수제 군만두, 안매운쫄면, 고기찐만두" },
-      { id:'SW9', name:"구들짱황소곱창 곡반정점", macro:"gyeonggi_incheon", micro:"suwon", category:"고기/구이", ratingNaver:4.7, ratingKakao:4.5, address:"경기 수원시 권선구 곡반정로65번길 26", lat:37.2412, lng:127.0319, menu:"인생소곱창, 대창구이, 깍두기볶음밥" },
-      { id:'SW10', name:"장터설렁탕 세류본점", macro:"gyeonggi_incheon", micro:"suwon", category:"한식", ratingNaver:4.6, ratingKakao:4.3, address:"경기 수원시 권선구 정조로 389", lat:37.2512, lng:127.0158, menu:"전통 설렁탕, 꼬리곰탕, 모듬수육" },
-      { id:'SW11', name:"아줌마왕족발 권선시장", macro:"gyeonggi_incheon", micro:"suwon", category:"한식", ratingNaver:4.7, ratingKakao:4.4, address:"경기 수원시 권선구 세권로 185 권선시장", lat:37.2581, lng:127.0258, menu:"순대국밥 서비스 족발 대, 모듬순대" },
-      { id:'SW12', name:"고기원칙 인계점", macro:"gyeonggi_incheon", micro:"suwon", category:"고기/구이", ratingNaver:4.7, ratingKakao:4.4, address:"경기 수원시 팔달구 인계로166번길 48-17", lat:37.2625, lng:127.0322, menu:"72시간 항아리 숙성삼겹살, 조개탕" },
-      { id:'SW13', name:"본수원갈비 인계점", macro:"gyeonggi_incheon", micro:"suwon", category:"고기/구이", ratingNaver:4.6, ratingKakao:4.2, address:"경기 수원시 팔달구 경수대로 456", lat:37.2678, lng:127.0275, menu:"수원식 양념소갈비, 된장찌개" },
-
-      // ==========================================
-      // 7. 경기: 광교(이의/하동/원천) (12개)
-      // ==========================================
-      { id:'GG1', name:"세상의모든아침 광교점", macro:"gyeonggi_incheon", micro:"gwanggyo", category:"양식", ratingNaver:4.5, ratingKakao:4.0, address:"경기 수원시 영통구 광교호수공원로 80", lat:37.2762, lng:127.0583, menu:"트러플 머쉬룸 리조또, 브런치" },
-      { id:'GG2', name:"백년화로 광교이의점", macro:"gyeonggi_incheon", micro:"gwanggyo", category:"고기/구이", ratingNaver:4.7, ratingKakao:4.5, address:"경기 수원시 영통구 대학로 56", lat:37.2995, lng:127.0478, menu:"한우 소갈비살, 통삼겹살" },
-      { id:'GG3', name:"정돈 갤러리아 광교점", macro:"gyeonggi_incheon", micro:"gwanggyo", category:"일식/초밥", ratingNaver:4.7, ratingKakao:4.4, address:"경기 수원시 영통구 광교중앙로 124", lat:37.2847, lng:127.0569, menu:"안심 돈카츠, 등심 돈카츠" },
-      { id:'GG4', name:"도쿄등심 앨리웨이 광교점", macro:"gyeonggi_incheon", micro:"gwanggyo", category:"고기/구이", ratingNaver:4.8, ratingKakao:4.6, address:"경기 수원시 영통구 광교호수공원로 80 앨리웨이", lat:37.2774, lng:127.0601, menu:"숙성 한우 스키야키, 구이 코스" },
-      { id:'GG5', name:"지동관 광교점", macro:"gyeonggi_incheon", micro:"gwanggyo", category:"중식", ratingNaver:4.5, ratingKakao:4.2, address:"경기 수원시 영통구 센트럴타운로 15", lat:37.2878, lng:127.0512, menu:"삼선짬뽕, 탕수육, 유산슬" },
-      { id:'GG6', name:"몽린 호수공원점", macro:"gyeonggi_incheon", micro:"gwanggyo", category:"고기/구이", ratingNaver:4.8, ratingKakao:4.6, address:"경기 수원시 영통구 하동 1019", lat:37.2795, lng:127.0645, menu:"숯불 프리미엄 우대갈비, 볏짚삼겹살" },
-      { id:'GG7', name:"화포식당 광교카페거리점", macro:"gyeonggi_incheon", micro:"gwanggyo", category:"고기/구이", ratingNaver:4.7, ratingKakao:4.4, address:"경기 수원시 영통구 센트럴파크로127번길 16", lat:37.2912, lng:127.0489, menu:"숙성 통목살, 삼겹살, 구워먹는임실치즈" },
-      { id:'GG8', name:"풍성식당 원천본점", macro:"gyeonggi_incheon", micro:"gwanggyo", category:"한식", ratingNaver:4.6, ratingKakao:4.3, address:"경기 수원시 영통구 매영로 37", lat:37.2689, lng:127.0521, menu:"묵은지 삼겹살찌개, 제육두루치기" },
-      { id:'GG9', name:"태화반점 원천점", macro:"gyeonggi_incheon", micro:"gwanggyo", category:"중식", ratingNaver:4.6, ratingKakao:4.3, address:"경기 수원시 영통구 중부대로 259", lat:37.2718, lng:127.0498, menu:"바삭 탕수육, 유슬짜장면, 짬뽕" },
-      { id:'GG10', name:"광교 어울림 횟집", macro:"gyeonggi_incheon", micro:"gwanggyo", category:"회/해산물", ratingNaver:4.7, ratingKakao:4.4, address:"경기 수원시 영통구 대학1로 26", lat:37.3012, lng:127.0458, menu:"숙성 대광어회, 우럭매운탕" },
-      { id:'GG11', name:"카페 노티드 갤러리아 광교", macro:"gyeonggi_incheon", micro:"gwanggyo", category:"카페", ratingNaver:4.6, ratingKakao:4.2, address:"경기 수원시 영통구 광교중앙로 124 B1", lat:37.2845, lng:127.0565, menu:"우유생크림 도넛, 클래식 바닐라 도넛" },
-      { id:'GG12', name:"형훈텐동 앨리웨이광교점", macro:"gyeonggi_incheon", micro:"gwanggyo", category:"일식/초밥", ratingNaver:4.6, ratingKakao:4.2, address:"경기 수원시 영통구 광교호수공원로 80", lat:37.2778, lng:127.0608, menu:"형훈스페셜텐동, 유자토마토" },
-
-      // ==========================================
-      // 8. 경기: 성남/분당/판교/모란 (12개)
-      // ==========================================
-      { id:'SNM1', name:"능라도 분당본점", macro:"gyeonggi_incheon", micro:"seongnam", category:"한식", ratingNaver:4.5, ratingKakao:4.1, address:"경기 성남시 분당구 산운로32번길 12", lat:37.3872, lng:127.0984, menu:"평양냉면, 녹두지짐이, 접시만두" },
-      { id:'SNM2', name:"윤밀원", macro:"gyeonggi_incheon", micro:"seongnam", category:"한식", ratingNaver:4.7, ratingKakao:4.5, address:"경기 성남시 분당구 불정로 106", lat:37.3621, lng:127.1215, menu:"족발, 양지칼국수, 평양냉면" },
-      { id:'SNM3', name:"등갈비달인 모란본점", macro:"gyeonggi_incheon", micro:"seongnam", category:"고기/구이", ratingNaver:4.6, ratingKakao:4.4, address:"경기 성남시 중원구 제일로35번길 52", lat:37.4328, lng:127.1294, menu:"매운 치즈등갈비, 떡튀김" },
-      { id:'SNM4', name:"서현실비 본점", macro:"gyeonggi_incheon", micro:"seongnam", category:"고기/구이", ratingNaver:4.6, ratingKakao:4.3, address:"경기 성남시 분당구 황새울로311번길 14", lat:37.3854, lng:127.1218, menu:"두툼오겹살, 목살, 볶음밥" },
-      { id:'SNM5', name:"판교 현대백화점 이탈리(Eataly)", macro:"gyeonggi_incheon", micro:"seongnam", category:"양식", ratingNaver:4.5, ratingKakao:4.1, address:"경기 성남시 분당구 판교역로146번길 20", lat:37.3927, lng:127.1119, menu:"트러플 파스타, 화덕 피자" },
-      { id:'SNM6', name:"장수본가소곱창 모란본점", macro:"gyeonggi_incheon", micro:"seongnam", category:"고기/구이", ratingNaver:4.7, ratingKakao:4.5, address:"경기 성남시 중원구 광명로 16", lat:37.4319, lng:127.1285, menu:"한우 곱창구이, 모듬구이, 날치알볶음밥" },
-      { id:'SNM7', name:"깜보 모란점", macro:"gyeonggi_incheon", micro:"seongnam", category:"고기/구이", ratingNaver:4.8, ratingKakao:4.6, address:"경기 성남시 중원구 광명로32번길 8", lat:37.4324, lng:127.1301, menu:"급랭 냉동삼겹살, 청국장, 볶음밥" },
-      { id:'SNM8', name:"정자초밥 본점", macro:"gyeonggi_incheon", micro:"seongnam", category:"일식/초밥", ratingNaver:4.6, ratingKakao:4.3, address:"경기 성남시 분당구 정자일로 197", lat:37.3682, lng:127.1089, menu:"특선 모듬초밥, 도로스시, 우동" },
-      { id:'SNM9', name:"락앤웍 판교점", macro:"gyeonggi_incheon", micro:"seongnam", category:"중식", ratingNaver:4.5, ratingKakao:4.2, address:"경기 성남시 분당구 삼평동 678", lat:37.4018, lng:127.1121, menu:"해물누룽지탕, 탕수육, 마파두부" },
-      { id:'SNM10', name:"짱구네 뻘낙지 분당점", macro:"gyeonggi_incheon", micro:"seongnam", category:"한식", ratingNaver:4.6, ratingKakao:4.3, address:"경기 성남시 분당구 수내동 20-5", lat:37.3779, lng:127.1158, menu:"빨간거(산낙지전골), 하얀거(연포탕)" },
-      { id:'SNM11', name:"강릉초당짬뽕순두부 야탑점", macro:"gyeonggi_incheon", micro:"seongnam", category:"한식", ratingNaver:4.6, ratingKakao:4.3, address:"경기 성남시 분당구 야탑로105번길 9", lat:37.4124, lng:127.1298, menu:"얼큰 짬뽕순두부, 초당모두부" },
-      { id:'SNM12', name:"코코이찌방야 서현역점", macro:"gyeonggi_incheon", micro:"seongnam", category:"일식/초밥", ratingNaver:4.5, ratingKakao:4.1, address:"경기 성남시 분당구 황새울로360번길 21", lat:37.3842, lng:127.1231, menu:"로스카츠 카레, 치킨가라아게 카레" },
-
-      // ==========================================
-      // 9. 경기: 인천(부평/구월/송도/신포) (12개)
-      // ==========================================
-      { id:'IC1', name:"부암갈비", macro:"gyeonggi_incheon", micro:"incheon", category:"고기/구이", ratingNaver:4.6, ratingKakao:4.3, address:"인천 남동구 용천로 149", lat:37.4568, lng:126.7119, menu:"돼지 생갈비, 젓갈볶음밥, 계란크러스트" },
-      { id:'IC2', name:"청실홍실 신포본점", macro:"gyeonggi_incheon", micro:"incheon", category:"분식", ratingNaver:4.6, ratingKakao:4.3, address:"인천 미추홀구 석정로 300", lat:37.4647, lng:126.6669, menu:"판모밀, 통만두" },
-      { id:'IC3', name:"신포순대 본점", macro:"gyeonggi_incheon", micro:"incheon", category:"한식", ratingNaver:4.5, ratingKakao:4.2, address:"인천 중구 제물량로166번길 33", lat:37.4712, lng:126.6264, menu:"찹쌀순대, 순대국밥" },
-      { id:'IC4', name:"신복관 송도본점", macro:"gyeonggi_incheon", micro:"incheon", category:"한식", ratingNaver:4.6, ratingKakao:4.2, address:"인천 연수구 인천타워대로132번길 9", lat:37.3892, lng:126.6458, menu:"우쭈세트, 치즈볶음밥" },
-      { id:'IC5', name:"신포닭강정 본점", macro:"gyeonggi_incheon", micro:"incheon", category:"치킨", ratingNaver:4.5, ratingKakao:4.1, address:"인천 중구 우현로49번길 3", lat:37.4716, lng:126.6269, menu:"원조 닭강정 보통맛/매운맛" },
-      { id:'IC6', name:"연경 차이나타운본점", macro:"gyeonggi_incheon", micro:"incheon", category:"중식", ratingNaver:4.6, ratingKakao:4.2, address:"인천 중구 차이나타운로 41", lat:37.4752, lng:126.6189, menu:"원조 하얀짜장, 멘보샤, 찹쌀탕수육" },
-      { id:'IC7', name:"공화춘 본점", macro:"gyeonggi_incheon", micro:"incheon", category:"중식", ratingNaver:4.5, ratingKakao:4.0, address:"인천 중구 차이나타운로 43", lat:37.4756, lng:126.6192, menu:"공화춘 옛날짜장, 삼선짬뽕" },
-      { id:'IC8', name:"화포식당 구월로데오점", macro:"gyeonggi_incheon", micro:"incheon", category:"고기/구이", ratingNaver:4.7, ratingKakao:4.4, address:"인천 남동구 인하로507번길 23", lat:37.4449, lng:126.7028, menu:"숙성 통삼겹살, 해물된장술밥" },
-      { id:'IC9', name:"고모네뽈찜 부평본점", macro:"gyeonggi_incheon", micro:"incheon", category:"한식", ratingNaver:4.6, ratingKakao:4.3, address:"인천 부평구 부평문화로 71", lat:37.4921, lng:126.7235, menu:"대구뽈찜, 아구찜, 날치알볶음밥" },
-      { id:'IC10', name:"풀사이드228 송도점", macro:"gyeonggi_incheon", micro:"incheon", category:"양식", ratingNaver:4.6, ratingKakao:4.2, address:"인천 연수구 해돋이로 157", lat:37.3978, lng:126.6531, menu:"수제 화덕피자, 스테이크 플래터" },
-      { id:'IC11', name:"대박버섯소불고기 주안점", macro:"gyeonggi_incheon", micro:"incheon", category:"한식", ratingNaver:4.6, ratingKakao:4.3, address:"인천 미추홀구 주안로 116", lat:37.4651, lng:126.6812, menu:"산더미 버섯불고기전골, 솥밥" },
-      { id:'IC12', name:"송도 쉐라톤 피스트뷔페", macro:"gyeonggi_incheon", micro:"incheon", category:"양식", ratingNaver:4.7, ratingKakao:4.4, address:"인천 연수구 컨벤시아대로 153", lat:37.3895, lng:126.6475, menu:"호텔 디너 뷔페, 양갈비구이" },
-
-      // ==========================================
-      // 10. 경기: 부천/시흥(배곧/정왕) (12개)
-      // ==========================================
-      { id:'BC1', name:"조박사냉면", macro:"gyeonggi_incheon", micro:"bucheon", category:"한식", ratingNaver:4.5, ratingKakao:4.1, address:"경기 부천시 심곡로 45", lat:37.4842, lng:126.7824, menu:"함흥비빔냉면, 수육" },
-      { id:'BC2', name:"투파인드피터 배곧점", macro:"gyeonggi_incheon", micro:"bucheon", category:"양식", ratingNaver:4.8, ratingKakao:4.6, address:"경기 시흥시 서울대학로278번길 19-14", lat:37.3751, lng:126.7320, menu:"스파이시 크랩 파스타, 수비드 목살" },
-      { id:'BC3', name:"짱이네 매콤돈가스냉면", macro:"gyeonggi_incheon", micro:"bucheon", category:"분식", ratingNaver:4.6, ratingKakao:4.3, address:"경기 부천시 신흥로 201", lat:37.5028, lng:126.7758, menu:"매콤돈가스, 물냉면(돈냉면)" },
-      { id:'BC4', name:"본가만두전골전문점 시흥점", macro:"gyeonggi_incheon", micro:"bucheon", category:"한식", ratingNaver:4.7, ratingKakao:4.4, address:"경기 시흥시 동서로811번길 33", lat:37.4012, lng:126.8315, menu:"얼큰 만두전골, 백탕 만두전골" },
-      { id:'BC5', name:"팽오리농장 본점", macro:"gyeonggi_incheon", micro:"bucheon", category:"한식", ratingNaver:4.6, ratingKakao:4.3, address:"경기 부천시 대장로118번길 7", lat:37.5451, lng:126.7892, menu:"뼈없는 오리도리탕, 볶음밥" },
-      { id:'BC6', name:"삼도갈비 부천상동점", macro:"gyeonggi_incheon", micro:"bucheon", category:"고기/구이", ratingNaver:4.6, ratingKakao:4.3, address:"경기 부천시 송내대로42번길 67", lat:37.4912, lng:126.7531, menu:"수요미식회 수제 돼지갈비, 평양냉면" },
-      { id:'BC7', name:"잇츠(EAT'S) 부천중동점", macro:"gyeonggi_incheon", micro:"bucheon", category:"양식", ratingNaver:4.6, ratingKakao:4.2, address:"경기 부천시 길주로 219", lat:37.5041, lng:126.7645, menu:"부채살 비프스테이크, 게살크림파스타" },
-      { id:'BC8', name:"조개포차 배곧직영점", macro:"gyeonggi_incheon", micro:"bucheon", category:"회/해산물", ratingNaver:4.8, ratingKakao:4.5, address:"경기 시흥시 서울대학로278번길 25-8", lat:37.3739, lng:126.7335, menu:"3단 가리비구이 무한리필, 해물라면" },
-      { id:'BC9', name:"정통집 배곧점", macro:"gyeonggi_incheon", micro:"bucheon", category:"한식", ratingNaver:4.7, ratingKakao:4.4, address:"경기 시흥시 서울대학로264번길 35", lat:37.3712, lng:126.7358, menu:"돼지김치구이, 특미볶음밥" },
-      { id:'BC10', name:"동화속마을 화덕구이 정왕점", macro:"gyeonggi_incheon", micro:"bucheon", category:"고기/구이", ratingNaver:4.6, ratingKakao:4.3, address:"경기 시흥시 옥구천동로 72", lat:37.3512, lng:126.7289, menu:"참나무 화덕 삼겹살, 오리훈제구이" },
-      { id:'BC11', name:"물왕저수지 예원한정식", macro:"gyeonggi_incheon", micro:"bucheon", category:"한식", ratingNaver:4.5, ratingKakao:4.1, address:"경기 시흥시 동서로857번길 28-24", lat:37.4042, lng:126.8341, menu:"남도 떡갈비 정식, 보리굴비 코스" },
-      { id:'BC12', name:"기라쿠 라멘 부천역점", macro:"gyeonggi_incheon", micro:"bucheon", category:"일식/초밥", ratingNaver:4.6, ratingKakao:4.3, address:"경기 부천시 부천로29번길 7", lat:37.4878, lng:126.7845, menu:"진한 돈코츠라멘, 매운 카라미소라멘" },
-
-      // ==========================================
-      // 11. 경기: 일산/파주 (12개)
-      // ==========================================
-      { id:'IS1', name:"일산칼국수 본점", macro:"gyeonggi_incheon", micro:"ilsan", category:"한식", ratingNaver:4.6, ratingKakao:4.3, address:"경기 고양시 일산동구 경의로 467", lat:37.6698, lng:126.7892, menu:"닭칼국수, 바지락칼국수" },
-      { id:'IS2', name:"만돈", macro:"gyeonggi_incheon", micro:"ilsan", category:"일식/초밥", ratingNaver:4.8, ratingKakao:4.5, address:"경기 고양시 일산동구 정발산로 24", lat:37.6582, lng:126.7725, menu:"특로스카츠, 히레카츠" },
-      { id:'IS3', name:"파주 뼈칼국수 교하제면소", macro:"gyeonggi_incheon", micro:"ilsan", category:"한식", ratingNaver:4.7, ratingKakao:4.4, address:"경기 파주시 탄현면 평화로 885-18", lat:37.7854, lng:126.6912, menu:"뼈칼국수, 비빔칼국수, 고기만두" },
-      { id:'IS4', name:"통일동산 두부마을", macro:"gyeonggi_incheon", micro:"ilsan", category:"한식", ratingNaver:4.5, ratingKakao:4.1, address:"경기 파주시 탄현면 필승로 480", lat:37.7812, lng:126.6958, menu:"장단콩 청국장정식, 두부보쌈" },
-      { id:'IS5', name:"밤가시버거", macro:"gyeonggi_incheon", micro:"ilsan", category:"양식", ratingNaver:4.7, ratingKakao:4.5, address:"경기 고양시 일산동구 일산로380번길 41", lat:37.6742, lng:126.7865, menu:"밤가시 오리지널 버거, 쉬림프 버거" },
-      { id:'IS6', name:"가나안덕 일산본점", macro:"gyeonggi_incheon", micro:"ilsan", category:"고기/구이", ratingNaver:4.6, ratingKakao:4.3, address:"경기 고양시 일산동구 애니골길 52", lat:37.6712, lng:126.7958, menu:"참숯 오리숯불구이, 녹두죽" },
-      { id:'IS7', name:"청목 일산점", macro:"gyeonggi_incheon", micro:"ilsan", category:"한식", ratingNaver:4.5, ratingKakao:4.1, address:"경기 고양시 일산동구 중앙로 1200", lat:37.6558, lng:126.7765, menu:"이천 쌀밥 한정식, 보쌈 정식" },
-      { id:'IS8', name:"아다마스253 헤이리점", macro:"gyeonggi_incheon", micro:"ilsan", category:"양식", ratingNaver:4.6, ratingKakao:4.2, address:"경기 파주시 탄현면 헤이리마을길 47", lat:37.7901, lng:126.7012, menu:"수제 고르곤졸라 피자, 안심스테이크" },
-      { id:'IS9', name:"양지말화로구이 파주점", macro:"gyeonggi_incheon", micro:"ilsan", category:"고기/구이", ratingNaver:4.6, ratingKakao:4.3, address:"경기 파주시 미래로 375", lat:37.7214, lng:126.7412, menu:"고추장 삼겹살 화로구이, 더덕구이" },
-      { id:'IS10', name:"소복소복 일산백석점", macro:"gyeonggi_incheon", micro:"ilsan", category:"일식/초밥", ratingNaver:4.7, ratingKakao:4.4, address:"경기 고양시 일산동구 강송로73번길 53-12", lat:37.6438, lng:126.7915, menu:"새우튀김 냉소바, 장어소바" },
-      { id:'IS11', name:"마장호수 출렁다리 매운탕", macro:"gyeonggi_incheon", micro:"ilsan", category:"한식", ratingNaver:4.5, ratingKakao:4.1, address:"경기 파주시 광탄면 기산로 365", lat:37.8189, lng:126.9245, menu:"빠가사리 참게 매운탕, 손수제비" },
-      { id:'IS12', name:"롤링파스타 일산웨돔점", macro:"gyeonggi_incheon", micro:"ilsan", category:"양식", ratingNaver:4.6, ratingKakao:4.2, address:"경기 고양시 일산동구 정발산로 24 웨스턴돔", lat:37.6575, lng:126.7729, menu:"매운 크림 파스타, 고르곤졸라 피자" },
-
-      // ==========================================
-      // 12. 강원: 속초/강릉/양양/춘천 (12개)
-      // ==========================================
-      { id:'GW1', name:"만석닭강정 본점", macro:"gangwon", micro:"sokcho", category:"치킨", ratingNaver:4.5, ratingKakao:4.1, address:"강원 속초시 청초호반로 72", lat:38.1921, lng:128.5839, menu:"닭강정 보통맛/화끈한맛" },
-      { id:'GW2', name:"동화가든 본점", macro:"gangwon", micro:"sokcho", category:"한식", ratingNaver:4.6, ratingKakao:4.3, address:"강원 강릉시 초당순두부길77번길 15", lat:37.7915, lng:128.9152, menu:"원조 짬순(짬뽕순두부), 초두부" },
-      { id:'GW3', name:"엄지네포장마차 본점", macro:"gangwon", micro:"sokcho", category:"회/해산물", ratingNaver:4.6, ratingKakao:4.2, address:"강원 강릉시 경강로2255번길 21", lat:37.7702, lng:128.9084, menu:"꼬막무침비빔밥, 육사시미" },
-      { id:'GW4', name:"통나무집닭갈비", macro:"gangwon", micro:"sokcho", category:"고기/구이", ratingNaver:4.6, ratingKakao:4.3, address:"강원 춘천시 신북읍 신샘밭로 763", lat:37.9284, lng:127.7845, menu:"철판닭갈비, 쟁반막국수" },
-      { id:'GW5', name:"영광정메밀국수", macro:"gangwon", micro:"sokcho", category:"한식", ratingNaver:4.6, ratingKakao:4.3, address:"강원 양양군 강현면 진미로 446", lat:38.1685, lng:128.5621, menu:"메밀국수, 수육, 감자전" },
-      { id:'GW6', name:"봉포머구리집", macro:"gangwon", micro:"sokcho", category:"회/해산물", ratingNaver:4.6, ratingKakao:4.2, address:"강원 속초시 영랑해안길 223", lat:38.2212, lng:128.5912, menu:"모듬물회, 전복물회, 섭국" },
-      { id:'GW7', name:"청초수물회 속초본점", macro:"gangwon", micro:"sokcho", category:"회/해산물", ratingNaver:4.6, ratingKakao:4.2, address:"강원 속초시 엑스포로 12-36", lat:38.1915, lng:128.5824, menu:"해전물회, 오징어순대, 보양전복죽" },
-      { id:'GW8', name:"춘천 원조숯불닭갈비", macro:"gangwon", micro:"sokcho", category:"고기/구이", ratingNaver:4.6, ratingKakao:4.3, address:"강원 춘천시 낙원길 28-4", lat:37.8812, lng:127.7289, menu:"수요미식회 뼈없는 숯불닭갈비" },
-      { id:'GW9', name:"테라로사 커피공장 강릉본점", macro:"gangwon", micro:"sokcho", category:"카페", ratingNaver:4.8, ratingKakao:4.6, address:"강원 강릉시 구정면 현천길 7", lat:37.6958, lng:128.9124, menu:"핸드드립 스페셜티, 까눌레, 레몬치즈케이크" },
-      { id:'GW10', name:"양양 범바우막국수", macro:"gangwon", micro:"sokcho", category:"한식", ratingNaver:4.6, ratingKakao:4.3, address:"강원 양양군 강현면 동해대로 3277-22", lat:38.1489, lng:128.6125, menu:"꾸지뽕 비빔막국수, 메밀전병, 수육" },
-      { id:'GW11', name:"홍천 양지말화로구이 본점", macro:"gangwon", micro:"sokcho", category:"고기/구이", ratingNaver:4.6, ratingKakao:4.4, address:"강원 홍천군 홍천읍 양지말길 17-4", lat:37.6789, lng:127.8654, menu:"고추장 삼겹살 화로구이, 양송이구이" },
-      { id:'GW12', name:"원주 진미통닭", macro:"gangwon", micro:"sokcho", category:"치킨", ratingNaver:4.6, ratingKakao:4.3, address:"강원 원주시 우산로 64", lat:37.3685, lng:127.9341, menu:"백종원 3대천왕 원조 양념통닭, 후라이드" },
-
-      // ==========================================
-      // 13. 대전/충청: 대전/세종/천안/청주 (12개)
-      // ==========================================
-      { id:'DJ1', name:"성심당 본점", macro:"daejeon_chungcheong", micro:"daejeon", category:"카페", ratingNaver:4.9, ratingKakao:4.8, address:"대전 중구 대종로480번길 15", lat:36.3277, lng:127.4273, menu:"튀김소보로, 명란바게트, 딸기시루" },
-      { id:'DJ2', name:"오씨칼국수 본점", macro:"daejeon_chungcheong", micro:"daejeon", category:"한식", ratingNaver:4.6, ratingKakao:4.4, address:"대전 동구 옛신탄진로 13", lat:36.3401, lng:127.4328, menu:"손칼국수, 물총조개탕, 해물파전" },
-      { id:'DJ3', name:"태평소국밥 본점", macro:"daejeon_chungcheong", micro:"daejeon", category:"한식", ratingNaver:4.7, ratingKakao:4.5, address:"대전 중구 태평로 116", lat:36.3212, lng:127.3995, menu:"소국밥, 소갈비찜, 육사시미" },
-      { id:'DJ4', name:"병천 충남집순대", macro:"daejeon_chungcheong", micro:"daejeon", category:"한식", ratingNaver:4.6, ratingKakao:4.3, address:"충남 천안시 동남구 병천면 충절로 1748", lat:36.7645, lng:127.2991, menu:"순대국밥, 순대접시" },
-      { id:'DJ5', name:"청주 쫄쫄호떡", macro:"daejeon_chungcheong", micro:"daejeon", category:"분식", ratingNaver:4.6, ratingKakao:4.3, address:"충북 청주시 상당구 상당로55번길 40-1", lat:36.6341, lng:127.4912, menu:"원조 쫄쫄호떡, 즉석떡볶이" },
-      { id:'DJ6', name:"광천식당 대전선화본점", macro:"daejeon_chungcheong", micro:"daejeon", category:"한식", ratingNaver:4.6, ratingKakao:4.3, address:"대전 중구 대종로505번길 29", lat:36.3298, lng:127.4245, menu:"매운 오징어두루치기, 수육, 면사리" },
-      { id:'DJ7', name:"진로집", macro:"daejeon_chungcheong", micro:"daejeon", category:"한식", ratingNaver:4.5, ratingKakao:4.2, address:"대전 중구 중교로 45-5", lat:36.3265, lng:127.4262, menu:"50년 전통 두부두루치기, 두부김치전" },
-      { id:'DJ8', name:"한영식당", macro:"daejeon_chungcheong", micro:"daejeon", category:"한식", ratingNaver:4.6, ratingKakao:4.3, address:"대전 중구 계룡로874번길 19", lat:36.3225, lng:127.4112, menu:"백종원 3대천왕 파듬뿍 닭볶음탕" },
-      { id:'DJ9', name:"세종 산장가든", macro:"daejeon_chungcheong", micro:"daejeon", category:"고기/구이", ratingNaver:4.7, ratingKakao:4.4, address:"세종 연서면 도신고복로 1131-7", lat:36.5892, lng:127.2514, menu:"담양식 원조 숯불갈비, 매운갈비, 수제비" },
-      { id:'DJ10', name:"이봉원의봉짬뽕 천안두정본점", macro:"daejeon_chungcheong", micro:"daejeon", category:"중식", ratingNaver:4.6, ratingKakao:4.3, address:"충남 천안시 서북구 두정동 1478", lat:36.8312, lng:127.1425, menu:"프리미엄 짬뽕, 벚꽃탕수육, 볶음밥" },
-      { id:'DJ11', name:"서문우동 청주본점", macro:"daejeon_chungcheong", micro:"daejeon", category:"분식", ratingNaver:4.6, ratingKakao:4.3, address:"충북 청주시 상당구 무심동로392번길 6", lat:36.6358, lng:127.4854, menu:"서문시장 50년 옛날식 냄비우동, 야채고로케" },
-      { id:'DJ12', name:"공주 명성묵집", macro:"daejeon_chungcheong", micro:"daejeon", category:"한식", ratingNaver:4.6, ratingKakao:4.3, address:"충남 공주시 백미고을길 14", lat:36.4589, lng:127.1215, menu:"묵밥, 메밀묵전, 도토리묵무침" },
-
-      // ==========================================
-      // 14. 대구/경북: 대구/경주/포항 (12개)
-      // ==========================================
-      { id:'DG1', name:"왕거미식당", macro:"daegu_gyeongbuk", micro:"daegu", category:"고기/구이", ratingNaver:4.6, ratingKakao:4.4, address:"대구 중구 국채보상로 696-8", lat:35.8679, lng:128.6083, menu:"뭉티기(생고기), 오드레기구이" },
-      { id:'DG2', name:"걸리버막창 본점", macro:"daegu_gyeongbuk", micro:"daegu", category:"고기/구이", ratingNaver:4.7, ratingKakao:4.5, address:"대구 북구 옥산로 53", lat:35.8854, lng:128.5881, menu:"초벌막창, 삼겹살, 버섯된장찌개" },
-      { id:'DG3', name:"중앙떡볶이", macro:"daegu_gyeongbuk", micro:"daegu", category:"분식", ratingNaver:4.5, ratingKakao:4.1, address:"대구 중구 동성로2길 81", lat:35.8711, lng:128.5962, menu:"쌀떡볶이, 납작만두" },
-      { id:'DG4', name:"함양집 보문점", macro:"daegu_gyeongbuk", micro:"daegu", category:"한식", ratingNaver:4.6, ratingKakao:4.3, address:"경북 경주시 보불로 287", lat:35.8341, lng:129.2789, menu:"한우물회, 전통비빔밥, 치즈불고기" },
-      { id:'DG5', name:"환여횟집 본점", macro:"daegu_gyeongbuk", micro:"daegu", category:"회/해산물", ratingNaver:4.6, ratingKakao:4.2, address:"경북 포항시 북구 해안로 189-1", lat:36.0562, lng:129.3804, menu:"물회, 물회국수, 매운탕" },
-      { id:'DG6', name:"안지랑 안지곱창막창", macro:"daegu_gyeongbuk", micro:"daegu", category:"고기/구이", ratingNaver:4.6, ratingKakao:4.3, address:"대구 남구 대명로36길 63", lat:35.8362, lng:128.5789, menu:"안지랑 연탄 곱창한바가지, 치즈막창" },
-      { id:'DG7', name:"미진분식 동성로본점", macro:"daegu_gyeongbuk", micro:"daegu", category:"분식", ratingNaver:4.6, ratingKakao:4.2, address:"대구 중구 동성로 6-1", lat:35.8682, lng:128.5942, menu:"매콤 쫄면, 꼬마김밥, 우동" },
-      { id:'DG8', name:"벙글벙글찜갈비 본점", macro:"daegu_gyeongbuk", micro:"daegu", category:"고기/구이", ratingNaver:4.5, ratingKakao:4.1, address:"대구 중구 동덕로36길 9-12", lat:35.8712, lng:128.6042, menu:"동인동 매운 소갈비찜, 볶음밥" },
-      { id:'DG9', name:"교리김밥 본점", macro:"daegu_gyeongbuk", micro:"daegu", category:"분식", ratingNaver:4.5, ratingKakao:4.0, address:"경북 경주시 탑리3길 2", lat:35.8289, lng:129.2158, menu:"계란지단폭탄 교리김밥, 잔치국수" },
-      { id:'DG10', name:"원조 황남빵 본점", macro:"daegu_gyeongbuk", micro:"daegu", category:"카페", ratingNaver:4.8, ratingKakao:4.6, address:"경북 경주시 태종로 783", lat:35.8398, lng:129.2112, menu:"경주 전통 수제 황남빵, 팥앙금떡" },
-      { id:'DG11', name:"마라도회식당 포항본점", macro:"daegu_gyeongbuk", micro:"daegu", category:"회/해산물", ratingNaver:4.7, ratingKakao:4.4, address:"경북 포항시 북구 해안로 217-1", lat:36.0592, lng:129.3812, menu:"생활의달인 최강달인 물회, 회덮밥" },
-      { id:'DG12', name:"원조안동찜닭 구시장본점", macro:"daegu_gyeongbuk", micro:"daegu", category:"한식", ratingNaver:4.6, ratingKakao:4.3, address:"경북 안동시 번영길 47 안동구시장", lat:36.5645, lng:128.7301, menu:"안동 구시장 원조 안동찜닭, 볶음밥" },
-
-      // ==========================================
-      // 15. 부산/경남: 부산/기장/창원 (12개)
-      // ==========================================
-      { id:'BS1', name:"해운대암소갈비집", macro:"busan_gyeongnam", micro:"busan", category:"고기/구이", ratingNaver:4.5, ratingKakao:4.1, address:"부산 해운대구 중동2로10번길 32-10", lat:35.1631, lng:129.1666, menu:"생갈비, 양념갈비, 감자사리" },
-      { id:'BS2', name:"이재모피자 본점", macro:"busan_gyeongnam", micro:"busan", category:"양식", ratingNaver:4.8, ratingKakao:4.7, address:"부산 중구 광복중앙로 31", lat:35.1017, lng:129.0298, menu:"이재모 크러스트 피자, 오븐스파게티" },
-      { id:'BS3', name:"쌍둥이돼지국밥 본점", macro:"busan_gyeongnam", micro:"busan", category:"한식", ratingNaver:4.5, ratingKakao:4.0, address:"부산 남구 유엔평화로 35-1", lat:35.1328, lng:129.0945, menu:"수육백반, 돼지국밥" },
-      { id:'BS4', name:"칠암사계", macro:"busan_gyeongnam", micro:"busan", category:"카페", ratingNaver:4.7, ratingKakao:4.5, address:"부산 기장군 일광읍 칠암1길 7-10", lat:35.3021, lng:129.2612, menu:"소금빵, 칠암아나고 빵, 시그니처 커피" },
-      { id:'BS5', name:"밀레니엄회센타 민락점", macro:"busan_gyeongnam", micro:"busan", category:"회/해산물", ratingNaver:4.6, ratingKakao:4.3, address:"부산 수영구 민락수변로 103", lat:35.1558, lng:129.1274, menu:"광안리 모듬활어회, 매운탕" },
-      { id:'BS6', name:"수변최고돼지국밥 민락본점", macro:"busan_gyeongnam", micro:"busan", category:"한식", ratingNaver:4.8, ratingKakao:4.6, address:"부산 수영구 광안해변로370번길 9-32", lat:35.1542, lng:129.1265, menu:"항정국밥, 고기국밥, 순대고기수육" },
-      { id:'BS7', name:"백화양곱창 자갈치본점", macro:"busan_gyeongnam", micro:"busan", category:"고기/구이", ratingNaver:4.7, ratingKakao:4.4, address:"부산 중구 자갈치로23번길 6", lat:35.0978, lng:129.0278, menu:"연탄불 양곱창소금구이, 양념양곱창" },
-      { id:'BS8', name:"초량불백 초량본점", macro:"busan_gyeongnam", micro:"busan", category:"한식", ratingNaver:4.6, ratingKakao:4.2, address:"부산 동구 초량로 36", lat:35.1189, lng:129.0378, menu:"원조 매콤 돼지불백정식, 된장찌개" },
-      { id:'BS9', name:"연화리 해녀촌 포차", macro:"busan_gyeongnam", micro:"busan", category:"회/해산물", ratingNaver:4.7, ratingKakao:4.5, address:"부산 기장군 기장읍 연화1길 184", lat:35.2289, lng:129.2278, menu:"해녀 해물모듬한상, 가마솥 전복죽" },
-      { id:'BS10', name:"해운대 기와집대구탕", macro:"busan_gyeongnam", micro:"busan", category:"한식", ratingNaver:4.6, ratingKakao:4.2, address:"부산 해운대구 달맞이길104번길 46", lat:35.1612, lng:129.1789, menu:"달맞이고개 원조 시원한 대구탕" },
-      { id:'BS11', name:"오동동진짜초가집 마산본점", macro:"busan_gyeongnam", micro:"busan", category:"한식", ratingNaver:4.5, ratingKakao:4.1, address:"경남 창원시 마산합포구 오동동길 102", lat:35.2078, lng:128.5812, menu:"수요미식회 원조 건아구찜, 아구수육" },
-      { id:'BS12', name:"뚱보할매김밥집 통영본점", macro:"busan_gyeongnam", micro:"busan", category:"분식", ratingNaver:4.5, ratingKakao:4.0, address:"경남 통영시 통영해안로 325", lat:34.8432, lng:128.4235, menu:"원조 통영 충무김밥, 꼴뚜기어묵무침" },
-
-      // ==========================================
-      // 16. 광주/전라: 광주/전주/여수/군산 (12개)
-      // ==========================================
-      { id:'GJ1', name:"송정떡갈비 1호점", macro:"gwangju_jeonla", micro:"gwangju", category:"고기/구이", ratingNaver:4.5, ratingKakao:4.1, address:"광주 광산구 광산로29번길 1", lat:35.1378, lng:126.7915, menu:"원조 떡갈비, 갈비뼈국 서비스" },
-      { id:'GJ2', name:"영미오리탕 본점", macro:"gwangju_jeonla", micro:"gwangju", category:"한식", ratingNaver:4.7, ratingKakao:4.5, address:"광주 북구 유동로 1", lat:35.1614, lng:126.9038, menu:"들깨오리탕, 신선미나리 추가" },
-      { id:'GJ3', name:"현대옥 전주본점", macro:"gwangju_jeonla", micro:"gwangju", category:"한식", ratingNaver:4.7, ratingKakao:4.4, address:"전북 전주시 완산구 화산천변2길 7", lat:35.8118, lng:127.1235, menu:"전주남부시장식 콩나물국밥, 오징어사리" },
-      { id:'GJ4', name:"꽃돌게장1번가", macro:"gwangju_jeonla", micro:"gwangju", category:"회/해산물", ratingNaver:4.8, ratingKakao:4.6, address:"전남 여수시 봉산2로 36", lat:34.7291, lng:127.7314, menu:"꽃게 간장게장 정식, 양념게장" },
-      { id:'GJ5', name:"복성루", macro:"gwangju_jeonla", micro:"gwangju", category:"중식", ratingNaver:4.5, ratingKakao:4.1, address:"전북 군산시 월명로 382", lat:35.9812, lng:126.7214, menu:"고기짬뽕, 물짜장, 볶음밥" },
-      { id:'GJ6', name:"명화식육식당 광주본점", macro:"gwangju_jeonla", micro:"gwangju", category:"한식", ratingNaver:4.7, ratingKakao:4.5, address:"광주 광산구 평동로 421", lat:35.1215, lng:126.7589, menu:"애호박시골국밥, 생고기" },
-      { id:'GJ7', name:"베테랑칼국수 전주한옥마을본점", macro:"gwangju_jeonla", micro:"gwangju", category:"분식", ratingNaver:4.6, ratingKakao:4.3, address:"전북 전주시 완산구 경기전길 135", lat:35.8142, lng:127.1512, menu:"들깨칼국수, 수제 쫄면, 고기만두" },
-      { id:'GJ8', name:"삼백집 전주본점", macro:"gwangju_jeonla", micro:"gwangju", category:"한식", ratingNaver:4.6, ratingKakao:4.2, address:"전북 전주시 완산구 전주객사2길 22", lat:35.8198, lng:127.1412, menu:"원조 삼백집 콩나물국밥, 고추만두" },
-      { id:'GJ9', name:"두꺼비게장 여수본점", macro:"gwangju_jeonla", micro:"gwangju", category:"회/해산물", ratingNaver:4.6, ratingKakao:4.3, address:"전남 여수시 봉산남3길 12", lat:34.7312, lng:127.7305, menu:"간장돌게장 백반, 양념게장, 갈치조림" },
-      { id:'GJ10', name:"삼학집 여수본점", macro:"gwangju_jeonla", micro:"gwangju", category:"회/해산물", ratingNaver:4.6, ratingKakao:4.3, address:"전남 여수시 이순신광장로 159", lat:34.7385, lng:127.7425, menu:"70년 전통 서대회무침, 갈치구이" },
-      { id:'GJ11', name:"지린성 군산본점", macro:"gwangju_jeonla", micro:"gwangju", category:"중식", ratingNaver:4.6, ratingKakao:4.2, address:"전북 군산시 미원로 87", lat:35.9785, lng:126.7189, menu:"매운 고추짜장, 고추짬뽕, 일반짜장" },
-      { id:'GJ12', name:"이성당 군산본점", macro:"gwangju_jeonla", micro:"gwangju", category:"카페", ratingNaver:4.8, ratingKakao:4.6, address:"전북 군산시 중앙로 177", lat:35.9862, lng:126.7115, menu:"대한민국 최고령 빵집 단팥빵, 야채빵" },
-
-      // ==========================================
-      // 17. 제주: 제주시/서귀포/애월 (12개)
-      // ==========================================
-      { id:'JJ1', name:"숙성도 노형본점", macro:"jeju", micro:"jeju", category:"고기/구이", ratingNaver:4.8, ratingKakao:4.5, address:"제주 제주시 원노형로 41", lat:33.4849, lng:126.4808, menu:"720 숙성 뼈등심, 960 숙성 뼈목살" },
-      { id:'JJ2', name:"우진해장국", macro:"jeju", micro:"jeju", category:"한식", ratingNaver:4.6, ratingKakao:4.2, address:"제주 제주시 서사로 11", lat:33.5113, lng:126.5201, menu:"고사리육개장, 몸국, 사골해장국" },
-      { id:'JJ3', name:"자매국수 본점", macro:"jeju", micro:"jeju", category:"한식", ratingNaver:4.5, ratingKakao:4.1, address:"제주 제주시 탑동로 11", lat:33.5168, lng:126.5273, menu:"고기국수, 비빔국수, 돔베고기" },
-      { id:'JJ4', name:"오는정김밥", macro:"jeju", micro:"jeju", category:"분식", ratingNaver:4.6, ratingKakao:4.3, address:"제주 서귀포시 동문동로 2", lat:33.2508, lng:126.5654, menu:"원조 오는정김밥, 떡볶이" },
-      { id:'JJ5', name:"춘심이네 본점", macro:"jeju", micro:"jeju", category:"회/해산물", ratingNaver:4.7, ratingKakao:4.4, address:"제주 서귀포시 안덕면 창천중앙로24번길 16", lat:33.2645, lng:126.3684, menu:"통갈치구이, 뼈없는 은갈치조림" },
-      { id:'JJ6', name:"늘봄흑돼지 본점", macro:"jeju", micro:"jeju", category:"고기/구이", ratingNaver:4.6, ratingKakao:4.2, address:"제주 제주시 한라대학로 12", lat:33.4795, lng:126.4762, menu:"제주 흑돼지 생구이, 흑돼지돌솥밥정식" },
-      { id:'JJ7', name:"은희네해장국 본점", macro:"jeju", micro:"jeju", category:"한식", ratingNaver:4.7, ratingKakao:4.5, address:"제주 제주시 고마로13길 8", lat:33.5082, lng:126.5445, menu:"소고기 선지해장국, 내장탕, 돔베고기" },
-      { id:'JJ8', name:"쌍둥이횟집 서귀포본점", macro:"jeju", micro:"jeju", category:"회/해산물", ratingNaver:4.6, ratingKakao:4.2, address:"제주 서귀포시 중정로62번길 14", lat:33.2489, lng:126.5645, menu:"스페셜 모듬활어회 코스, 전복버터구이" },
-      { id:'JJ9', name:"노라바 해물라면 애월점", macro:"jeju", micro:"jeju", category:"기타", ratingNaver:4.6, ratingKakao:4.3, address:"제주 제주시 애월읍 구엄길 100", lat:33.4812, lng:126.3654, menu:"통문어 해물라면, 옛날 도시락" },
-      { id:'JJ10', name:"칠돈가 중문점", macro:"jeju", micro:"jeju", category:"고기/구이", ratingNaver:4.7, ratingKakao:4.4, address:"제주 서귀포시 중문관광로 8", lat:33.2568, lng:126.4258, menu:"연탄불 흑돼지 근고기, 김치찌개" },
-      { id:'JJ11', name:"만선식당 모슬포본점", macro:"jeju", micro:"jeju", category:"회/해산물", ratingNaver:4.6, ratingKakao:4.3, address:"제주 서귀포시 대정읍 하모항구로 44", lat:33.2189, lng:126.2512, menu:"원조 고등어회, 산낙지, 고등어조림" },
-      { id:'JJ12', name:"명진전복", macro:"jeju", micro:"jeju", category:"회/해산물", ratingNaver:4.7, ratingKakao:4.4, address:"제주 제주시 구좌읍 해맞이해안로 1282", lat:33.5358, lng:126.8524, menu:"수요미식회 전복돌솥밥, 버터전복구이, 전복회" }
-    ];
-
-    let restaurants = [];
-    let currentCategory = '전체';
-    let currentRatingFilter = null;
-    let map = null;
-    let markerGroup = null;
-    let selectedRouletteWinner = null;
-
-    const categories = ['전체', '한식', '고기/구이', '일식/초밥', '회/해산물', '중식', '양식', '카페', '분식', '치킨', '기타'];
-
-    const categoryImages = {
-      '한식': 'https://images.unsplash.com/photo-1590301157890-4810ed352733?auto=format&fit=crop&w=600&q=80',
-      '고기/구이': 'https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=600&q=80',
-      '일식/초밥': 'https://images.unsplash.com/photo-1579871494447-9811cf80d66c?auto=format&fit=crop&w=600&q=80',
-      '회/해산물': 'https://images.unsplash.com/photo-1615141982883-c7ad0e69fd62?auto=format&fit=crop&w=600&q=80',
-      '중식': 'https://images.unsplash.com/photo-1563245372-f21724e3856d?auto=format&fit=crop&w=600&q=80',
-      '양식': 'https://images.unsplash.com/photo-1551183053-bf91a1d81141?auto=format&fit=crop&w=600&q=80',
-      '카페': 'https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?auto=format&fit=crop&w=600&q=80',
-      '분식': 'https://images.unsplash.com/photo-1569718212165-3a8278d5f624?auto=format&fit=crop&w=600&q=80',
-      '치킨': 'https://images.unsplash.com/photo-1626082927389-6cd097cdc6ec?auto=format&fit=crop&w=600&q=80',
-      '기타': 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=600&q=80'
+    const defaultRegionCoords = {
+      gangnam: [37.5013, 127.0396],
+      songpa: [37.5103, 127.1098],
+      hongdae: [37.5563, 126.9234],
+      seongsu: [37.5445, 127.0560],
+      jongro: [37.5701, 126.9850],
+      suwon: [37.2638, 127.0286],
+      gwanggyo: [37.2880, 127.0520],
+      seongnam: [37.4328, 127.1294],
+      incheon: [37.4568, 126.7050],
+      bucheon: [37.4950, 126.7650],
+      ilsan: [37.6650, 126.7750],
+      sokcho: [38.1921, 128.5839],
+      daejeon: [36.3401, 127.4200],
+      daegu: [35.8711, 128.5962],
+      busan: [35.1631, 129.1666],
+      gwangju: [35.1595, 126.8526],
+      jeju: [33.4996, 126.5312]
     };
 
     function getRestaurantImage(r) {
@@ -686,8 +705,7 @@
     function initializeApp() {
       const storedVersion = safeGetStorage('tastemap_version');
       const storedData = safeGetStorage('tastemap_data');
-      
-      // Force refresh on DB_VERSION bump to ensure all 200+ verified restaurants are loaded
+
       if (storedVersion !== DB_VERSION || !storedData) {
         restaurants = [...seedData];
         saveData();
@@ -697,19 +715,19 @@
           restaurants = JSON.parse(storedData);
           const existingSeedIds = new Set(restaurants.map(r => r.id));
           const newSeedItems = seedData.filter(r => !existingSeedIds.has(r.id));
-          if(newSeedItems.length > 0) {
+          if (newSeedItems.length > 0) {
             restaurants = [...restaurants, ...newSeedItems];
             saveData();
           }
-        } catch(e) {
+        } catch (e) {
           restaurants = [...seedData];
           saveData();
         }
       }
-      
+
       initCategories();
       initMap();
-      
+
       setTimeout(() => {
         onMacroRegionChange();
       }, 150);
@@ -727,7 +745,7 @@
       const macroVal = document.getElementById('regionMacroSelect').value;
       const microSelect = document.getElementById('regionMicroSelect');
       microSelect.innerHTML = '';
-      
+
       if (macroVal === 'all') {
         microSelect.innerHTML = '<option value="all">세부 권역 전체</option>';
         microSelect.disabled = true;
@@ -768,7 +786,7 @@
     function applyFilters() {
       const macro = document.getElementById('regionMacroSelect').value;
       const micro = document.getElementById('regionMicroSelect').value;
-      
+
       let filtered = restaurants;
       if (macro !== 'all') {
         filtered = filtered.filter(r => r.macro === macro);
@@ -786,12 +804,12 @@
 
     function renderList(list) {
       const listCountEl = document.getElementById('listCount');
-      if(listCountEl) listCountEl.textContent = list.length;
-      
+      if (listCountEl) listCountEl.textContent = list.length;
+
       const container = document.getElementById('restaurantList');
-      if(!container) return;
+      if (!container) return;
       container.innerHTML = '';
-      
+
       if (list.length === 0) {
         container.innerHTML = `
           <div class="h-full flex flex-col items-center justify-center text-slate-400 p-8 text-center mt-10">
@@ -804,10 +822,10 @@
         `;
         return;
       }
-      
+
       list.forEach(r => {
         const foodImgUrl = getRestaurantImage(r);
-        
+
         const card = document.createElement('div');
         card.className = "bg-white p-3 sm:p-4 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition cursor-pointer flex gap-3 sm:gap-4 items-center";
         card.onclick = () => openDetail(r);
@@ -842,20 +860,18 @@
       }
 
       if (map) {
-        try { map.remove(); } catch(e) {}
+        try { map.remove(); } catch (e) {}
         map = null;
       }
-      
+
       try {
         map = L.map('map', { 
           zoomControl: false,
           tap: false
         }).setView([36.5, 127.8], 7);
-        
+
         L.control.zoom({ position: 'bottomright' }).addTo(map);
-        
-        // Google Maps Official Korean Layer: 100% full Korean labels (hl=ko, gl=KR)
-        // 대한민국 전역의 지하철역, 출구, 동/읍/면, 도로명이 완벽한 한국어로 표시됩니다.
+
         L.tileLayer('https://mt{s}.google.com/vt/lyrs=m&hl=ko&gl=KR&x={x}&y={y}&z={z}', {
           attribution: '&copy; Google Maps',
           subdomains: '0123',
@@ -876,12 +892,12 @@
       if (!map || !markerGroup) return;
       markerGroup.clearLayers();
       if (!list || list.length === 0) return;
-      
+
       list.forEach(r => {
         if (!r.lat || !r.lng) return;
         const iconHtml = `
           <div class="w-8 h-8 rounded-full bg-white border-2 border-orange-500 shadow-md flex items-center justify-center text-orange-600 font-black text-[11px] hover:scale-110 transition-transform">
-            ${r.category.substring(0,1)}
+            ${r.category.substring(0, 1)}
           </div>
         `;
         const icon = L.divIcon({ 
@@ -892,7 +908,7 @@
           popupAnchor: [0, -16]
         });
         const marker = L.marker([r.lat, r.lng], { icon }).addTo(markerGroup);
-        
+
         marker.bindPopup(`
           <div class="text-xs p-1">
             <div class="font-bold text-slate-800 text-sm mb-0.5">${r.name}</div>
@@ -902,13 +918,13 @@
           </div>
         `);
       });
-      
+
       try { 
         const bounds = markerGroup.getBounds();
         if (bounds && bounds.isValid && bounds.isValid()) {
           map.fitBounds(bounds, { padding: [35, 35], maxZoom: 15 });
         }
-      } catch(e) {
+      } catch (e) {
         console.warn("fitBounds failed", e);
       }
 
@@ -922,7 +938,7 @@
 
     function toggleMobileMap() {
       const mapCol = document.getElementById('mapColumn');
-      if(mapCol) {
+      if (mapCol) {
         mapCol.classList.toggle('active');
         setTimeout(() => { if (map) map.invalidateSize(); }, 100);
         setTimeout(() => { if (map) map.invalidateSize(); }, 350);
@@ -932,23 +948,23 @@
     function openDetail(r) {
       document.getElementById('detailName').textContent = r.name;
       document.getElementById('detailCategory').textContent = r.category;
-      
+
       const macroSelect = document.querySelector(`#regionMacroSelect option[value="${r.macro}"]`);
       document.getElementById('detailRegion').textContent = macroSelect ? macroSelect.text : '';
-      
+
       document.getElementById('detailNaver').textContent = r.ratingNaver;
       document.getElementById('detailKakao').textContent = r.ratingKakao;
       document.getElementById('detailMenu').textContent = r.menu;
       document.getElementById('detailAddress').textContent = r.address;
-      
+
       const detailImgEl = document.getElementById('detailImg');
       detailImgEl.src = getRestaurantImage(r);
       detailImgEl.onerror = () => { detailImgEl.src = categoryImages[r.category] || categoryImages['기타']; };
-      
+
       const exactNameQuery = encodeURIComponent(r.name);
       document.getElementById('btnNaverMap').onclick = () => window.open(`https://map.naver.com/v5/search/${exactNameQuery}`, '_blank');
       document.getElementById('btnKakaoMap').onclick = () => window.open(`https://map.kakao.com/link/search/${exactNameQuery}`, '_blank');
-      
+
       openModal('detailModal');
     }
 
@@ -961,117 +977,195 @@
 
     function openModal(id) { 
       const el = document.getElementById(id);
-      if(el) el.classList.remove('hidden'); 
-      if(id === 'rouletteModal') resetRouletteUI();
+      if (el) el.classList.remove('hidden'); 
+      if (id === 'rouletteModal') resetRouletteUI();
+      if (id === 'addRestaurantModal') onAddMacroChange();
     }
-    
+
     function closeModal(id) { 
       const el = document.getElementById(id);
-      if(el) el.classList.add('hidden'); 
-      if(id === 'rouletteModal') clearInterval(rouletteInterval);
+      if (el) el.classList.add('hidden'); 
+      if (id === 'rouletteModal') clearInterval(rouletteInterval);
     }
 
     function resetRouletteUI() {
-      document.getElementById('rouletteNotice').classList.add('hidden');
       document.getElementById('roulettePlaceholder').classList.remove('hidden');
       document.getElementById('rouletteContent').classList.add('hidden');
       document.getElementById('btnRouletteDetail').classList.add('hidden');
-      document.getElementById('btnSpinStart').disabled = false;
-      document.getElementById('btnSpinStart').innerHTML = '<i class="fa-solid fa-shuffle mr-1.5"></i> 맛집 뽑기 시작!';
-      selectedRouletteWinner = null;
+      document.getElementById('rouletteNotice').classList.add('hidden');
+      const startBtn = document.getElementById('btnSpinStart');
+      startBtn.disabled = false;
+      startBtn.classList.remove('opacity-50');
+      rouletteWinner = null;
     }
 
-    let rouletteInterval;
     function spinRoulette() {
-      const macroVal = document.getElementById('regionMacroSelect').value;
-      const microVal = document.getElementById('regionMicroSelect').value;
-      const noticeEl = document.getElementById('rouletteNotice');
-      noticeEl.classList.add('hidden');
-      
-      let filtered = restaurants;
-      if (macroVal !== 'all') filtered = filtered.filter(r => r.macro === macroVal);
-      if (microVal !== 'all' && microVal !== undefined && microVal !== '') filtered = filtered.filter(r => r.micro === microVal);
-      if (currentCategory !== '전체') filtered = filtered.filter(r => r.category === currentCategory);
+      const macro = document.getElementById('regionMacroSelect').value;
+      const micro = document.getElementById('regionMicroSelect').value;
 
-      if(filtered.length === 0) {
-        noticeEl.textContent = "현재 선택하신 필터 조건에 맞는 맛집이 없습니다. 지역이나 카테고리를 변경해 보세요!";
+      let candidateList = restaurants;
+      if (macro !== 'all') {
+        candidateList = candidateList.filter(r => r.macro === macro);
+        if (micro !== 'all') candidateList = candidateList.filter(r => r.micro === micro);
+      }
+      if (currentCategory !== '전체') {
+        candidateList = candidateList.filter(r => r.category === currentCategory);
+      }
+
+      const noticeEl = document.getElementById('rouletteNotice');
+      if (candidateList.length === 0) {
+        noticeEl.textContent = '현재 선택된 조건에 맞는 맛집이 없습니다. 조건을 넓혀보세요!';
         noticeEl.classList.remove('hidden');
         return;
       }
-      
+      noticeEl.classList.add('hidden');
+
       const placeholder = document.getElementById('roulettePlaceholder');
       const content = document.getElementById('rouletteContent');
+      const categoryEl = document.getElementById('rouletteCategory');
       const resultEl = document.getElementById('rouletteResult');
-      const catEl = document.getElementById('rouletteCategory');
       const menuEl = document.getElementById('rouletteMenu');
-      const spinBtn = document.getElementById('btnSpinStart');
+      const startBtn = document.getElementById('btnSpinStart');
       const detailBtn = document.getElementById('btnRouletteDetail');
-      
+
       placeholder.classList.add('hidden');
       content.classList.remove('hidden');
       detailBtn.classList.add('hidden');
-      spinBtn.disabled = true;
-      spinBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-1.5"></i> 고민 중...';
-      
+      startBtn.disabled = true;
+      startBtn.classList.add('opacity-50');
+
+      let spinCount = 0;
+      const totalSpins = 24;
       resultEl.classList.add('roulette-anim');
-      
-      let ticks = 0;
+
       clearInterval(rouletteInterval);
-      
       rouletteInterval = setInterval(() => {
-        const rand = filtered[Math.floor(Math.random() * filtered.length)];
+        const rand = candidateList[Math.floor(Math.random() * candidateList.length)];
+        categoryEl.textContent = rand.category;
         resultEl.textContent = rand.name;
-        catEl.textContent = rand.category;
         menuEl.textContent = rand.menu;
-        ticks++;
-        
-        if(ticks > 18) {
+        spinCount++;
+
+        if (spinCount >= totalSpins) {
           clearInterval(rouletteInterval);
           resultEl.classList.remove('roulette-anim');
-          selectedRouletteWinner = rand;
-          
-          resultEl.textContent = rand.name;
-          catEl.textContent = rand.category;
-          menuEl.textContent = rand.menu;
-          
-          spinBtn.disabled = false;
-          spinBtn.innerHTML = '<i class="fa-solid fa-rotate-right mr-1.5"></i> 다시 뽑기';
+          rouletteWinner = candidateList[Math.floor(Math.random() * candidateList.length)];
+          categoryEl.textContent = rouletteWinner.category;
+          resultEl.textContent = rouletteWinner.name;
+          menuEl.textContent = rouletteWinner.menu;
+          startBtn.disabled = false;
+          startBtn.classList.remove('opacity-50');
           detailBtn.classList.remove('hidden');
         }
-      }, 90);
+      }, 70);
     }
 
     function viewRouletteWinner() {
-      if (selectedRouletteWinner) {
+      if (rouletteWinner) {
         closeModal('rouletteModal');
-        openDetail(selectedRouletteWinner);
+        openDetail(rouletteWinner);
       }
     }
 
-    function saveCustomRestaurant() {
+    function onAddMacroChange() {
+      const macroVal = document.getElementById('addMacro').value;
+      const microSelect = document.getElementById('addMicro');
+      if (!microSelect) return;
+      microSelect.innerHTML = '';
+      const micros = regionConfig[macroVal] || [];
+      micros.forEach(m => {
+        if (m.id === 'all') return;
+        const opt = document.createElement('option');
+        opt.value = m.id;
+        opt.textContent = m.name;
+        microSelect.appendChild(opt);
+      });
+    }
+
+    async function geocodeAddress(query, fallbackMacro, fallbackMicro) {
+      try {
+        const cleanQuery = query.replace(/[()]/g, ' ').trim();
+        const res = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(cleanQuery)}&countrycodes=kr&limit=1`, {
+          headers: { 'Accept-Language': 'ko' }
+        });
+        if (res.ok) {
+          const data = await res.json();
+          if (data && data.length > 0) {
+            return {
+              lat: parseFloat(data[0].lat),
+              lng: parseFloat(data[0].lon)
+            };
+          }
+        }
+      } catch (e) {
+        console.warn('Nominatim geocode failed, using regional fallback', e);
+      }
+
+      const baseCoord = defaultRegionCoords[fallbackMicro] || defaultRegionCoords['suwon'] || [37.2638, 127.0286];
+      const jitterLat = (Math.random() - 0.5) * 0.006;
+      const jitterLng = (Math.random() - 0.5) * 0.006;
+      return {
+        lat: baseCoord[0] + jitterLat,
+        lng: baseCoord[1] + jitterLng
+      };
+    }
+
+    async function saveCustomRestaurant() {
       const name = document.getElementById('addName').value.trim();
       const cat = document.getElementById('addCategory').value;
       const mac = document.getElementById('addMacro').value;
+      const mic = document.getElementById('addMicro').value || "all";
       const addr = document.getElementById('addAddress').value.trim();
-      const menu = document.getElementById('addMenu').value.trim() || '등록 메뉴 없음';
-      const nav = parseFloat(document.getElementById('addNaver').value) || 0;
-      const kak = parseFloat(document.getElementById('addKakao').value) || 0;
-      
-      if(!name || !addr) return;
-      
+      const menu = document.getElementById('addMenu').value.trim() || '추천 메뉴';
+      const nav = parseFloat(document.getElementById('addNaver').value) || 4.5;
+      const kak = parseFloat(document.getElementById('addKakao').value) || 4.2;
+      const saveBtn = document.getElementById('btnAddSave');
+
+      if (!name || !addr) return;
+
+      saveBtn.disabled = true;
+      saveBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-1"></i> 좌표 찾는 중...';
+
+      const coords = await geocodeAddress(addr, mac, mic);
+
       const newRest = {
-        id: 'C' + Date.now(), name, category: cat, macro: mac, micro: "all",
-        address: addr, ratingNaver: nav, ratingKakao: kak, menu,
-        lat: 37.5 + (Math.random() * 0.1), lng: 127.0 + (Math.random() * 0.1)
+        id: 'C' + Date.now(),
+        name,
+        category: cat,
+        macro: mac,
+        micro: mic,
+        address: addr,
+        ratingNaver: nav,
+        ratingKakao: kak,
+        menu,
+        lat: coords.lat,
+        lng: coords.lng
       };
-      
+
       restaurants.unshift(newRest);
       saveData();
+
+      saveBtn.disabled = false;
+      saveBtn.innerHTML = '지도에 등록하기';
       closeModal('addRestaurantModal');
-      
+
       document.getElementById('regionMacroSelect').value = mac;
-      currentCategory = cat;
       onMacroRegionChange();
+
+      const microSelect = document.getElementById('regionMicroSelect');
+      if (microSelect) {
+        microSelect.value = mic;
+      }
+      currentCategory = '전체';
+      initCategories();
+      applyFilters();
+
+      if (map) {
+        map.flyTo([newRest.lat, newRest.lng], 16, { animate: true, duration: 1.2 });
+        setTimeout(() => {
+          openDetail(newRest);
+        }, 1300);
+      }
     }
 
     window.onload = initializeApp;
