@@ -243,6 +243,45 @@
             카카오맵
           </button>
         </div>
+
+        <!-- Visitor Anonymous Reviews Section -->
+        <div class="mt-8 pt-6 border-t border-slate-100">
+          <div class="flex items-center justify-between mb-4">
+            <div class="flex items-center gap-2">
+              <h4 class="font-bold text-slate-800 text-sm sm:text-base">방문자 솔직 리뷰</h4>
+              <span id="reviewCountBadge" class="bg-orange-100 text-orange-600 font-extrabold text-[11px] px-2 py-0.5 rounded-full">0개</span>
+            </div>
+            <div id="reviewAvgRating" class="hidden items-center gap-1 text-xs font-bold text-amber-500 bg-amber-50 px-2.5 py-1 rounded-xl border border-amber-200">
+              <i class="fa-solid fa-star"></i>
+              <span id="reviewAvgScore">0.0</span>
+            </div>
+          </div>
+
+          <!-- Review Form -->
+          <div class="bg-slate-50 p-3.5 sm:p-4 rounded-2xl border border-slate-200 mb-4">
+            <div class="flex items-center justify-between mb-2.5 flex-wrap gap-2">
+              <div class="flex items-center gap-1.5" id="starRatingContainer">
+                <span class="text-xs font-bold text-slate-600 mr-1">별점:</span>
+                <i class="fa-solid fa-star star-btn text-amber-400 text-base cursor-pointer hover:scale-110 transition" data-value="1" onclick="setReviewRating(1)"></i>
+                <i class="fa-solid fa-star star-btn text-amber-400 text-base cursor-pointer hover:scale-110 transition" data-value="2" onclick="setReviewRating(2)"></i>
+                <i class="fa-solid fa-star star-btn text-amber-400 text-base cursor-pointer hover:scale-110 transition" data-value="3" onclick="setReviewRating(3)"></i>
+                <i class="fa-solid fa-star star-btn text-amber-400 text-base cursor-pointer hover:scale-110 transition" data-value="4" onclick="setReviewRating(4)"></i>
+                <i class="fa-solid fa-star star-btn text-amber-400 text-base cursor-pointer hover:scale-110 transition" data-value="5" onclick="setReviewRating(5)"></i>
+                <span id="starRatingText" class="text-xs font-bold text-amber-600 ml-1">5점</span>
+              </div>
+              <input type="text" id="reviewNickname" maxlength="10" placeholder="닉네임 (기본: 익명)" class="text-xs border border-slate-200 rounded-lg px-2.5 py-1 bg-white outline-none w-28 sm:w-32 focus:border-orange-500">
+            </div>
+            <div class="flex gap-2">
+              <input type="text" id="reviewText" placeholder="이 식당의 분위기나 맛은 어떠셨나요? (한 줄 평 남기기)" class="flex-1 text-xs border border-slate-200 rounded-xl px-3 py-2 bg-white outline-none focus:border-orange-500" onkeydown="if(event.key === 'Enter') submitReview()">
+              <button onclick="submitReview()" class="px-3.5 py-2 bg-slate-800 hover:bg-slate-900 text-white rounded-xl text-xs font-bold shrink-0 transition active:scale-95">등록</button>
+            </div>
+          </div>
+
+          <!-- Review List Container -->
+          <div id="reviewList" class="space-y-2.5 max-h-56 overflow-y-auto custom-scrollbar">
+            <!-- Dynamically populated -->
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -329,6 +368,32 @@
           <label class="block text-xs font-bold text-slate-600 mb-1.5">대표 메뉴</label>
           <input type="text" id="addMenu" class="w-full border border-slate-200 rounded-xl p-2.5 outline-none focus:border-orange-500 bg-slate-50" placeholder="예: 선지해장국, 수육">
         </div>
+
+        <!-- Image Upload Section -->
+        <div>
+          <label class="block text-xs font-bold text-slate-600 mb-1.5">대표 사진 등록 (선택)</label>
+          <div class="flex gap-2 mb-2">
+            <button type="button" id="tabImgFile" onclick="switchImageTab('file')" class="flex-1 py-1.5 text-xs font-bold rounded-xl border border-orange-500 bg-orange-50 text-orange-600 transition">기기 사진 업로드</button>
+            <button type="button" id="tabImgUrl" onclick="switchImageTab('url')" class="flex-1 py-1.5 text-xs font-bold rounded-xl border border-slate-200 bg-slate-50 text-slate-600 transition">이미지 링크(URL)</button>
+          </div>
+
+          <div id="uploadFileSection">
+            <label class="border-2 border-dashed border-slate-200 hover:border-orange-400 rounded-2xl p-4 flex flex-col items-center justify-center cursor-pointer bg-slate-50 hover:bg-orange-50/30 transition relative overflow-hidden h-28">
+              <input type="file" id="addPhotoFile" accept="image/*" class="hidden" onchange="handleFileSelect(event)">
+              <div id="fileUploadPlaceholder" class="text-center text-slate-400">
+                <i class="fa-solid fa-cloud-arrow-up text-xl text-slate-300 mb-1"></i>
+                <div class="text-[11px] font-semibold text-slate-600">클릭하여 음식 사진 선택</div>
+                <div class="text-[9px] text-slate-400 mt-0.5">JPG, PNG 등 이미지 지원</div>
+              </div>
+              <img id="filePreviewImg" src="" alt="미리보기" class="hidden w-full h-full object-cover rounded-xl absolute inset-0">
+            </label>
+          </div>
+
+          <div id="uploadUrlSection" class="hidden">
+            <input type="url" id="addPhotoUrl" class="w-full border border-slate-200 rounded-xl p-2.5 outline-none focus:border-orange-500 bg-slate-50 text-xs" placeholder="https://example.com/food.jpg">
+          </div>
+        </div>
+
         <div class="bg-indigo-50 border border-indigo-100 rounded-xl p-3 text-xs text-indigo-800 flex items-start gap-2.5">
           <i class="fa-solid fa-circle-info text-indigo-500 text-sm mt-0.5 shrink-0"></i>
           <div>
@@ -840,10 +905,27 @@
       list.forEach(r => {
         const foodImgUrl = getRestaurantImage(r);
 
-        const ratingHtml = r.isUserAdded
-          ? `<span class="text-[10px] sm:text-[11px] font-bold text-indigo-700 bg-indigo-50 px-2 py-0.5 rounded border border-indigo-200 flex items-center gap-1"><i class="fa-solid fa-user-pen text-[9px]"></i>이용자 추가 맛집</span>`
-          : `<span class="text-[10px] sm:text-[11px] font-bold text-green-700 bg-green-50 px-1.5 py-0.5 rounded border border-green-100"><i class="fa-solid fa-star text-[9px] mr-0.5"></i>N ${r.ratingNaver}</span>
+        // 이용자 평균 별점 계산 (M 4.3)
+        let userRatingBadge = '';
+        if (r.reviews && r.reviews.length > 0) {
+          const totalScore = r.reviews.reduce((acc, cur) => acc + (cur.rating || 5), 0);
+          const avgScore = (totalScore / r.reviews.length).toFixed(1);
+          userRatingBadge = `<span class="text-[10px] sm:text-[11px] font-bold text-orange-700 bg-orange-50 px-1.5 py-0.5 rounded border border-orange-200 flex items-center" title="이용자 리뷰 ${r.reviews.length}개 평균 평점"><i class="fa-solid fa-star text-amber-500 text-[9px] mr-0.5"></i>M ${avgScore}</span>`;
+        }
+
+        let ratingHtml = '';
+        if (r.isUserAdded) {
+          ratingHtml = `<span class="text-[10px] sm:text-[11px] font-bold text-indigo-700 bg-indigo-50 px-2 py-0.5 rounded border border-indigo-200 flex items-center gap-1"><i class="fa-solid fa-user-pen text-[9px]"></i>이용자 추가</span>`;
+          if (userRatingBadge) {
+            ratingHtml += userRatingBadge;
+          }
+        } else {
+          ratingHtml = `<span class="text-[10px] sm:text-[11px] font-bold text-green-700 bg-green-50 px-1.5 py-0.5 rounded border border-green-100"><i class="fa-solid fa-star text-[9px] mr-0.5"></i>N ${r.ratingNaver}</span>
              <span class="text-[10px] sm:text-[11px] font-bold text-yellow-700 bg-yellow-50 px-1.5 py-0.5 rounded border border-yellow-100"><i class="fa-solid fa-star text-[9px] mr-0.5"></i>K ${r.ratingKakao}</span>`;
+          if (userRatingBadge) {
+            ratingHtml += userRatingBadge;
+          }
+        }
 
         const badgeHtml = r.isUserAdded
           ? `<span class="text-[10px] font-extrabold bg-indigo-50 text-indigo-600 px-1.5 py-0.5 rounded border border-indigo-100 flex items-center gap-1"><i class="fa-solid fa-user-pen text-[8px]"></i>이용자 추가</span>`
@@ -864,7 +946,7 @@
             </div>
             <h3 class="font-bold text-slate-800 text-[15px] sm:text-base truncate break-keep">${r.name}</h3>
             <p class="text-[11px] sm:text-xs text-slate-500 truncate mb-2 mt-0.5"><i class="fa-solid fa-utensils text-slate-300 mr-1.5"></i>${r.menu}</p>
-            <div class="flex gap-2 items-center flex-wrap">
+            <div class="flex gap-1.5 items-center flex-wrap">
               ${ratingHtml}
             </div>
           </div>
@@ -1025,6 +1107,8 @@
       const secFile = document.getElementById('uploadFileSection');
       const secUrl = document.getElementById('uploadUrlSection');
 
+      if (!tabFile || !tabUrl || !secFile || !secUrl) return;
+
       if (type === 'file') {
         tabFile.className = "flex-1 py-1.5 text-xs font-bold rounded-xl border border-orange-500 bg-orange-50 text-orange-600 transition";
         tabUrl.className = "flex-1 py-1.5 text-xs font-bold rounded-xl border border-slate-200 bg-slate-50 text-slate-600 transition";
@@ -1058,10 +1142,15 @@
 
     function resetAddModalForm() {
       uploadedImageBase64 = null;
-      document.getElementById('addName').value = '';
-      document.getElementById('addAddress').value = '';
-      document.getElementById('addMenu').value = '';
-      document.getElementById('addPhotoUrl').value = '';
+      const nameEl = document.getElementById('addName');
+      if (nameEl) nameEl.value = '';
+      const addrEl = document.getElementById('addAddress');
+      if (addrEl) addrEl.value = '';
+      const menuEl = document.getElementById('addMenu');
+      if (menuEl) menuEl.value = '';
+      const photoUrlEl = document.getElementById('addPhotoUrl');
+      if (photoUrlEl) photoUrlEl.value = '';
+      
       const previewImg = document.getElementById('filePreviewImg');
       const placeholder = document.getElementById('fileUploadPlaceholder');
       if (previewImg) {
@@ -1192,6 +1281,8 @@
 
       resetReviewForm();
       renderReviews(currentSelectedRestaurant);
+      // 리뷰가 등록되면 목록의 'M 별점'도 즉시 실시간 갱신
+      applyFilters();
     }
 
     function resetApp() {
