@@ -945,9 +945,10 @@
 
       document.getElementById('modalTags').innerHTML = (r.tags || []).map(t => `<span class="px-2.5 py-1 bg-slate-100 text-slate-700 rounded-lg text-xs font-medium"># ${t}</span>`).join('');
 
-      const encoded = encodeURIComponent(`${r.name} ${r.address.split(' ')[0]}`);
-      document.getElementById('btnNaverMap').href = `https://map.naver.com/p/search/${encoded}`;
-      document.getElementById('btnKakaoMap').href = `https://map.kakao.com/link/search/${encoded}`;
+      // 네이버 지도 및 카카오맵 검색 시 상호명(r.name)만 정확하게 검색되도록 수정
+      const encodedName = encodeURIComponent(r.name);
+      document.getElementById('btnNaverMap').href = `https://map.naver.com/p/search/${encodedName}`;
+      document.getElementById('btnKakaoMap').href = `https://map.kakao.com/link/search/${encodedName}`;
 
       document.getElementById('detailModal').classList.remove('hidden');
     }
