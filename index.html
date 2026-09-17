@@ -781,6 +781,55 @@
       return categoryImages[r ? r.category : '기타'] || categoryImages['기타'];
     }
 
+    function getShortRegionName(r) {
+      if (!r) return '전국';
+      const shortMap = {
+        gangnam: '강남',
+        songpa: '잠실/송파',
+        hongdae: '홍대/연남',
+        seongsu: '성수/서울숲',
+        jongro: '종로/을지로',
+        suwon: '수원',
+        gwanggyo: '광교',
+        seongnam: '성남/모란',
+        incheon: '인천',
+        bucheon: '부천/시흥',
+        ilsan: '일산/파주',
+        sokcho: '속초/강릉',
+        daejeon: '대전/충청',
+        daegu: '대구/경북',
+        busan: '부산',
+        gwangju: '광주/전라',
+        jeju: '제주'
+      };
+
+      if (r.micro && shortMap[r.micro]) {
+        return shortMap[r.micro];
+      }
+
+      const macroMap = {
+        seoul: '서울',
+        gyeonggi_incheon: '경기',
+        gangwon: '강원',
+        daejeon_chungcheong: '충청',
+        daegu_gyeongbuk: '대구/경북',
+        busan_gyeongnam: '부산/경남',
+        gwangju_jeonla: '전라',
+        jeju: '제주'
+      };
+
+      if (r.macro && macroMap[r.macro]) {
+        return macroMap[r.macro];
+      }
+
+      // 주소에서 시/구 추출 시도
+      if (r.address) {
+        const parts = r.address.split(' ');
+        if (parts.length > 1) return parts[1];
+      }
+      return '전국';
+    }
+
     function initializeApp() {
       const storedVersion = safeGetStorage('tastemap_version');
       const storedData = safeGetStorage('tastemap_data');
@@ -904,6 +953,7 @@
 
       list.forEach(r => {
         const foodImgUrl = getRestaurantImage(r);
+        const regionName = getShortRegionName(r);
 
         // 이용자 평균 별점 계산 (M 4.3)
         let userRatingBadge = '';
@@ -937,11 +987,13 @@
         card.innerHTML = `
           <div class="w-20 h-20 sm:w-24 sm:h-24 shrink-0 rounded-2xl overflow-hidden bg-slate-100 shadow-inner relative">
             <img src="${foodImgUrl}" alt="${r.name}" loading="lazy" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" onerror="this.src='${categoryImages['한식']}'">
-            <span class="absolute bottom-1 right-1 bg-black/60 backdrop-blur-sm text-white text-[9px] font-bold px-1.5 py-0.5 rounded">${r.category}</span>
+            <span class="absolute bottom-1 right-1 bg-black/65 backdrop-blur-sm text-white text-[9px] font-bold px-1.5 py-0.5 rounded">${regionName}, ${r.category}</span>
           </div>
           <div class="flex-1 min-w-0 flex flex-col justify-center">
             <div class="flex items-center gap-1.5 mb-1 flex-wrap">
-              <span class="text-[10px] font-extrabold bg-orange-50 text-orange-600 px-1.5 py-0.5 rounded border border-orange-100">${r.category}</span>
+              <span class="text-[10px] font-extrabold bg-orange-50 text-orange-700 px-2 py-0.5 rounded border border-orange-200 flex items-center gap-1">
+                <i class="fa-solid fa-location-dot text-[9px] text-orange-500"></i>${regionName}, ${r.category}
+              </span>
               ${badgeHtml}
             </div>
             <h3 class="font-bold text-slate-800 text-[15px] sm:text-base truncate break-keep">${r.name}</h3>
@@ -1017,11 +1069,12 @@
         const marker = L.marker([r.lat, r.lng], { icon }).addTo(markerGroup);
 
         const userTag = r.isUserAdded ? `<span class="bg-indigo-100 text-indigo-700 text-[9px] font-bold px-1.5 py-0.5 rounded">이용자 추가</span>` : '';
+        const regionName = getShortRegionName(r);
 
         marker.bindPopup(`
           <div class="text-xs p-1">
             <div class="flex items-center gap-1.5 mb-1 flex-wrap">
-              <span class="text-[10px] text-orange-600 font-semibold">${r.category}</span>
+              <span class="text-[10px] text-orange-600 font-semibold">${regionName}, ${r.category}</span>
               ${userTag}
             </div>
             <div class="font-bold text-slate-800 text-sm mb-0.5">${r.name}</div>
