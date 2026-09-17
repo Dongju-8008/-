@@ -183,6 +183,7 @@
         <div class="absolute bottom-4 left-4 right-4">
           <div class="flex items-center gap-2 mb-1.5 flex-wrap">
             <span id="detailCategory" class="px-2 py-0.5 bg-orange-500 text-white text-[10px] sm:text-xs font-bold rounded"></span>
+            <span id="detailUserBadge" class="hidden px-2 py-0.5 bg-indigo-600 text-white text-[10px] sm:text-xs font-bold rounded flex items-center gap-1"><i class="fa-solid fa-user-pen text-[9px]"></i>이용자 추가</span>
             <span id="detailRegion" class="text-white/90 text-[10px] sm:text-xs font-medium"></span>
           </div>
           <h3 id="detailName" class="text-xl sm:text-2xl font-bold text-white leading-tight break-keep"></h3>
@@ -190,7 +191,8 @@
       </div>
       
       <div class="p-5 sm:p-6 overflow-y-auto custom-scrollbar bg-white">
-        <div class="flex gap-3 mb-6">
+        <!-- Default Ratings (for Seed data) -->
+        <div id="detailRatingContainer" class="flex gap-3 mb-6">
           <div class="flex-1 bg-green-50/50 rounded-2xl p-3 border border-green-100 flex flex-col items-center justify-center">
             <span class="text-[10px] sm:text-xs font-bold text-green-700 mb-1">네이버 평점</span>
             <div class="text-lg sm:text-xl font-extrabold text-green-600"><i class="fa-solid fa-star text-sm mr-1"></i><span id="detailNaver"></span></div>
@@ -198,6 +200,17 @@
           <div class="flex-1 bg-yellow-50/50 rounded-2xl p-3 border border-yellow-100 flex flex-col items-center justify-center">
             <span class="text-[10px] sm:text-xs font-bold text-yellow-800 mb-1">카카오 평점</span>
             <div class="text-lg sm:text-xl font-extrabold text-yellow-600"><i class="fa-solid fa-star text-sm mr-1"></i><span id="detailKakao"></span></div>
+          </div>
+        </div>
+
+        <!-- Notice for User Added Restaurants -->
+        <div id="detailUserNotice" class="hidden mb-6 bg-indigo-50/80 border border-indigo-100 rounded-2xl p-3.5 flex items-center gap-3">
+          <div class="w-9 h-9 rounded-xl bg-indigo-100 text-indigo-600 flex items-center justify-center shrink-0 text-base">
+            <i class="fa-solid fa-user-check"></i>
+          </div>
+          <div class="min-w-0 flex-1">
+            <div class="font-bold text-indigo-900 text-xs sm:text-sm">이용자가 직접 추천·등록한 맛집</div>
+            <div class="text-[11px] text-indigo-700 mt-0.5">아래 네이버/카카오 지도 버튼으로 실시간 공식 평점과 리뷰를 확인하세요!</div>
           </div>
         </div>
         
@@ -316,14 +329,11 @@
           <label class="block text-xs font-bold text-slate-600 mb-1.5">대표 메뉴</label>
           <input type="text" id="addMenu" class="w-full border border-slate-200 rounded-xl p-2.5 outline-none focus:border-orange-500 bg-slate-50" placeholder="예: 선지해장국, 수육">
         </div>
-        <div class="grid grid-cols-2 gap-3">
+        <div class="bg-indigo-50 border border-indigo-100 rounded-xl p-3 text-xs text-indigo-800 flex items-start gap-2.5">
+          <i class="fa-solid fa-circle-info text-indigo-500 text-sm mt-0.5 shrink-0"></i>
           <div>
-            <label class="block text-xs font-bold text-slate-600 mb-1.5">네이버 평점 (선택)</label>
-            <input type="number" id="addNaver" step="0.1" class="w-full border border-slate-200 rounded-xl p-2.5 bg-slate-50" placeholder="예: 4.6">
-          </div>
-          <div>
-            <label class="block text-xs font-bold text-slate-600 mb-1.5">카카오 평점 (선택)</label>
-            <input type="number" id="addKakao" step="0.1" class="w-full border border-slate-200 rounded-xl p-2.5 bg-slate-50" placeholder="예: 4.3">
+            <span class="font-bold block mb-0.5">이용자 추천 맛집 안내</span>
+            직접 등록한 맛집은 목록 및 지도에 <span class="font-bold text-indigo-700">[이용자 추가]</span> 뱃지가 표기되며, 실시간 포털 평점은 네이버/카카오 지도 버튼으로 바로 확인할 수 있습니다.
           </div>
         </div>
       </div>
@@ -826,6 +836,15 @@
       list.forEach(r => {
         const foodImgUrl = getRestaurantImage(r);
 
+        const ratingHtml = r.isUserAdded
+          ? `<span class="text-[10px] sm:text-[11px] font-bold text-indigo-700 bg-indigo-50 px-2 py-0.5 rounded border border-indigo-200 flex items-center gap-1"><i class="fa-solid fa-user-pen text-[9px]"></i>이용자 추가 맛집</span>`
+          : `<span class="text-[10px] sm:text-[11px] font-bold text-green-700 bg-green-50 px-1.5 py-0.5 rounded border border-green-100"><i class="fa-solid fa-star text-[9px] mr-0.5"></i>N ${r.ratingNaver}</span>
+             <span class="text-[10px] sm:text-[11px] font-bold text-yellow-700 bg-yellow-50 px-1.5 py-0.5 rounded border border-yellow-100"><i class="fa-solid fa-star text-[9px] mr-0.5"></i>K ${r.ratingKakao}</span>`;
+
+        const badgeHtml = r.isUserAdded
+          ? `<span class="text-[10px] font-extrabold bg-indigo-50 text-indigo-600 px-1.5 py-0.5 rounded border border-indigo-100 flex items-center gap-1"><i class="fa-solid fa-user-pen text-[8px]"></i>이용자 추가</span>`
+          : '';
+
         const card = document.createElement('div');
         card.className = "bg-white p-3 sm:p-4 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition cursor-pointer flex gap-3 sm:gap-4 items-center";
         card.onclick = () => openDetail(r);
@@ -835,14 +854,14 @@
             <span class="absolute bottom-1 right-1 bg-black/60 backdrop-blur-sm text-white text-[9px] font-bold px-1.5 py-0.5 rounded">${r.category}</span>
           </div>
           <div class="flex-1 min-w-0 flex flex-col justify-center">
-            <div class="flex items-center gap-1.5 mb-1">
+            <div class="flex items-center gap-1.5 mb-1 flex-wrap">
               <span class="text-[10px] font-extrabold bg-orange-50 text-orange-600 px-1.5 py-0.5 rounded border border-orange-100">${r.category}</span>
+              ${badgeHtml}
             </div>
             <h3 class="font-bold text-slate-800 text-[15px] sm:text-base truncate break-keep">${r.name}</h3>
             <p class="text-[11px] sm:text-xs text-slate-500 truncate mb-2 mt-0.5"><i class="fa-solid fa-utensils text-slate-300 mr-1.5"></i>${r.menu}</p>
-            <div class="flex gap-2">
-              <span class="text-[10px] sm:text-[11px] font-bold text-green-700 bg-green-50 px-1.5 py-0.5 rounded border border-green-100"><i class="fa-solid fa-star text-[9px] mr-0.5"></i>N ${r.ratingNaver}</span>
-              <span class="text-[10px] sm:text-[11px] font-bold text-yellow-700 bg-yellow-50 px-1.5 py-0.5 rounded border border-yellow-100"><i class="fa-solid fa-star text-[9px] mr-0.5"></i>K ${r.ratingKakao}</span>
+            <div class="flex gap-2 items-center flex-wrap">
+              ${ratingHtml}
             </div>
           </div>
         `;
@@ -895,9 +914,11 @@
 
       list.forEach(r => {
         if (!r.lat || !r.lng) return;
+        const iconBorderColor = r.isUserAdded ? 'border-indigo-600 text-indigo-600' : 'border-orange-500 text-orange-600';
         const iconHtml = `
-          <div class="w-8 h-8 rounded-full bg-white border-2 border-orange-500 shadow-md flex items-center justify-center text-orange-600 font-black text-[11px] hover:scale-110 transition-transform">
+          <div class="w-8 h-8 rounded-full bg-white border-2 ${iconBorderColor} shadow-md flex items-center justify-center font-black text-[11px] hover:scale-110 transition-transform relative">
             ${r.category.substring(0, 1)}
+            ${r.isUserAdded ? '<span class="absolute -top-1 -right-1 w-3 h-3 bg-indigo-600 rounded-full border-2 border-white"></span>' : ''}
           </div>
         `;
         const icon = L.divIcon({ 
@@ -909,10 +930,16 @@
         });
         const marker = L.marker([r.lat, r.lng], { icon }).addTo(markerGroup);
 
+        const userTag = r.isUserAdded ? `<span class="bg-indigo-100 text-indigo-700 text-[9px] font-bold px-1.5 py-0.5 rounded">이용자 추가</span>` : '';
+
         marker.bindPopup(`
           <div class="text-xs p-1">
+            <div class="flex items-center gap-1.5 mb-1 flex-wrap">
+              <span class="text-[10px] text-orange-600 font-semibold">${r.category}</span>
+              ${userTag}
+            </div>
             <div class="font-bold text-slate-800 text-sm mb-0.5">${r.name}</div>
-            <div class="text-[11px] text-orange-600 font-semibold mb-1">${r.category} · ${r.menu}</div>
+            <div class="text-[11px] text-slate-600 font-medium mb-1">${r.menu}</div>
             <div class="text-[11px] text-slate-500 mb-2 truncate">${r.address}</div>
             <button onclick="window.openDetailById('${r.id}')" class="w-full py-1.5 bg-orange-500 hover:bg-orange-600 text-white rounded-lg font-bold text-xs shadow-sm transition">상세보기</button>
           </div>
@@ -949,11 +976,25 @@
       document.getElementById('detailName').textContent = r.name;
       document.getElementById('detailCategory').textContent = r.category;
 
+      const userBadge = document.getElementById('detailUserBadge');
+      const ratingContainer = document.getElementById('detailRatingContainer');
+      const userNotice = document.getElementById('detailUserNotice');
+
+      if (r.isUserAdded) {
+        userBadge.classList.remove('hidden');
+        ratingContainer.classList.add('hidden');
+        userNotice.classList.remove('hidden');
+      } else {
+        userBadge.classList.add('hidden');
+        ratingContainer.classList.remove('hidden');
+        userNotice.classList.add('hidden');
+        document.getElementById('detailNaver').textContent = r.ratingNaver;
+        document.getElementById('detailKakao').textContent = r.ratingKakao;
+      }
+
       const macroSelect = document.querySelector(`#regionMacroSelect option[value="${r.macro}"]`);
       document.getElementById('detailRegion').textContent = macroSelect ? macroSelect.text : '';
 
-      document.getElementById('detailNaver').textContent = r.ratingNaver;
-      document.getElementById('detailKakao').textContent = r.ratingKakao;
       document.getElementById('detailMenu').textContent = r.menu;
       document.getElementById('detailAddress').textContent = r.address;
 
@@ -1117,8 +1158,6 @@
       const mic = document.getElementById('addMicro').value || "all";
       const addr = document.getElementById('addAddress').value.trim();
       const menu = document.getElementById('addMenu').value.trim() || '추천 메뉴';
-      const nav = parseFloat(document.getElementById('addNaver').value) || 4.5;
-      const kak = parseFloat(document.getElementById('addKakao').value) || 4.2;
       const saveBtn = document.getElementById('btnAddSave');
 
       if (!name || !addr) return;
@@ -1135,9 +1174,8 @@
         macro: mac,
         micro: mic,
         address: addr,
-        ratingNaver: nav,
-        ratingKakao: kak,
         menu,
+        isUserAdded: true,
         lat: coords.lat,
         lng: coords.lng
       };
