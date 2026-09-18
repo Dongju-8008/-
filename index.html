@@ -447,6 +447,9 @@
 
     function getShortRegionName(r) {
       if (!r) return '전국';
+      if (r.micro === 'suwon' || r.micro === 'suwon_paldal_gwonseon' || r.micro === 'suwon_yeongtong_gwanggyo') {
+        return '수원';
+      }
       if (r.macro && r.micro && regionConfig[r.macro]) {
         const found = regionConfig[r.macro].find(m => m.id === r.micro);
         if (found && found.name && found.id !== 'all') {
@@ -498,8 +501,7 @@
       ],
       gyeonggi_south_east: [
         { id: 'all', name: '경기동부/남부 전체' },
-        { id: 'suwon_paldal_gwonseon', name: '수원 팔달/권선' },
-        { id: 'suwon_yeongtong_gwanggyo', name: '수원 영통/광교' },
+        { id: 'suwon', name: '수원' },
         { id: 'bundang_seohyeon_yatap', name: '분당/서현/야탑' },
         { id: 'pangyo_seongnam', name: '판교/성남' },
         { id: 'anyang_gunpo_uiwang', name: '안양/군포/의왕' },
@@ -594,6 +596,7 @@
       nowon_dobong: [37.654, 127.056],
       sangam_eunpyeong: [37.577, 126.891],
       bulgwang_eungam: [37.610, 126.929],
+      suwon: [37.275, 127.028],
       suwon_paldal_gwonseon: [37.268, 127.025],
       suwon_yeongtong_gwanggyo: [37.288, 127.054],
       bundang_seohyeon_yatap: [37.382, 127.121],
@@ -718,38 +721,38 @@
       { id: "S62", name: "오레노라멘 본점", category: "일식/초밥", macro: "seoul_gangbuk", micro: "jongno_gwanghwamun", address: "서울 종로구 율곡로 49-4", ratingNaver: 4.68, ratingKakao: 4.4, menu: "토리빠이탄 라멘, 카라빠이탄", lat: 37.5762, lng: 126.9852 },
       { id: "S63", name: "동원집", category: "한식", macro: "seoul_gangbuk", micro: "myeongdong_cityhall_euljiro", address: "서울 중구 퇴계로27길 48", ratingNaver: 4.53, ratingKakao: 4.2, menu: "감자국, 머리고기, 순대", lat: 37.5621, lng: 126.9954 },
 
-      // ================= 경기동부/남부: 수원 팔달/권선 =================
-      { id: "SW1", name: "가보정 1관", category: "고기/구이", macro: "gyeonggi_south_east", micro: "suwon_paldal_gwonseon", address: "경기 수원시 팔달구 장다리로 282", ratingNaver: 4.72, ratingKakao: 4.4, menu: "한우 생갈비, 한우 양념갈비 정식", lat: 37.2758, lng: 127.0298 },
-      { id: "SW2", name: "유치회관 본점", category: "한식", macro: "gyeonggi_south_east", micro: "suwon_paldal_gwonseon", address: "경기 수원시 팔달구 효원로292번길 67", ratingNaver: 4.64, ratingKakao: 4.3, menu: "선지해장국, 수육, 수육무침", lat: 37.2625, lng: 127.0305 },
-      { id: "SW3", name: "이나경송탄부대찌개", category: "한식", macro: "gyeonggi_south_east", micro: "suwon_paldal_gwonseon", address: "경기 수원시 팔달구 효원로307번길 47", ratingNaver: 4.61, ratingKakao: 4.2, menu: "스페셜 부대찌개 (소시지 폭탄)", lat: 37.2612, lng: 127.0321 },
-      { id: "SW4", name: "광주족발순대 권선시장점", category: "한식", macro: "gyeonggi_south_east", micro: "suwon_paldal_gwonseon", address: "경기 수원시 권선구 세권로 185", ratingNaver: 4.58, ratingKakao: 4.4, menu: "왕족발, 순대국밥, 모듬순대 서비스", lat: 37.2568, lng: 127.0245 },
-      { id: "SW5", name: "입주집", category: "고기/구이", macro: "gyeonggi_south_east", micro: "suwon_paldal_gwonseon", address: "경기 수원시 팔달구 팔달문로 3", ratingNaver: 4.55, ratingKakao: 4.2, menu: "소곱창구이, 막창구이, 볶음밥", lat: 37.2775, lng: 127.0182 },
-      { id: "SW6", name: "진미통닭", category: "치킨", macro: "gyeonggi_south_east", micro: "suwon_paldal_gwonseon", address: "경기 수원시 팔달구 정조로800번길 21", ratingNaver: 4.60, ratingKakao: 4.1, menu: "가마솥 후라이드, 통닭", lat: 37.2801, lng: 127.0169 },
-      { id: "SW7", name: "용성통닭 본점", category: "치킨", macro: "gyeonggi_south_east", micro: "suwon_paldal_gwonseon", address: "경기 수원시 팔달구 정조로800번길 15", ratingNaver: 4.57, ratingKakao: 4.2, menu: "후라이드, 닭발/모래집 튀김", lat: 37.2798, lng: 127.0165 },
-      { id: "SW8", name: "보영만두 본점", category: "분식", macro: "gyeonggi_south_east", micro: "suwon_paldal_gwonseon", address: "경기 수원시 장안구 팔달로 271", ratingNaver: 4.62, ratingKakao: 4.1, menu: "군만두, 매운쫄면, 찐만두", lat: 37.2872, lng: 127.0145 },
-      { id: "SW9", name: "장터설렁탕 세류본점", category: "한식", macro: "gyeonggi_south_east", micro: "suwon_paldal_gwonseon", address: "경기 수원시 권선구 정조로 441", ratingNaver: 4.53, ratingKakao: 4.3, menu: "가마솥 설렁탕, 도가니탕, 모듬수육", lat: 37.2482, lng: 127.0156 },
-      { id: "SW10", name: "구들짱황소곱창 곡반정점", category: "고기/구이", macro: "gyeonggi_south_east", micro: "suwon_paldal_gwonseon", address: "경기 수원시 권선구 곡반정로65번길 23", ratingNaver: 4.65, ratingKakao: 4.3, menu: "불쇼 한우곱창, 대창구이", lat: 37.2405, lng: 127.0341 },
-      { id: "SW11", name: "본수원갈비 본점", category: "고기/구이", macro: "gyeonggi_south_east", micro: "suwon_paldal_gwonseon", address: "경기 수원시 팔달구 중부대로223번길 41", ratingNaver: 4.68, ratingKakao: 4.3, menu: "생갈비, 양념갈비, 된장찌개", lat: 37.2812, lng: 127.0425 },
-      { id: "SW12", name: "아줌마왕족발 권선시장점", category: "한식", macro: "gyeonggi_south_east", micro: "suwon_paldal_gwonseon", address: "경기 수원시 권선구 세권로 185", ratingNaver: 4.57, ratingKakao: 4.3, menu: "야들야들 온족발, 순댓국", lat: 37.2565, lng: 127.0242 },
-      { id: "SW13", name: "운멜로 1호점 (행궁동)", category: "양식", macro: "gyeonggi_south_east", micro: "suwon_paldal_gwonseon", address: "경기 수원시 팔달구 행궁로 71", ratingNaver: 4.66, ratingKakao: 4.3, menu: "풍기크레마 파스타, 스테이크", lat: 37.2825, lng: 127.0125 },
-      { id: "SW14", name: "존앤진피자펍 행궁점", category: "양식", macro: "gyeonggi_south_east", micro: "suwon_paldal_gwonseon", address: "경기 수원시 팔달구 신풍로 47", ratingNaver: 4.63, ratingKakao: 4.2, menu: "존앤진 피자, 하와이안 피자", lat: 37.2842, lng: 127.0138 },
-      { id: "SW15", name: "고기원칙 인계점", category: "고기/구이", macro: "gyeonggi_south_east", micro: "suwon_paldal_gwonseon", address: "경기 수원시 팔달구 효원로265번길 44", ratingNaver: 4.60, ratingKakao: 4.2, menu: "항아리 숙성삼겹, 황제덧살", lat: 37.2618, lng: 127.0285 },
-      { id: "SW16", name: "장안통닭", category: "치킨", macro: "gyeonggi_south_east", micro: "suwon_paldal_gwonseon", address: "경기 수원시 팔달구 팔달문로3번길 42", ratingNaver: 4.54, ratingKakao: 4.1, menu: "바삭 통닭, 똥집마늘구이", lat: 37.2805, lng: 127.0172 },
+      // ================= 경기동부/남부: 수원 =================
+      { id: "SW1", name: "가보정 1관", category: "고기/구이", macro: "gyeonggi_south_east", micro: "suwon", address: "경기 수원시 팔달구 장다리로 282", ratingNaver: 4.72, ratingKakao: 4.4, menu: "한우 생갈비, 한우 양념갈비 정식", lat: 37.2758, lng: 127.0298 },
+      { id: "SW2", name: "유치회관 본점", category: "한식", macro: "gyeonggi_south_east", micro: "suwon", address: "경기 수원시 팔달구 효원로292번길 67", ratingNaver: 4.64, ratingKakao: 4.3, menu: "선지해장국, 수육, 수육무침", lat: 37.2625, lng: 127.0305 },
+      { id: "SW3", name: "이나경송탄부대찌개", category: "한식", macro: "gyeonggi_south_east", micro: "suwon", address: "경기 수원시 팔달구 효원로307번길 47", ratingNaver: 4.61, ratingKakao: 4.2, menu: "스페셜 부대찌개 (소시지 폭탄)", lat: 37.2612, lng: 127.0321 },
+      { id: "SW4", name: "광주족발순대 권선시장점", category: "한식", macro: "gyeonggi_south_east", micro: "suwon", address: "경기 수원시 권선구 세권로 185", ratingNaver: 4.58, ratingKakao: 4.4, menu: "왕족발, 순대국밥, 모듬순대 서비스", lat: 37.2568, lng: 127.0245 },
+      { id: "SW5", name: "입주집", category: "고기/구이", macro: "gyeonggi_south_east", micro: "suwon", address: "경기 수원시 팔달구 팔달문로 3", ratingNaver: 4.55, ratingKakao: 4.2, menu: "소곱창구이, 막창구이, 볶음밥", lat: 37.2775, lng: 127.0182 },
+      { id: "SW6", name: "진미통닭", category: "치킨", macro: "gyeonggi_south_east", micro: "suwon", address: "경기 수원시 팔달구 정조로800번길 21", ratingNaver: 4.60, ratingKakao: 4.1, menu: "가마솥 후라이드, 통닭", lat: 37.2801, lng: 127.0169 },
+      { id: "SW7", name: "용성통닭 본점", category: "치킨", macro: "gyeonggi_south_east", micro: "suwon", address: "경기 수원시 팔달구 정조로800번길 15", ratingNaver: 4.57, ratingKakao: 4.2, menu: "후라이드, 닭발/모래집 튀김", lat: 37.2798, lng: 127.0165 },
+      { id: "SW8", name: "보영만두 본점", category: "분식", macro: "gyeonggi_south_east", micro: "suwon", address: "경기 수원시 장안구 팔달로 271", ratingNaver: 4.62, ratingKakao: 4.1, menu: "군만두, 매운쫄면, 찐만두", lat: 37.2872, lng: 127.0145 },
+      { id: "SW9", name: "장터설렁탕 세류본점", category: "한식", macro: "gyeonggi_south_east", micro: "suwon", address: "경기 수원시 권선구 정조로 441", ratingNaver: 4.53, ratingKakao: 4.3, menu: "가마솥 설렁탕, 도가니탕, 모듬수육", lat: 37.2482, lng: 127.0156 },
+      { id: "SW10", name: "구들짱황소곱창 곡반정점", category: "고기/구이", macro: "gyeonggi_south_east", micro: "suwon", address: "경기 수원시 권선구 곡반정로65번길 23", ratingNaver: 4.65, ratingKakao: 4.3, menu: "불쇼 한우곱창, 대창구이", lat: 37.2405, lng: 127.0341 },
+      { id: "SW11", name: "본수원갈비 본점", category: "고기/구이", macro: "gyeonggi_south_east", micro: "suwon", address: "경기 수원시 팔달구 중부대로223번길 41", ratingNaver: 4.68, ratingKakao: 4.3, menu: "생갈비, 양념갈비, 된장찌개", lat: 37.2812, lng: 127.0425 },
+      { id: "SW12", name: "아줌마왕족발 권선시장점", category: "한식", macro: "gyeonggi_south_east", micro: "suwon", address: "경기 수원시 권선구 세권로 185", ratingNaver: 4.57, ratingKakao: 4.3, menu: "야들야들 온족발, 순댓국", lat: 37.2565, lng: 127.0242 },
+      { id: "SW13", name: "운멜로 1호점 (행궁동)", category: "양식", macro: "gyeonggi_south_east", micro: "suwon", address: "경기 수원시 팔달구 행궁로 71", ratingNaver: 4.66, ratingKakao: 4.3, menu: "풍기크레마 파스타, 스테이크", lat: 37.2825, lng: 127.0125 },
+      { id: "SW14", name: "존앤진피자펍 행궁점", category: "양식", macro: "gyeonggi_south_east", micro: "suwon", address: "경기 수원시 팔달구 신풍로 47", ratingNaver: 4.63, ratingKakao: 4.2, menu: "존앤진 피자, 하와이안 피자", lat: 37.2842, lng: 127.0138 },
+      { id: "SW15", name: "고기원칙 인계점", category: "고기/구이", macro: "gyeonggi_south_east", micro: "suwon", address: "경기 수원시 팔달구 효원로265번길 44", ratingNaver: 4.60, ratingKakao: 4.2, menu: "항아리 숙성삼겹, 황제덧살", lat: 37.2618, lng: 127.0285 },
+      { id: "SW16", name: "장안통닭", category: "치킨", macro: "gyeonggi_south_east", micro: "suwon", address: "경기 수원시 팔달구 팔달문로3번길 42", ratingNaver: 4.54, ratingKakao: 4.1, menu: "바삭 통닭, 똥집마늘구이", lat: 37.2805, lng: 127.0172 },
 
-      // ================= 경기동부/남부: 수원 영통/광교 =================
-      { id: "GG1", name: "세상의모든아침 광교점", category: "양식", macro: "gyeonggi_south_east", micro: "suwon_yeongtong_gwanggyo", address: "경기 수원시 영통구 광교호수공원로 80", ratingNaver: 4.62, ratingKakao: 4.1, menu: "트러플 리조또, 스테이크", lat: 37.2842, lng: 127.0589 },
-      { id: "GG2", name: "백년화로 광교이의점", category: "고기/구이", macro: "gyeonggi_south_east", micro: "suwon_yeongtong_gwanggyo", address: "경기 수원시 영통구 대학1로 54", ratingNaver: 4.69, ratingKakao: 4.5, menu: "이베리코 꽃목살, 숯불 소갈비살", lat: 37.2995, lng: 127.0435 },
-      { id: "GG3", name: "정돈 갤러리아광교점", category: "일식/초밥", macro: "gyeonggi_south_east", micro: "suwon_yeongtong_gwanggyo", address: "경기 수원시 영통구 광교중앙로 124 갤러리아 지하1층", ratingNaver: 4.65, ratingKakao: 4.3, menu: "프리미엄 안심돈카츠, 등심돈카츠", lat: 37.2885, lng: 127.0562 },
-      { id: "GG4", name: "도쿄등심 앨리웨이광교점", category: "일식/초밥", macro: "gyeonggi_south_east", micro: "suwon_yeongtong_gwanggyo", address: "경기 수원시 영통구 광교호수공원로 80 앨리웨이 3층", ratingNaver: 4.68, ratingKakao: 4.4, menu: "한우 스키야키, 워터에이징 한우", lat: 37.2839, lng: 127.0592 },
-      { id: "GG5", name: "지동관 광교아브뉴프랑점", category: "중식", macro: "gyeonggi_south_east", micro: "suwon_yeongtong_gwanggyo", address: "경기 수원시 영통구 센트럴타운로 85", ratingNaver: 4.52, ratingKakao: 4.0, menu: "70년 전통 삼선짬뽕, 탕수육", lat: 37.2915, lng: 127.0498 },
-      { id: "GG6", name: "몽린 앨리웨이광교점", category: "고기/구이", macro: "gyeonggi_south_east", micro: "suwon_yeongtong_gwanggyo", address: "경기 수원시 영통구 광교호수공원로 80", ratingNaver: 4.63, ratingKakao: 4.3, menu: "짚불 볏짚 우대갈비, 된장찌개", lat: 37.2835, lng: 127.0585 },
-      { id: "GG7", name: "어울림 횟집 광교원천점", category: "회/해산물", macro: "gyeonggi_south_east", micro: "suwon_yeongtong_gwanggyo", address: "경기 수원시 영통구 매영로 310", ratingNaver: 4.59, ratingKakao: 4.2, menu: "제철 모듬활어회, 매운탕", lat: 37.2721, lng: 127.0612 },
-      { id: "GG8", name: "형훈텐동 앨리웨이광교점", category: "일식/초밥", macro: "gyeonggi_south_east", micro: "suwon_yeongtong_gwanggyo", address: "경기 수원시 영통구 광교호수공원로 80", ratingNaver: 4.56, ratingKakao: 4.1, menu: "스페셜텐동, 에비텐동", lat: 37.2838, lng: 127.0588 },
-      { id: "GG9", name: "화포식당 광교카페거리점", category: "고기/구이", macro: "gyeonggi_south_east", micro: "suwon_yeongtong_gwanggyo", address: "경기 수원시 영통구 센트럴파크로127번길 16", ratingNaver: 4.64, ratingKakao: 4.3, menu: "숙성 통삼겹살, 목살스테이크", lat: 37.2972, lng: 127.0515 },
-      { id: "GG10", name: "풍성식당 원천점", category: "한식", macro: "gyeonggi_south_east", micro: "suwon_yeongtong_gwanggyo", address: "경기 수원시 영통구 원천동 29-62", ratingNaver: 4.51, ratingKakao: 4.2, menu: "묵은지 생삼겹살 김치찌개, 제육볶음", lat: 37.2715, lng: 127.0585 },
-      { id: "GG11", name: "노티드 광교갤러리아", category: "카페", macro: "gyeonggi_south_east", micro: "suwon_yeongtong_gwanggyo", address: "경기 수원시 영통구 광교중앙로 124 지하1층", ratingNaver: 4.62, ratingKakao: 4.2, menu: "우유생크림도넛, 바닐라크림도넛", lat: 37.2884, lng: 127.0560 },
-      { id: "GG12", name: "오이탈리안 광교점", category: "양식", macro: "gyeonggi_south_east", micro: "suwon_yeongtong_gwanggyo", address: "경기 수원시 영통구 센트럴타운로 85 2층", ratingNaver: 4.60, ratingKakao: 4.3, menu: "갓구운 식전빵 무한제공, 바질파스타", lat: 37.2918, lng: 127.0502 },
-      { id: "GG13", name: "라벤치 광교점", category: "양식", macro: "gyeonggi_south_east", micro: "suwon_yeongtong_gwanggyo", address: "경기 수원시 영통구 센트럴파크로127번길 147", ratingNaver: 4.58, ratingKakao: 4.2, menu: "목살 스테이크 샐러드, 게살 크림리조또", lat: 37.2965, lng: 127.0538 },
+      // 수원 (영통/광교 포함)
+      { id: "GG1", name: "세상의모든아침 광교점", category: "양식", macro: "gyeonggi_south_east", micro: "suwon", address: "경기 수원시 영통구 광교호수공원로 80", ratingNaver: 4.62, ratingKakao: 4.1, menu: "트러플 리조또, 스테이크", lat: 37.2842, lng: 127.0589 },
+      { id: "GG2", name: "백년화로 광교이의점", category: "고기/구이", macro: "gyeonggi_south_east", micro: "suwon", address: "경기 수원시 영통구 대학1로 54", ratingNaver: 4.69, ratingKakao: 4.5, menu: "이베리코 꽃목살, 숯불 소갈비살", lat: 37.2995, lng: 127.0435 },
+      { id: "GG3", name: "정돈 갤러리아광교점", category: "일식/초밥", macro: "gyeonggi_south_east", micro: "suwon", address: "경기 수원시 영통구 광교중앙로 124 갤러리아 지하1층", ratingNaver: 4.65, ratingKakao: 4.3, menu: "프리미엄 안심돈카츠, 등심돈카츠", lat: 37.2885, lng: 127.0562 },
+      { id: "GG4", name: "도쿄등심 앨리웨이광교점", category: "일식/초밥", macro: "gyeonggi_south_east", micro: "suwon", address: "경기 수원시 영통구 광교호수공원로 80 앨리웨이 3층", ratingNaver: 4.68, ratingKakao: 4.4, menu: "한우 스키야키, 워터에이징 한우", lat: 37.2839, lng: 127.0592 },
+      { id: "GG5", name: "지동관 광교아브뉴프랑점", category: "중식", macro: "gyeonggi_south_east", micro: "suwon", address: "경기 수원시 영통구 센트럴타운로 85", ratingNaver: 4.52, ratingKakao: 4.0, menu: "70년 전통 삼선짬뽕, 탕수육", lat: 37.2915, lng: 127.0498 },
+      { id: "GG6", name: "몽린 앨리웨이광교점", category: "고기/구이", macro: "gyeonggi_south_east", micro: "suwon", address: "경기 수원시 영통구 광교호수공원로 80", ratingNaver: 4.63, ratingKakao: 4.3, menu: "짚불 볏짚 우대갈비, 된장찌개", lat: 37.2835, lng: 127.0585 },
+      { id: "GG7", name: "어울림 횟집 광교원천점", category: "회/해산물", macro: "gyeonggi_south_east", micro: "suwon", address: "경기 수원시 영통구 매영로 310", ratingNaver: 4.59, ratingKakao: 4.2, menu: "제철 모듬활어회, 매운탕", lat: 37.2721, lng: 127.0612 },
+      { id: "GG8", name: "형훈텐동 앨리웨이광교점", category: "일식/초밥", macro: "gyeonggi_south_east", micro: "suwon", address: "경기 수원시 영통구 광교호수공원로 80", ratingNaver: 4.56, ratingKakao: 4.1, menu: "스페셜텐동, 에비텐동", lat: 37.2838, lng: 127.0588 },
+      { id: "GG9", name: "화포식당 광교카페거리점", category: "고기/구이", macro: "gyeonggi_south_east", micro: "suwon", address: "경기 수원시 영통구 센트럴파크로127번길 16", ratingNaver: 4.64, ratingKakao: 4.3, menu: "숙성 통삼겹살, 목살스테이크", lat: 37.2972, lng: 127.0515 },
+      { id: "GG10", name: "풍성식당 원천점", category: "한식", macro: "gyeonggi_south_east", micro: "suwon", address: "경기 수원시 영통구 원천동 29-62", ratingNaver: 4.51, ratingKakao: 4.2, menu: "묵은지 생삼겹살 김치찌개, 제육볶음", lat: 37.2715, lng: 127.0585 },
+      { id: "GG11", name: "노티드 광교갤러리아", category: "카페", macro: "gyeonggi_south_east", micro: "suwon", address: "경기 수원시 영통구 광교중앙로 124 지하1층", ratingNaver: 4.62, ratingKakao: 4.2, menu: "우유생크림도넛, 바닐라크림도넛", lat: 37.2884, lng: 127.0560 },
+      { id: "GG12", name: "오이탈리안 광교점", category: "양식", macro: "gyeonggi_south_east", micro: "suwon", address: "경기 수원시 영통구 센트럴타운로 85 2층", ratingNaver: 4.60, ratingKakao: 4.3, menu: "갓구운 식전빵 무한제공, 바질파스타", lat: 37.2918, lng: 127.0502 },
+      { id: "GG13", name: "라벤치 광교점", category: "양식", macro: "gyeonggi_south_east", micro: "suwon", address: "경기 수원시 영통구 센트럴파크로127번길 147", ratingNaver: 4.58, ratingKakao: 4.2, menu: "목살 스테이크 샐러드, 게살 크림리조또", lat: 37.2965, lng: 127.0538 },
 
       // ================= 경기동부/남부: 분당/서현/야탑 & 판교/성남 =================
       { id: "SN1", name: "윤밀원", category: "한식", macro: "gyeonggi_south_east", micro: "bundang_seohyeon_yatap", address: "경기 성남시 분당구 불정로 420", ratingNaver: 4.68, ratingKakao: 4.4, menu: "양지칼국수, 평양냉면, 족발", lat: 37.3712, lng: 127.1354 },
@@ -942,6 +945,10 @@
           if (Array.isArray(parsed)) {
             parsed.forEach(r => {
               if (r.isUserAdded || (typeof r.id === 'string' && r.id.startsWith('C'))) {
+                // 기존 수원 세부 권역 키를 통합 'suwon'으로 자동 매핑
+                if (r.micro === 'suwon_paldal_gwonseon' || r.micro === 'suwon_yeongtong_gwanggyo') {
+                  r.micro = 'suwon';
+                }
                 userAddedItems.push(r);
               }
               if (r.reviews && r.reviews.length > 0) {
@@ -960,6 +967,9 @@
           const parsedBackup = JSON.parse(customBackup);
           if (Array.isArray(parsedBackup)) {
             parsedBackup.forEach(custom => {
+              if (custom.micro === 'suwon_paldal_gwonseon' || custom.micro === 'suwon_yeongtong_gwanggyo') {
+                custom.micro = 'suwon';
+              }
               if (!userAddedItems.some(item => item.id === custom.id || item.name === custom.name)) {
                 userAddedItems.push(custom);
               }
@@ -1053,7 +1063,13 @@
       let filtered = restaurants;
       if (macro !== 'all') {
         filtered = filtered.filter(r => r.macro === macro);
-        if (micro !== 'all') filtered = filtered.filter(r => r.micro === micro);
+        if (micro !== 'all') {
+          if (micro === 'suwon') {
+            filtered = filtered.filter(r => r.micro === 'suwon' || r.micro === 'suwon_paldal_gwonseon' || r.micro === 'suwon_yeongtong_gwanggyo');
+          } else {
+            filtered = filtered.filter(r => r.micro === micro);
+          }
+        }
       }
       if (currentCategory !== '전체') {
         filtered = filtered.filter(r => r.category === currentCategory);
@@ -1514,7 +1530,13 @@
       let candidateList = restaurants;
       if (macro !== 'all') {
         candidateList = candidateList.filter(r => r.macro === macro);
-        if (micro !== 'all') candidateList = candidateList.filter(r => r.micro === micro);
+        if (micro !== 'all') {
+          if (micro === 'suwon') {
+            candidateList = candidateList.filter(r => r.micro === 'suwon' || r.micro === 'suwon_paldal_gwonseon' || r.micro === 'suwon_yeongtong_gwanggyo');
+          } else {
+            candidateList = candidateList.filter(r => r.micro === micro);
+          }
+        }
       }
       if (currentCategory !== '전체') {
         candidateList = candidateList.filter(r => r.category === currentCategory);
