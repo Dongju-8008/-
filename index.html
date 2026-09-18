@@ -445,6 +445,30 @@
       return categoryImages['기타'] || 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=600&q=80';
     }
 
+    function getShortRegionName(r) {
+      if (!r) return '전국';
+      if (r.macro && r.micro && regionConfig[r.macro]) {
+        const found = regionConfig[r.macro].find(m => m.id === r.micro);
+        if (found && found.name && found.id !== 'all') {
+          return found.name;
+        }
+      }
+      const macroMap = {
+        seoul_gangnam: '서울강남',
+        seoul_gangbuk: '서울강북',
+        gyeonggi_south_east: '경기동부/남부',
+        gyeonggi_north: '경기북부',
+        incheon_bucheon: '인천/부천',
+        busan_gyeongsang: '부산/경상',
+        daegu_gyeongbuk: '대구/경북',
+        daejeon_chungcheong: '대전/충청',
+        gwangju_jeonla: '광주/전라',
+        gangwon: '강원도',
+        jeju: '제주도'
+      };
+      return macroMap[r.macro] || '전국';
+    }
+
     const regionConfig = {
       seoul_gangnam: [
         { id: 'all', name: '서울강남 전체' },
@@ -903,130 +927,63 @@
       try { localStorage.setItem(key, val); } catch (e) {}
     }
 
-    function getShortRegionName(r) {
-      if (!r) return '전국';
-      const shortMap = {
-        apgujeong_cheongdam_sinsa: '압구정/청담',
-        gwanak_dongjak_sadang: '관악/동작/사당',
-        gangdong_cheonho_gildong: '강동/천호',
-        gangnam_nonhyeon: '강남/논현',
-        gangseo_mokdong_yangcheon: '강서/목동',
-        gyodae_bangbae_yangjae: '교대/방배/양재',
-        jamsil_songpa: '잠실/송파',
-        guro_yeongdeungpo: '구로/영등포',
-        samseong_yeoksam_daechi: '삼성/역삼/대치',
-        bulgwang_eungam: '불광/응암',
-        daehakro_suyu: '대학로/수유',
-        geondae_seongsu_jungnang: '건대/성수/중랑',
-        hongdae_sangsu_hapjeong: '홍대/상수/합정',
-        itaewon_hannam_yongsan: '이태원/한남/용산',
-        jongno_gwanghwamun: '종로/광화문',
-        myeongdong_cityhall_euljiro: '명동/을지로',
-        nowon_dobong: '노원/도봉',
-        sangam_eunpyeong: '상암/은평',
-        sinchon_ewha_gongdeok: '신촌/이대/공덕',
-        wangsimni_dongdaemun: '왕십리/동대문',
-        ansan: '안산',
-        anyang_gunpo_uiwang: '안양/군포/의왕',
-        bundang_seohyeon_yatap: '분당/서현/야탑',
-        gwangmyeong_siheung: '광명/시흥',
-        guri_hanam_namyangju: '구리/하남/남양주',
-        hwaseong_dongtan_pyeongtaek_osan: '화성/동탄/평택',
-        pangyo_seongnam: '판교/성남',
-        suwon_paldal_gwonseon: '수원 팔달/권선',
-        suwon_yeongtong_gwanggyo: '수원 영통/광교',
-        yongin_gwangju_icheon: '용인/광주/이천',
-        ilsan_deogyang_paju: '일산/덕양/파주',
-        gimpo: '김포',
-        uijeongbu_yangju: '의정부/양주',
-        bucheon: '부천',
-        gyeyang_bupyeong_seogu: '계양/부평/서구',
-        namdong_michuhol: '남동/미추홀',
-        songdo_yeonsu_junggu: '송도/연수/중구',
-        pusan_univ_dongnae: '부산대/동래',
-        kyungsung_gwangan_suyeong: '경성대/광안/수영',
-        haeundae_centum_gijang: '해운대/기장',
-        jinju_geoje_tongyeong: '진주/거제/통영',
-        masan_changwon_jinhae: '마산/창원/진해',
-        nampo_junggu_saha: '남포/사하',
-        sasang_gimhae_yangsan: '사상/김해/양산',
-        seomyeon_busanjin_donggu: '서면/부산진구',
-        ulsan: '울산',
-        yeonsan_geoje_gyodae: '연산/거제/교대',
-        bukgu_seogu_dalseo: '대구 북/서/달서',
-        junggu_namgu: '대구 중구/남구',
-        gumi_gimcheon_sangju_mungyeong_andong: '구미/안동/경북',
-        pohang_gyeongju: '포항/경주',
-        suseong_donggu: '대구 수성/동구',
-        cheonan_chungnam: '천안/충남',
-        cheongju_chungbuk_sejong: '청주/충북/세종',
-        junggu_donggu_daedeok: '대전 중/동/대덕',
-        seogu_yuseong: '대전 서구/유성구',
-        gwangsang_bukgu: '광주 광산/북구',
-        jeonju_iksan_gunsan: '전주/익산/군산',
-        mokpo: '목포',
-        seogu_donggu_namgu: '광주 서/동/남구',
-        yeosu_gwangyang: '여수/광양',
-        chuncheon_hongcheon: '춘천/홍천',
-        gangneung_donghae: '강릉/동해',
-        sokcho_yangyang: '속초/양양',
-        wonju: '원주',
-        jeju_city: '제주시',
-        seogwipo: '서귀포',
-        seongsan_ilchulbong: '성산일출봉'
-      };
-
-      if (r.micro && shortMap[r.micro]) {
-        return shortMap[r.micro];
-      }
-
-      const macroMap = {
-        seoul_gangnam: '서울강남',
-        seoul_gangbuk: '서울강북',
-        gyeonggi_south_east: '경기동부/남부',
-        gyeonggi_north: '경기북부',
-        incheon_bucheon: '인천/부천',
-        busan_gyeongsang: '부산/경상',
-        daegu_gyeongbuk: '대구/경북',
-        daejeon_chungcheong: '대전/충청',
-        gwangju_jeonla: '광주/전라',
-        gangwon: '강원도',
-        jeju: '제주도'
-      };
-
-      if (r.macro && macroMap[r.macro]) {
-        return macroMap[r.macro];
-      }
-
-      if (r.address) {
-        const parts = r.address.split(' ');
-        if (parts.length > 1) return parts[1];
-      }
-      return '전국';
-    }
-
     function initializeApp() {
       const storedVersion = safeGetStorage('tastemap_version');
       const storedData = safeGetStorage('tastemap_data');
+      const customBackup = safeGetStorage('tastemap_custom_restaurants');
 
-      if (storedVersion !== DB_VERSION || !storedData) {
-        restaurants = [...seedData];
-        saveData();
-        safeSetStorage('tastemap_version', DB_VERSION);
-      } else {
+      let userAddedItems = [];
+      let reviewsMap = {};
+
+      // 1. 기존 데이터에서 사용자가 직접 추가한 맛집 및 리뷰 안전 추출
+      if (storedData) {
         try {
-          restaurants = JSON.parse(storedData);
-          const existingSeedIds = new Set(restaurants.map(r => r.id));
-          const newSeedItems = seedData.filter(r => !existingSeedIds.has(r.id));
-          if (newSeedItems.length > 0) {
-            restaurants = [...restaurants, ...newSeedItems];
-            saveData();
+          const parsed = JSON.parse(storedData);
+          if (Array.isArray(parsed)) {
+            parsed.forEach(r => {
+              if (r.isUserAdded || (typeof r.id === 'string' && r.id.startsWith('C'))) {
+                userAddedItems.push(r);
+              }
+              if (r.reviews && r.reviews.length > 0) {
+                reviewsMap[r.id] = r.reviews;
+              }
+            });
           }
         } catch (e) {
-          restaurants = [...seedData];
-          saveData();
+          console.warn("기존 데이터 파싱 중 예외 발생, 백업 검사로 이동", e);
         }
       }
+
+      // 2. 전용 백업 저장소(tastemap_custom_restaurants)가 있다면 추가 복원
+      if (customBackup) {
+        try {
+          const parsedBackup = JSON.parse(customBackup);
+          if (Array.isArray(parsedBackup)) {
+            parsedBackup.forEach(custom => {
+              if (!userAddedItems.some(item => item.id === custom.id || item.name === custom.name)) {
+                userAddedItems.push(custom);
+              }
+            });
+          }
+        } catch (e) {}
+      }
+
+      // 3. 기본 시드 데이터에 사용자가 남긴 리뷰 연결
+      const baseSeed = seedData.map(item => {
+        if (reviewsMap[item.id] && (!item.reviews || item.reviews.length === 0)) {
+          return { ...item, reviews: reviewsMap[item.id] };
+        }
+        return item;
+      });
+
+      // 4. 사용자가 추가한 맛집들을 목록 최상단에 배치하여 병합
+      const seedIds = new Set(baseSeed.map(s => s.id));
+      const filteredUserItems = userAddedItems.filter(u => !seedIds.has(u.id));
+      restaurants = [...filteredUserItems, ...baseSeed];
+
+      // 5. 병합 데이터 및 사용자 맛집 전용 백업 동시 저장
+      saveData();
+      safeSetStorage('tastemap_version', DB_VERSION);
 
       initCategories();
       initMap();
@@ -1042,6 +999,9 @@
 
     function saveData() {
       safeSetStorage('tastemap_data', JSON.stringify(restaurants));
+      // 사용자가 직접 등록한 맛집만 별도 안전 저장소에 이중 백업
+      const userCustomOnly = restaurants.filter(r => r.isUserAdded || (typeof r.id === 'string' && r.id.startsWith('C')));
+      safeSetStorage('tastemap_custom_restaurants', JSON.stringify(userCustomOnly));
     }
 
     function onMacroRegionChange() {
