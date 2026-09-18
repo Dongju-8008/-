@@ -11,7 +11,7 @@
   <!-- Leaflet Map CSS & JS -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="" />
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
-
+ 
   <script>
     tailwind.config = {
       theme: {
@@ -23,7 +23,7 @@
       }
     }
   </script>
-
+ 
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Pretendard:wght@300;400;500;600;700;800&display=swap');
     body {
@@ -36,12 +36,12 @@
     
     .no-scrollbar::-webkit-scrollbar { display: none; }
     .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-
+ 
     .leaflet-popup-content-wrapper {
       border-radius: 1rem; padding: 4px; box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.15);
     }
     .leaflet-popup-content { margin: 8px 12px; }
-
+ 
     #map {
       width: 100%;
       height: 100%;
@@ -66,7 +66,7 @@
         transform: translateY(0);
       }
     }
-
+ 
     @keyframes roulettePulse {
       0%, 100% { transform: scale(1); }
       50% { transform: scale(1.05); }
@@ -77,7 +77,7 @@
   </style>
 </head>
 <body class="bg-slate-50 text-slate-800 h-dvh flex flex-col antialiased overflow-hidden">
-
+ 
   <!-- HEADER -->
   <header class="flex-none z-40 bg-white border-b border-slate-200 shadow-sm transition-all">
     <div class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
@@ -96,7 +96,7 @@
               <p class="text-[10px] sm:text-[11px] text-slate-500 -mt-0.5 truncate hidden sm:block">전국 핫플 맛집 탐색기</p>
             </div>
           </div>
-
+ 
           <div class="flex items-center space-x-2 shrink-0">
             <button onclick="openModal('addRestaurantModal')" class="flex items-center space-x-1 px-2.5 py-1.5 sm:px-3 bg-orange-50 text-orange-600 rounded-xl font-semibold text-xs border border-orange-200 hover:bg-orange-100 transition">
               <i class="fa-solid fa-plus"></i><span class="hidden sm:inline">맛집 등록</span>
@@ -106,7 +106,7 @@
             </button>
           </div>
         </div>
-
+ 
         <!-- Region Selectors -->
         <div class="flex items-center gap-1.5 bg-slate-50 p-1.5 rounded-xl border border-slate-200 w-full sm:w-auto shrink-0">
           <div class="flex items-center justify-center w-6 text-orange-500 text-sm shrink-0">
@@ -136,7 +136,7 @@
       <div class="flex items-center gap-2 py-2.5 overflow-x-auto no-scrollbar border-t border-slate-100" id="categoryContainer"></div>
     </div>
   </header>
-
+ 
   <!-- MAIN BODY -->
   <main class="flex-1 min-h-0 w-full max-w-7xl mx-auto flex flex-col md:flex-row p-0 md:p-4 gap-0 md:gap-4 relative">
     
@@ -151,13 +151,13 @@
       </div>
       
       <div id="restaurantList" class="flex-1 overflow-y-auto p-3 sm:p-4 space-y-3 sm:space-y-4 custom-scrollbar bg-slate-50/30 pb-24 md:pb-4"></div>
-
+ 
       <!-- Mobile Map Toggle Button -->
       <button onclick="toggleMobileMap()" class="md:hidden absolute bottom-6 left-1/2 -translate-x-1/2 z-40 bg-slate-800/95 backdrop-blur text-white px-5 py-2.5 rounded-full font-bold text-sm shadow-xl shadow-slate-900/20 flex items-center gap-2 hover:bg-slate-700 active:scale-95 transition-transform border border-slate-700/50">
         <i class="fa-solid fa-map text-orange-400"></i> 지도 뷰 보기
       </button>
     </div>
-
+ 
     <!-- Map Column -->
     <div id="mapColumn" class="flex-1 h-full md:rounded-3xl shadow-lg md:shadow-sm md:border md:border-slate-200 overflow-hidden relative bg-slate-100">
       <div id="map"></div>
@@ -167,7 +167,7 @@
       </button>
     </div>
   </main>
-
+ 
   <!-- DETAIL MODAL -->
   <div id="detailModal" class="fixed inset-0 z-[1001] hidden bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4">
     <div class="bg-white rounded-3xl shadow-2xl w-full max-w-lg overflow-hidden transform transition-all flex flex-col max-h-[95vh] sm:max-h-[90vh]">
@@ -181,6 +181,7 @@
           <div class="flex items-center gap-2 mb-1.5 flex-wrap">
             <span id="detailCategory" class="px-2 py-0.5 bg-orange-500 text-white text-[10px] sm:text-xs font-bold rounded"></span>
             <span id="detailUserBadge" class="hidden px-2 py-0.5 bg-indigo-600 text-white text-[10px] sm:text-xs font-bold rounded flex items-center gap-1"><i class="fa-solid fa-user-pen text-[9px]"></i>이용자 추가</span>
+            <span id="detailTopBadge" class="hidden px-2 py-0.5 bg-amber-500 text-white text-[10px] sm:text-xs font-bold rounded flex items-center gap-1"><i class="fa-solid fa-crown text-[9px]"></i>AI 인기 맛집</span>
             <span id="detailRegion" class="text-white/90 text-[10px] sm:text-xs font-medium"></span>
           </div>
           <h3 id="detailName" class="text-xl sm:text-2xl font-bold text-white leading-tight break-keep"></h3>
@@ -199,7 +200,7 @@
             <div class="text-lg sm:text-xl font-extrabold text-yellow-600"><i class="fa-solid fa-star text-sm mr-1"></i><span id="detailKakao"></span></div>
           </div>
         </div>
-
+ 
         <div id="detailUserNotice" class="hidden mb-6 bg-indigo-50/80 border border-indigo-100 rounded-2xl p-3.5 flex items-center gap-3">
           <div class="w-9 h-9 rounded-xl bg-indigo-100 text-indigo-600 flex items-center justify-center shrink-0 text-base">
             <i class="fa-solid fa-user-check"></i>
@@ -239,14 +240,14 @@
             카카오맵
           </button>
         </div>
-
-        <!-- Master Admin Delete for User-Added Restaurants -->
-        <div id="adminDeleteContainer" class="hidden mt-4">
+ 
+        <!-- Master Admin Delete (all restaurants) -->
+        <div class="mt-4">
           <button onclick="promptAdminDelete()" class="w-full py-2.5 bg-rose-50 hover:bg-rose-100 text-rose-600 border border-rose-200 rounded-xl font-bold text-xs transition flex items-center justify-center gap-1.5">
             <i class="fa-solid fa-lock text-[11px]"></i> 관리자 삭제 (마스터 전용)
           </button>
         </div>
-
+ 
         <!-- Reviews Section -->
         <div class="mt-8 pt-6 border-t border-slate-100">
           <div class="flex items-center justify-between mb-4">
@@ -259,7 +260,7 @@
               <span id="reviewAvgScore">0.0</span>
             </div>
           </div>
-
+ 
           <!-- Review Input Form -->
           <div class="bg-slate-50 p-3.5 sm:p-4 rounded-2xl border border-slate-200 mb-4">
             <div class="flex items-center justify-between mb-2.5 flex-wrap gap-2">
@@ -279,13 +280,13 @@
               <button onclick="submitReview()" class="px-3.5 py-2 bg-slate-800 hover:bg-slate-900 text-white rounded-xl text-xs font-bold shrink-0 transition active:scale-95">등록</button>
             </div>
           </div>
-
+ 
           <div id="reviewList" class="space-y-2.5 max-h-56 overflow-y-auto custom-scrollbar"></div>
         </div>
       </div>
     </div>
   </div>
-
+ 
   <!-- ROULETTE MODAL -->
   <div id="rouletteModal" class="fixed inset-0 z-[1002] hidden bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
     <div class="bg-white rounded-3xl p-6 sm:p-7 max-w-sm w-full text-center relative shadow-2xl border border-slate-100">
@@ -299,7 +300,7 @@
       <p class="text-xs text-slate-500 mb-5 break-keep">현재 선택된 지역과 카테고리 내에서 찐맛집을 추천해 드립니다!</p>
       
       <div id="rouletteNotice" class="hidden text-xs text-rose-500 font-semibold bg-rose-50 p-2.5 rounded-xl mb-4 border border-rose-100"></div>
-
+ 
       <div class="h-36 bg-slate-50 rounded-2xl border-2 border-dashed border-slate-200 flex flex-col items-center justify-center mb-5 overflow-hidden relative p-3">
         <div id="roulettePlaceholder" class="text-slate-400 text-xs flex flex-col items-center gap-1.5">
           <i class="fa-solid fa-utensils text-slate-300 text-2xl"></i>
@@ -322,7 +323,7 @@
       </div>
     </div>
   </div>
-
+ 
   <!-- ADD RESTAURANT MODAL -->
   <div id="addRestaurantModal" class="fixed inset-0 z-[1002] hidden bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
     <div class="bg-white rounded-3xl p-6 max-w-md w-full relative max-h-[90vh] overflow-y-auto custom-scrollbar shadow-2xl">
@@ -379,14 +380,25 @@
           <label class="block text-xs font-bold text-slate-600 mb-1.5">대표 메뉴</label>
           <input type="text" id="addMenu" class="w-full border border-slate-200 rounded-xl p-2.5 outline-none focus:border-orange-500 bg-slate-50" placeholder="예: 선지해장국, 수육">
         </div>
-
+ 
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-bold text-slate-600 mb-1.5">네이버 평점 (선택)</label>
+            <input type="number" step="0.01" min="0" max="5" id="addRatingNaver" class="w-full border border-slate-200 rounded-xl p-2.5 outline-none focus:border-orange-500 bg-slate-50" placeholder="예: 4.65">
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-600 mb-1.5">카카오 평점 (선택)</label>
+            <input type="number" step="0.01" min="0" max="5" id="addRatingKakao" class="w-full border border-slate-200 rounded-xl p-2.5 outline-none focus:border-orange-500 bg-slate-50" placeholder="예: 4.4">
+          </div>
+        </div>
+ 
         <div>
           <label class="block text-xs font-bold text-slate-600 mb-1.5">대표 사진 등록 (선택)</label>
           <div class="flex gap-2 mb-2">
             <button type="button" id="tabImgFile" onclick="switchImageTab('file')" class="flex-1 py-1.5 text-xs font-bold rounded-xl border border-orange-500 bg-orange-50 text-orange-600 transition">기기 사진 업로드</button>
             <button type="button" id="tabImgUrl" onclick="switchImageTab('url')" class="flex-1 py-1.5 text-xs font-bold rounded-xl border border-slate-200 bg-slate-50 text-slate-600 transition">이미지 링크(URL)</button>
           </div>
-
+ 
           <div id="uploadFileSection">
             <label class="border-2 border-dashed border-slate-200 hover:border-orange-400 rounded-2xl p-4 flex flex-col items-center justify-center cursor-pointer bg-slate-50 hover:bg-orange-50/30 transition relative overflow-hidden h-28">
               <input type="file" id="addPhotoFile" accept="image/*" class="hidden" onchange="handleFileSelect(event)">
@@ -397,17 +409,17 @@
               <img id="filePreviewImg" src="" alt="미리보기" class="hidden w-full h-full object-cover rounded-xl absolute inset-0">
             </label>
           </div>
-
+ 
           <div id="uploadUrlSection" class="hidden">
             <input type="url" id="addPhotoUrl" class="w-full border border-slate-200 rounded-xl p-2.5 outline-none focus:border-orange-500 bg-slate-50 text-xs" placeholder="https://example.com/food.jpg">
           </div>
         </div>
-
+ 
         <div class="bg-indigo-50 border border-indigo-100 rounded-xl p-3 text-xs text-indigo-800 flex items-start gap-2.5">
           <i class="fa-solid fa-circle-info text-indigo-500 text-sm mt-0.5 shrink-0"></i>
           <div>
             <span class="font-bold block mb-0.5">이용자 추천 안내</span>
-            직접 등록한 맛집은 [이용자추천] 뱃지가 부착되며, 삭제는 마스터 관리자 비밀번호(`admin1234`)로만 가능합니다.
+            평점을 입력하면 기준(네이버 4.6+ 또는 카카오 4.4+)을 넘는 맛집은 자동으로 <b>"AI 인기 맛집"</b>으로 표시되어 목록 상단에 노출됩니다. 삭제는 마스터 관리자 비밀번호(`admin1234`)로만 가능합니다.
           </div>
         </div>
       </div>
@@ -417,16 +429,25 @@
       </div>
     </div>
   </div>
-
+ 
   <!-- SCRIPT -->
   <script>
-    const DB_VERSION = "9.0.0";
+    const DB_VERSION = "10.0.0";
     const MASTER_ADMIN_PASS = "admin1234";
-
+    // 자동 "인기 맛집" 판정 기준: 이 기준을 넘으면 등록 방식(시드/이용자 추가)과 무관하게 자동으로 상단 노출 + 뱃지 부착
+    const TOP_RATED_NAVER_THRESHOLD = 4.6;
+    const TOP_RATED_KAKAO_THRESHOLD = 4.4;
+ 
+    function isTopRated(r) {
+      const n = parseFloat(r.ratingNaver);
+      const k = parseFloat(r.ratingKakao);
+      return (!isNaN(n) && n >= TOP_RATED_NAVER_THRESHOLD) || (!isNaN(k) && k >= TOP_RATED_KAKAO_THRESHOLD);
+    }
+ 
     const categories = [
-      '전체', '이용자추천', '한식', '고기/구이', '일식/초밥', '회/해산물', '중식', '양식', '카페', '분식', '치킨/피자', '기타'
+      '전체', 'AI인기맛집', '이용자추천', '한식', '고기/구이', '일식/초밥', '회/해산물', '중식', '양식', '카페', '분식', '치킨/피자', '기타'
     ];
-
+ 
     const categoryImages = {
       '한식': 'https://images.unsplash.com/photo-1590301157890-4810ed352733?auto=format&fit=crop&w=600&q=80',
       '고기/구이': 'https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=600&q=80',
@@ -439,13 +460,13 @@
       '치킨/피자': 'https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=600&q=80',
       '기타': 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=600&q=80'
     };
-
+ 
     function getRestaurantImage(r) {
       if (r && r.image) return r.image;
       if (r && r.category && categoryImages[r.category]) return categoryImages[r.category];
       return categoryImages['기타'] || 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=600&q=80';
     }
-
+ 
     const regionConfig = {
       seoul_gangnam: [
         { id: 'all', name: '서울강남 전체' },
@@ -548,7 +569,7 @@
         { id: 'seongsan_ilchulbong', name: '제주성산일출bong' }
       ]
     };
-
+ 
     const defaultRegionCoords = {
       apgujeong_cheongdam_sinsa: [37.525, 127.035],
       gangnam_nonhyeon: [37.505, 127.028],
@@ -618,7 +639,7 @@
       seogwipo: [33.254, 126.560],
       seongsan_ilchulbong: [33.458, 126.942]
     };
-
+ 
     function getShortRegionName(r) {
       if (!r) return '전국';
       if (r.micro === 'suwon') return '수원';
@@ -630,7 +651,7 @@
       }
       return '전국';
     }
-
+ 
     const seedData = [
       { id: "S1", name: "농민백암순대 본점", category: "한식", macro: "seoul_gangnam", micro: "gangnam_nonhyeon", address: "서울 강남구 역삼로3길 20-4", ratingNaver: 4.67, ratingKakao: 4.4, menu: "국밥, 모듬수육", lat: 37.4952, lng: 127.0321 },
       { id: "S2", name: "진미평양냉면", category: "한식", macro: "seoul_gangnam", micro: "gangnam_nonhyeon", address: "서울 강남구 학동로 305-3", ratingNaver: 4.54, ratingKakao: 4.2, menu: "평양냉면, 제육, 만두", lat: 37.5161, lng: 127.0360 },
@@ -660,7 +681,7 @@
       { id: "S26", name: "오목교탈출", category: "카페", macro: "seoul_gangnam", micro: "gangseo_mokdong_yangcheon", address: "서울 양천구 오목로 345", ratingNaver: 4.59, ratingKakao: 4.3, menu: "핸드드립 커피, 휘낭시에", lat: 37.5251, lng: 126.8741 },
       { id: "S27", name: "문래동창작촌 영일분식", category: "한식", macro: "seoul_gangnam", micro: "guro_yeongdeungpo", address: "서울 영등포구 도림로141길 34", ratingNaver: 4.61, ratingKakao: 4.3, menu: "칼비빔국수, 문래국수", lat: 37.5131, lng: 126.8951 },
       { id: "S28", name: "송죽장", category: "중식", macro: "seoul_gangnam", micro: "guro_yeongdeungpo", address: "서울 영등포구 버드나루로 12", ratingNaver: 4.52, ratingKakao: 4.1, menu: "고추쟁반짜장, 짬뽕", lat: 37.5211, lng: 126.9051 },
-
+ 
       // --- 서울강북 ---
       { id: "NB1", name: "을밀대 마포본점", category: "한식", macro: "seoul_gang북", micro: "sinchon_ewha_gongdeok", address: "서울 마포구 숭문길 24", ratingNaver: 4.62, ratingKakao: 4.3, menu: "평양냉면, 녹두전", lat: 37.5491, lng: 126.9451 },
       { id: "NB2", name: "소이연남", category: "중식", macro: "seoul_gang북", micro: "hongdae_sangsu_hapjeong", address: "서울 마포구 동교로 267", ratingNaver: 4.60, ratingKakao: 4.3, menu: "소고기 쌀국수, 쏨땀", lat: 37.5611, lng: 126.9231 },
@@ -675,7 +696,7 @@
       { id: "NB11", name: "순희네빈대떡", category: "분식", macro: "seoul_gang북", micro: "myeongdong_cityhall_euljiro", address: "서울 종로구 동호로 403길 38", ratingNaver: 4.53, ratingKakao: 4.1, menu: "녹두빈대떡, 완자탕", lat: 37.5701, lng: 126.9991 },
       { id: "NB12", name: "산수갑산", category: "한식", macro: "seoul_gang북", micro: "myeongdong_cityhall_euljiro", address: "서울 중구 을지로20길 24", ratingNaver: 4.66, ratingKakao: 4.4, menu: "순대국, 순대모듬", lat: 37.5651, lng: 126.9951 },
       { id: "NB13", name: "필동면옥", category: "한식", macro: "seoul_gang북", micro: "myeongdong_cityhall_euljiro", address: "서울 중구 서애로 26", ratingNaver: 4.56, ratingKakao: 4.2, menu: "평양냉면, 제육", lat: 37.5581, lng: 126.9921 },
-
+ 
       // --- 경기동부/남부 ---
       { id: "GS1", name: "가보정 1관", category: "고기/구이", macro: "gyeonggi_south_east", micro: "suwon", address: "경기 수원시 팔달구 장다리로 282", ratingNaver: 4.72, ratingKakao: 4.4, menu: "한우 생갈비, 한우 양념갈비", lat: 37.2758, lng: 127.0298 },
       { id: "GS2", name: "유치회관 본점", category: "한식", macro: "gyeonggi_south_east", micro: "suwon", address: "경기 수원시 팔달구 효원로292번길 67", ratingNaver: 4.64, ratingKakao: 4.3, menu: "선지해장국, 수육", lat: 37.2625, lng: 127.0305 },
@@ -687,50 +708,50 @@
       { id: "GS8", name: "능라도 분당본점", category: "한식", macro: "gyeonggi_south_east", micro: "pangyo_seongnam", address: "경기 성남시 분당구 산운로 32", ratingNaver: 4.64, ratingKakao: 4.3, menu: "평양냉면, 만두국", lat: 37.3891, lng: 127.1011 },
       { id: "GS9", name: "고기리막국수", category: "한식", macro: "gyeonggi_south_east", micro: "yongin_gwangju_icheon", address: "경기 용인시 수지구 동천로 614", ratingNaver: 4.76, ratingKakao: 4.6, menu: "들기름막국수, 수육", lat: 37.3481, lng: 127.0351 },
       { id: "GS10", name: "이천나랏님수라상", category: "한식", macro: "gyeonggi_south_east", micro: "yongin_gwangju_icheon", address: "경기 이천시 경충대로 3057", ratingNaver: 4.53, ratingKakao: 4.1, menu: "이천 쌀밥정식", lat: 37.2751, lng: 127.4451 },
-
+ 
       // --- 경기북부 ---
       { id: "GN1", name: "일산칼국수 본점", category: "한식", macro: "gyeonggi_north", micro: "ilsan_deogyang_paju", address: "경기 고양시 일산동구 경의로 467", ratingNaver: 4.64, ratingKakao: 4.3, menu: "닭칼국수", lat: 37.6621, lng: 126.7812 },
       { id: "GN2", name: "만돈", category: "일식/초밥", macro: "gyeonggi_north", micro: "ilsan_deogyang_paju", address: "경기 고양시 일산동구 정발산로 24", ratingNaver: 4.72, ratingKakao: 4.5, menu: "특로스카츠, 히레카츠", lat: 37.6581, lng: 126.7912 },
       { id: "GN3", name: "파주교하제면소", category: "한식", macro: "gyeonggi_north", micro: "ilsan_deogyang_paju", address: "경기 파주시 탄현면 새오리로 88", ratingNaver: 4.57, ratingKakao: 4.2, menu: "뼈칼국수, 비빔칼국수", lat: 37.7712, lng: 126.6912 },
-
+ 
       // --- 인천/부천 ---
       { id: "IB1", name: "부암갈비", category: "고기/구이", macro: "incheon_bucheon", micro: "namdong_michuhol", address: "인천 남동구 용천로 149", ratingNaver: 4.65, ratingKakao: 4.4, menu: "생갈비, 젓갈볶음밥", lat: 37.4581, lng: 126.7112 },
       { id: "IB2", name: "청실홍실 본점", category: "분식", macro: "incheon_bucheon", micro: "songdo_yeonsu_junggu", address: "인천 중구 인중로 136", ratingNaver: 4.51, ratingKakao: 4.1, menu: "모밀국수, 만두", lat: 37.4751, lng: 126.6251 },
       { id: "IB3", name: "신복관 송도본점", category: "한식", macro: "incheon_bucheon", micro: "songdo_yeonsu_junggu", address: "인천 연수구 해돋이로 157", ratingNaver: 4.58, ratingKakao: 4.2, menu: "우삼겹 쭈꾸미 세트", lat: 37.3891, lng: 126.6512 },
-
+ 
       // --- 강원도 ---
       { id: "GW1", name: "만석닭강정 본점", category: "치킨/피자", macro: "gangwon", micro: "sokcho_yangyang", address: "강원 속초시 청초호로 107", ratingNaver: 4.62, ratingKakao: 4.3, menu: "뼈닭강정 보통맛/매운맛", lat: 38.2041, lng: 128.5912 },
       { id: "GW2", name: "동화가든 본점", category: "한식", macro: "gangwon", micro: "gangneung_donghae", address: "강원 강릉시 초당순두부길77번길 15", ratingNaver: 4.60, ratingKakao: 4.2, menu: "원조 짬뽕순두부", lat: 37.7912, lng: 128.9151 },
       { id: "GW3", name: "엄지네포장마차 본점", category: "회/해산물", macro: "gangwon", micro: "gangneung_donghae", address: "강원 강릉시 경강로2256번길 21", ratingNaver: 4.68, ratingKakao: 4.5, menu: "꼬막무침 비빔밥, 육사시미", lat: 37.7551, lng: 128.8951 },
       { id: "GW4", name: "통나무집닭갈비", category: "고기/구이", macro: "gangwon", micro: "chuncheon_hongcheon", address: "강원 춘천시 신북읍 신샘밭로 763", ratingNaver: 4.65, ratingKakao: 4.4, menu: "철판 닭갈비, 막국수", lat: 37.9351, lng: 127.7812 },
-
+ 
       // --- 대전/충청 ---
       { id: "CC1", name: "성심당 본점", category: "카페", macro: "daejeon_chungcheong", micro: "junggu_donggu_daedeok", address: "대전 중구 대종로480번길 15", ratingNaver: 4.81, ratingKakao: 4.6, menu: "튀김소보로, 부추빵, 명란바게트", lat: 36.3276, lng: 127.4272 },
       { id: "CC2", name: "오씨칼국수 본점", category: "한식", macro: "daejeon_chungcheong", micro: "seogu_yuseong", address: "대전 동구 옛신탄진로 13", ratingNaver: 4.59, ratingKakao: 4.3, menu: "손칼국수, 물총조개탕", lat: 36.3512, lng: 127.4212 },
       { id: "CC3", name: "태평소국밥 본점", category: "한식", macro: "daejeon_chungcheong", micro: "seogu_yuseong", address: "대전 중구 계룡로 880", ratingNaver: 4.63, ratingKakao: 4.4, menu: "소고기국밥, 육사시미", lat: 36.3241, lng: 127.4051 },
-
+ 
       // --- 대구/경북 ---
       { id: "TK1", name: "걸리버막창 본점", category: "고기/구이", macro: "daegu_gyeongbuk", micro: "bukgu_seogu_dalseo", address: "대구 북구 성서동로", ratingNaver: 4.64, ratingKakao: 4.3, menu: "막창, 생삼겹살", lat: 35.8751, lng: 128.5612 },
       { id: "TK2", name: "중앙떡볶이", category: "분식", macro: "daegu_gyeongbuk", micro: "junggu_namgu", address: "대구 중구 국채보상로 537", ratingNaver: 4.52, ratingKakao: 4.1, menu: "쌀떡볶이, 납작만두", lat: 35.8691, lng: 128.5951 },
       { id: "TK3", name: "경주함양집 보문점", category: "한식", macro: "daegu_gyeongbuk", micro: "pohang_gyeongju", address: "경북 경주시 보문로 368-61", ratingNaver: 4.66, ratingKakao: 4.4, menu: "한우물회, 전통비빔밥", lat: 35.8421, lng: 129.2812 },
-
+ 
       // --- 부산/경상 ---
       { id: "BS1", name: "해운대암소갈비집", category: "고기/구이", macro: "busan_gyeongsang", micro: "haeundae_centum_gijang", address: "부산 해운대구 중동2로10번길 325", ratingNaver: 4.65, ratingKakao: 4.3, menu: "생갈비, 양념갈비, 감자사리", lat: 35.1632, lng: 129.1668 },
       { id: "BS2", name: "이재모피자 본점", category: "치킨/피자", macro: "busan_gyeongsang", micro: "nampo_junggu_saha", address: "부산 중구 광복중앙로 31", ratingNaver: 4.75, ratingKakao: 4.6, menu: "이재모 크러스트 피자, 스파게티", lat: 35.1012, lng: 129.0281 },
       { id: "BS3", name: "쌍둥이돼지국밥", category: "한식", macro: "busan_gyeongsang", micro: "kyungsung_gwangan_suyeong", address: "부산 남구 유엔로 209", ratingNaver: 4.56, ratingKakao: 4.2, menu: "돼지국밥, 수백", lat: 35.1351, lng: 129.0981 },
-
+ 
       // --- 광주/전라 ---
       { id: "JR1", name: "송정떡갈비 1호점", category: "고기/구이", macro: "gwangju_jeonla", micro: "gwangsang_bukgu", address: "광주 광산구 광산로29번길 1", ratingNaver: 4.60, ratingKakao: 4.3, menu: "한우떡갈비, 오리탕", lat: 35.1381, lng: 126.7912 },
       { id: "JR2", name: "현대옥 전주본점", category: "한식", macro: "gwangju_jeonla", micro: "jeonju_iksan_gunsan", address: "전북 전주시 완산구 화산로 241", ratingNaver: 4.63, ratingKakao: 4.4, menu: "콩나물국밥, 오징어사리", lat: 35.8191, lng: 127.1151 },
       { id: "JR3", name: "여수꽃돌게장1번가", category: "회/해산물", macro: "gwangju_jeonla", micro: "yeosu_gwangyang", address: "전남 여수시 봉산남4길 23", ratingNaver: 4.68, ratingKakao: 4.5, menu: "모둠꽃게장 정식", lat: 34.7391, lng: 127.6651 },
-
+ 
       // --- 제주도 ---
       { id: "JJ1", name: "숙성도 노형본점", category: "고기/구이", macro: "jeju", micro: "jeju_city", address: "제주 제주시 원노형로 41", ratingNaver: 4.74, ratingKakao: 4.5, menu: "720 숙성 뼈등심, 삼겹살", lat: 33.4862, lng: 126.4885 },
       { id: "JJ2", name: "우진해장국", category: "한식", macro: "jeju", micro: "jeju_city", address: "제주 제주시 서사로 11", ratingNaver: 4.65, ratingKakao: 4.3, menu: "고사리육개장, 몸국", lat: 33.5121, lng: 126.5181 },
       { id: "JJ3", name: "자매국수 본점", category: "한식", macro: "jeju", micro: "jeju_city", address: "제주 제주시 항골남길 46", ratingNaver: 4.53, ratingKakao: 4.1, menu: "고기국수, 비빔국수", lat: 33.5091, lng: 126.5281 },
       { id: "JJ4", name: "오는정김밥", category: "분식", macro: "jeju", micro: "seogwipo", address: "제주 서귀포시 동문로 2", ratingNaver: 4.62, ratingKakao: 4.3, menu: "오는정김밥, 치즈김밥", lat: 33.2512, lng: 126.5651 }
     ];
-
+ 
     let restaurants = [];
     let currentCategory = '전체';
     let currentRatingFilter = null;
@@ -742,21 +763,21 @@
     let currentSelectedRating = 5;
     let uploadedImageBase64 = null;
     let currentImageTab = 'file';
-
+ 
     function safeGetStorage(key) {
       try { return localStorage.getItem(key); } catch (e) { return null; }
     }
     function safeSetStorage(key, val) {
       try { localStorage.setItem(key, val); } catch (e) {}
     }
-
+ 
     function initializeApp() {
       const storedData = safeGetStorage('tastemap_data');
       const customBackup = safeGetStorage('tastemap_custom_restaurants');
-
+ 
       let userAddedItems = [];
       let reviewsMap = {};
-
+ 
       if (storedData) {
         try {
           const parsed = JSON.parse(storedData);
@@ -773,7 +794,7 @@
           }
         } catch (e) {}
       }
-
+ 
       if (customBackup) {
         try {
           const parsedBackup = JSON.parse(customBackup);
@@ -787,7 +808,7 @@
           }
         } catch (e) {}
       }
-
+ 
       const baseSeed = seedData.map(item => {
         if (item.micro === 'suwon_paldal_gwonseon' || item.micro === 'suwon_yeongtong_gwanggyo') item.micro = 'suwon';
         if (reviewsMap[item.id] && (!item.reviews || item.reviews.length === 0)) {
@@ -795,37 +816,37 @@
         }
         return item;
       });
-
+ 
       const seedIds = new Set(baseSeed.map(s => s.id));
       const filteredUserItems = userAddedItems.filter(u => !seedIds.has(u.id));
       restaurants = [...filteredUserItems, ...baseSeed];
-
+ 
       saveData();
       safeSetStorage('tastemap_version', DB_VERSION);
-
+ 
       initCategories();
       initMap();
-
+ 
       setTimeout(() => {
         onMacroRegionChange();
       }, 150);
-
+ 
       window.addEventListener('resize', () => {
         if (map) map.invalidateSize();
       });
     }
-
+ 
     function saveData() {
       safeSetStorage('tastemap_data', JSON.stringify(restaurants));
       const userCustomOnly = restaurants.filter(r => r.isUserAdded || (typeof r.id === 'string' && r.id.startsWith('C')));
       safeSetStorage('tastemap_custom_restaurants', JSON.stringify(userCustomOnly));
     }
-
+ 
     function onMacroRegionChange() {
       const macroVal = document.getElementById('regionMacroSelect').value;
       const microSelect = document.getElementById('regionMicroSelect');
       microSelect.innerHTML = '';
-
+ 
       if (macroVal === 'all') {
         microSelect.innerHTML = '<option value="all">세부 권역 전체</option>';
         microSelect.disabled = true;
@@ -841,7 +862,7 @@
       }
       applyFilters();
     }
-
+ 
     function initCategories() {
       const container = document.getElementById('categoryContainer');
       container.innerHTML = '';
@@ -852,21 +873,21 @@
           ? 'bg-slate-800 text-white border-slate-800 shadow-md shadow-slate-800/20' 
           : 'bg-white text-slate-500 border-slate-200 hover:bg-slate-50'
         }`;
-        btn.textContent = cat;
+        btn.textContent = cat === 'AI인기맛집' ? '👑 AI인기맛집' : cat;
         btn.onclick = () => { currentCategory = cat; initCategories(); applyFilters(); };
         container.appendChild(btn);
       });
     }
-
+ 
     function filterByRating(type) {
       currentRatingFilter = (currentRatingFilter === type) ? null : type;
       applyFilters();
     }
-
+ 
     function applyFilters() {
       const macro = document.getElementById('regionMacroSelect').value;
       const micro = document.getElementById('regionMicroSelect').value;
-
+ 
       let filtered = restaurants;
       if (macro !== 'all') {
         filtered = filtered.filter(r => r.macro === macro);
@@ -875,53 +896,72 @@
         }
       }
       
-      if (currentCategory === '이용자추천') {
+      if (currentCategory === 'AI인기맛집') {
+        filtered = filtered.filter(r => isTopRated(r));
+      } else if (currentCategory === '이용자추천') {
         filtered = filtered.filter(r => r.isUserAdded === true);
       } else if (currentCategory !== '전체') {
         filtered = filtered.filter(r => r.category === currentCategory);
       }
-
+ 
       if (currentRatingFilter === 'kakao') filtered = filtered.filter(r => r.ratingKakao >= 4.0);
       else if (currentRatingFilter === 'naver') filtered = filtered.filter(r => r.ratingNaver >= 4.5);
-
+ 
+      // 자동 정렬: "AI 인기 맛집" 기준을 넘는 곳을 항상 목록 최상단으로 자동 노출
+      filtered = [...filtered].sort((a, b) => {
+        const aTop = isTopRated(a) ? 1 : 0;
+        const bTop = isTopRated(b) ? 1 : 0;
+        if (aTop !== bTop) return bTop - aTop;
+        return 0;
+      });
+ 
       renderList(filtered);
       updateMapMarkers(filtered);
     }
-
+ 
     function renderList(list) {
       const listCountEl = document.getElementById('listCount');
       if (listCountEl) listCountEl.textContent = list.length;
       
       const totalBadge = document.getElementById('totalBadge');
       if (totalBadge) totalBadge.textContent = restaurants.length + '+';
-
+ 
       const container = document.getElementById('restaurantList');
       if (!container) return;
       container.innerHTML = '';
-
+ 
       list.forEach(r => {
         const foodImgUrl = getRestaurantImage(r);
         const regionName = getShortRegionName(r);
-
+        const topRated = isTopRated(r);
+ 
         let userRatingBadge = '';
         if (r.reviews && r.reviews.length > 0) {
           const totalScore = r.reviews.reduce((acc, cur) => acc + (cur.rating || 5), 0);
           const avgScore = (totalScore / r.reviews.length).toFixed(1);
           userRatingBadge = `<span class="text-[10px] sm:text-[11px] font-bold text-orange-700 bg-orange-50 px-1.5 py-0.5 rounded border border-orange-200 flex items-center"><i class="fa-solid fa-star text-amber-500 text-[9px] mr-0.5"></i>M ${avgScore}</span>`;
         }
-
+ 
+        let topBadge = '';
+        if (topRated) {
+          topBadge = `<span class="text-[10px] sm:text-[11px] font-bold text-amber-800 bg-amber-100 px-1.5 py-0.5 rounded border border-amber-300 flex items-center gap-0.5"><i class="fa-solid fa-crown text-[9px]"></i>AI인기</span>`;
+        }
+ 
         let ratingHtml = '';
         if (r.isUserAdded) {
           ratingHtml = `<span class="text-[10px] sm:text-[11px] font-bold text-indigo-700 bg-indigo-50 px-2 py-0.5 rounded border border-indigo-200 flex items-center gap-1"><i class="fa-solid fa-user-pen text-[9px]"></i>이용자 추가</span>`;
+          if (r.ratingNaver) ratingHtml += `<span class="text-[10px] sm:text-[11px] font-bold text-green-700 bg-green-50 px-1.5 py-0.5 rounded border border-green-100"><i class="fa-solid fa-star text-[9px] mr-0.5"></i>N ${r.ratingNaver}</span>`;
+          if (r.ratingKakao) ratingHtml += `<span class="text-[10px] sm:text-[11px] font-bold text-yellow-700 bg-yellow-50 px-1.5 py-0.5 rounded border border-yellow-100"><i class="fa-solid fa-star text-[9px] mr-0.5"></i>K ${r.ratingKakao}</span>`;
           if (userRatingBadge) ratingHtml += userRatingBadge;
         } else {
           ratingHtml = `<span class="text-[10px] sm:text-[11px] font-bold text-green-700 bg-green-50 px-1.5 py-0.5 rounded border border-green-100"><i class="fa-solid fa-star text-[9px] mr-0.5"></i>N ${r.ratingNaver}</span>
              <span class="text-[10px] sm:text-[11px] font-bold text-yellow-700 bg-yellow-50 px-1.5 py-0.5 rounded border border-yellow-100"><i class="fa-solid fa-star text-[9px] mr-0.5"></i>K ${r.ratingKakao}</span>`;
           if (userRatingBadge) ratingHtml += userRatingBadge;
         }
-
+        if (topBadge) ratingHtml += topBadge;
+ 
         const card = document.createElement('div');
-        card.className = "bg-white p-3 sm:p-4 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition cursor-pointer flex gap-3 sm:gap-4 items-center";
+        card.className = `bg-white p-3 sm:p-4 rounded-2xl border ${topRated ? 'border-amber-300 ring-1 ring-amber-200' : 'border-slate-200'} shadow-sm hover:shadow-md transition cursor-pointer flex gap-3 sm:gap-4 items-center`;
         card.onclick = () => openDetail(r);
         card.innerHTML = `
           <div class="w-20 h-20 sm:w-24 sm:h-24 shrink-0 rounded-2xl overflow-hidden bg-slate-100 shadow-inner relative">
@@ -944,58 +984,60 @@
         container.appendChild(card);
       });
     }
-
+ 
     function initMap() {
       const mapEl = document.getElementById('map');
       if (!mapEl) return;
-
+ 
       if (typeof L === 'undefined') {
         setTimeout(initMap, 200);
         return;
       }
-
+ 
       if (map) {
         try { map.remove(); } catch (e) {}
         map = null;
       }
-
+ 
       try {
         map = L.map('map', { zoomControl: false, tap: false }).setView([36.5, 127.8], 7);
         L.control.zoom({ position: 'bottomright' }).addTo(map);
-
+ 
         L.tileLayer('https://mt{s}.google.com/vt/lyrs=m&hl=ko&gl=KR&x={x}&y={y}&z={z}', {
           attribution: '&copy; Google Maps',
           subdomains: '0123',
           maxZoom: 20
         }).addTo(map);
-
+ 
         markerGroup = L.featureGroup().addTo(map);
         setTimeout(() => { if (map) map.invalidateSize(); }, 300);
       } catch (e) {}
     }
-
+ 
     function updateMapMarkers(list) {
       if (!map || !markerGroup) return;
       markerGroup.clearLayers();
       if (!list || list.length === 0) return;
-
+ 
       list.forEach(r => {
         if (!r.lat || !r.lng) return;
-        const iconBorderColor = r.isUserAdded ? 'border-indigo-600 text-indigo-600' : 'border-orange-500 text-orange-600';
+        const topRated = isTopRated(r);
+        const iconBorderColor = topRated ? 'border-amber-500 text-amber-600' : (r.isUserAdded ? 'border-indigo-600 text-indigo-600' : 'border-orange-500 text-orange-600');
         const iconHtml = `
           <div class="w-8 h-8 rounded-full bg-white border-2 ${iconBorderColor} shadow-md flex items-center justify-center font-black text-[11px] hover:scale-110 transition-transform relative">
             ${r.category.substring(0, 1)}
-            ${r.isUserAdded ? '<span class="absolute -top-1 -right-1 w-3 h-3 bg-indigo-600 rounded-full border-2 border-white"></span>' : ''}
+            ${topRated ? '<span class="absolute -top-1.5 -right-1.5 w-3.5 h-3.5 bg-amber-500 rounded-full border-2 border-white flex items-center justify-center"><i class="fa-solid fa-crown text-white" style="font-size:6px;"></i></span>' : (r.isUserAdded ? '<span class="absolute -top-1 -right-1 w-3 h-3 bg-indigo-600 rounded-full border-2 border-white"></span>' : '')}
           </div>
         `;
         const icon = L.divIcon({ html: iconHtml, className: 'custom-map-pin', iconSize: [32, 32], iconAnchor: [16, 16], popupAnchor: [0, -16] });
         const marker = L.marker([r.lat, r.lng], { icon }).addTo(markerGroup);
         const regionName = getShortRegionName(r);
-
+ 
         marker.bindPopup(`
           <div class="text-xs p-1">
             <div class="flex items-center gap-1.5 mb-1 flex-wrap">
               <span class="text-[10px] text-orange-600 font-semibold">${regionName}, ${r.category}</span>
+              ${topRated ? '<span class="text-[10px] text-amber-700 font-bold">👑 AI인기</span>' : ''}
             </div>
             <div class="font-bold text-slate-800 text-sm mb-0.5">${r.name}</div>
             <div class="text-[11px] text-slate-600 font-medium mb-1">${r.menu}</div>
@@ -1003,7 +1045,7 @@
           </div>
         `);
       });
-
+ 
       try { 
         const bounds = markerGroup.getBounds();
         if (bounds && bounds.isValid && bounds.isValid()) {
@@ -1011,12 +1053,12 @@
         }
       } catch (e) {}
     }
-
+ 
     window.openDetailById = function(id) {
       const found = restaurants.find(r => r.id === id);
       if (found) openDetail(found);
     };
-
+ 
     function toggleMobileMap() {
       const mapCol = document.getElementById('mapColumn');
       if (mapCol) {
@@ -1024,49 +1066,55 @@
         setTimeout(() => { if (map) map.invalidateSize(); }, 350);
       }
     }
-
+ 
     function openDetail(r) {
       currentSelectedRestaurant = r;
       document.getElementById('detailName').textContent = r.name;
       document.getElementById('detailCategory').textContent = r.category;
-
+ 
       const userBadge = document.getElementById('detailUserBadge');
+      const topBadge = document.getElementById('detailTopBadge');
       const ratingContainer = document.getElementById('detailRatingContainer');
       const userNotice = document.getElementById('detailUserNotice');
-      const adminDeleteContainer = document.getElementById('adminDeleteContainer');
-
+ 
+      topBadge.classList.toggle('hidden', !isTopRated(r));
+ 
       if (r.isUserAdded) {
         userBadge.classList.remove('hidden');
-        ratingContainer.classList.add('hidden');
         userNotice.classList.remove('hidden');
-        adminDeleteContainer.classList.remove('hidden');
+        if (r.ratingNaver || r.ratingKakao) {
+          ratingContainer.classList.remove('hidden');
+          document.getElementById('detailNaver').textContent = r.ratingNaver || '-';
+          document.getElementById('detailKakao').textContent = r.ratingKakao || '-';
+        } else {
+          ratingContainer.classList.add('hidden');
+        }
       } else {
         userBadge.classList.add('hidden');
         ratingContainer.classList.remove('hidden');
         userNotice.classList.add('hidden');
-        adminDeleteContainer.classList.add('hidden');
         document.getElementById('detailNaver').textContent = r.ratingNaver;
         document.getElementById('detailKakao').textContent = r.ratingKakao;
       }
-
+ 
       const macroSelect = document.querySelector(`#regionMacroSelect option[value="${r.macro}"]`);
       document.getElementById('detailRegion').textContent = macroSelect ? macroSelect.text : '';
       document.getElementById('detailMenu').textContent = r.menu;
       document.getElementById('detailAddress').textContent = r.address;
-
+ 
       const detailImgEl = document.getElementById('detailImg');
       detailImgEl.src = getRestaurantImage(r);
       detailImgEl.onerror = () => { detailImgEl.src = categoryImages[r.category] || categoryImages['기타']; };
-
+ 
       const exactNameQuery = encodeURIComponent(r.name);
       document.getElementById('btnNaverMap').onclick = () => window.open(`https://map.naver.com/v5/search/${exactNameQuery}`, '_blank');
       document.getElementById('btnKakaoMap').onclick = () => window.open(`https://map.kakao.com/link/search/${exactNameQuery}`, '_blank');
-
+ 
       resetReviewForm();
       renderReviews(r);
       openModal('detailModal');
     }
-
+ 
     function promptAdminDelete() {
       if (!currentSelectedRestaurant) return;
       const pass = prompt("마스터 관리자 비밀번호를 입력하세요:");
@@ -1080,7 +1128,7 @@
         alert("관리자 비밀번호가 일치하지 않습니다.");
       }
     }
-
+ 
     function switchImageTab(type) {
       currentImageTab = type;
       const tabFile = document.getElementById('tabImgFile');
@@ -1088,7 +1136,7 @@
       const secFile = document.getElementById('uploadFileSection');
       const secUrl = document.getElementById('uploadUrlSection');
       if (!tabFile) return;
-
+ 
       if (type === 'file') {
         tabFile.className = "flex-1 py-1.5 text-xs font-bold rounded-xl border border-orange-500 bg-orange-50 text-orange-600 transition";
         tabUrl.className = "flex-1 py-1.5 text-xs font-bold rounded-xl border border-slate-200 bg-slate-50 text-slate-600 transition";
@@ -1101,7 +1149,7 @@
         secFile.classList.add('hidden');
       }
     }
-
+ 
     function handleFileSelect(e) {
       const file = e.target.files && e.target.files[0];
       if (!file) return;
@@ -1118,12 +1166,16 @@
       };
       reader.readAsDataURL(file);
     }
-
+ 
     function resetAddModalForm() {
       uploadedImageBase64 = null;
       document.getElementById('addName').value = '';
       document.getElementById('addAddress').value = '';
       document.getElementById('addMenu').value = '';
+      const ratingNaverEl = document.getElementById('addRatingNaver');
+      const ratingKakaoEl = document.getElementById('addRatingKakao');
+      if (ratingNaverEl) ratingNaverEl.value = '';
+      if (ratingKakaoEl) ratingKakaoEl.value = '';
       const photoUrlEl = document.getElementById('addPhotoUrl');
       if (photoUrlEl) photoUrlEl.value = '';
       const previewImg = document.getElementById('filePreviewImg');
@@ -1132,7 +1184,7 @@
       if (placeholder) placeholder.classList.remove('hidden');
       switchImageTab('file');
     }
-
+ 
     function setReviewRating(score) {
       currentSelectedRating = score;
       document.getElementById('starRatingText').textContent = score + '점';
@@ -1143,33 +1195,33 @@
         else star.className = "fa-regular fa-star star-btn text-slate-300";
       });
     }
-
+ 
     function resetReviewForm() {
       setReviewRating(5);
       document.getElementById('reviewNickname').value = '';
       document.getElementById('reviewText').value = '';
     }
-
+ 
     function renderReviews(r) {
       const listEl = document.getElementById('reviewList');
       const countEl = document.getElementById('reviewCountBadge');
       const avgBox = document.getElementById('reviewAvgRating');
       const avgScoreEl = document.getElementById('reviewAvgScore');
       if (!listEl) return;
-
+ 
       const reviews = r.reviews || [];
       countEl.textContent = reviews.length + '개';
-
+ 
       if (reviews.length === 0) {
         avgBox.classList.add('hidden');
         listEl.innerHTML = `<div class="py-6 text-center text-slate-400 bg-slate-50/60 rounded-2xl border border-dashed border-slate-200"><p class="text-xs font-semibold text-slate-600">아직 등록된 리뷰가 없습니다.</p></div>`;
         return;
       }
-
+ 
       const totalRating = reviews.reduce((sum, rev) => sum + (rev.rating || 5), 0);
       avgScoreEl.textContent = (totalRating / reviews.length).toFixed(1);
       avgBox.classList.remove('hidden');
-
+ 
       listEl.innerHTML = '';
       reviews.forEach(rev => {
         const item = document.createElement('div');
@@ -1192,51 +1244,51 @@
         listEl.appendChild(item);
       });
     }
-
+ 
     function submitReview() {
       if (!currentSelectedRestaurant) return;
       const nickInput = document.getElementById('reviewNickname');
       const textInput = document.getElementById('reviewText');
       const content = textInput.value.trim();
       if (!content) { textInput.focus(); return; }
-
+ 
       const author = nickInput.value.trim() || '익명의 미식가';
       const now = new Date();
       const dateStr = `${now.getFullYear()}.${String(now.getMonth() + 1).padStart(2, '0')}.${String(now.getDate()).padStart(2, '0')}`;
-
+ 
       const newReview = { id: 'REV_' + Date.now(), author, rating: currentSelectedRating, content, date: dateStr };
       if (!currentSelectedRestaurant.reviews) currentSelectedRestaurant.reviews = [];
       currentSelectedRestaurant.reviews.unshift(newReview);
-
+ 
       const idx = restaurants.findIndex(x => x.id === currentSelectedRestaurant.id);
       if (idx !== -1) restaurants[idx] = currentSelectedRestaurant;
       saveData();
-
+ 
       resetReviewForm();
       renderReviews(currentSelectedRestaurant);
       applyFilters();
     }
-
+ 
     function resetApp() {
       document.getElementById('regionMacroSelect').value = 'all';
       currentCategory = '전체';
       currentRatingFilter = null;
       onMacroRegionChange();
     }
-
+ 
     function openModal(id) { 
       const el = document.getElementById(id);
       if (el) el.classList.remove('hidden'); 
       if (id === 'rouletteModal') resetRouletteUI();
       if (id === 'addRestaurantModal') { resetAddModalForm(); onAddMacroChange(); }
     }
-
+ 
     function closeModal(id) { 
       const el = document.getElementById(id);
       if (el) el.classList.add('hidden'); 
       if (id === 'rouletteModal') clearInterval(rouletteInterval);
     }
-
+ 
     function resetRouletteUI() {
       document.getElementById('roulettePlaceholder').classList.remove('hidden');
       document.getElementById('rouletteContent').classList.add('hidden');
@@ -1247,19 +1299,20 @@
       startBtn.classList.remove('opacity-50');
       rouletteWinner = null;
     }
-
+ 
     function spinRoulette() {
       const macro = document.getElementById('regionMacroSelect').value;
       const micro = document.getElementById('regionMicroSelect').value;
-
+ 
       let candidateList = restaurants;
       if (macro !== 'all') {
         candidateList = candidateList.filter(r => r.macro === macro);
         if (micro !== 'all') candidateList = candidateList.filter(r => r.micro === micro);
       }
-      if (currentCategory === '이용자추천') candidateList = candidateList.filter(r => r.isUserAdded === true);
+      if (currentCategory === 'AI인기맛집') candidateList = candidateList.filter(r => isTopRated(r));
+      else if (currentCategory === '이용자추천') candidateList = candidateList.filter(r => r.isUserAdded === true);
       else if (currentCategory !== '전체') candidateList = candidateList.filter(r => r.category === currentCategory);
-
+ 
       const noticeEl = document.getElementById('rouletteNotice');
       if (candidateList.length === 0) {
         noticeEl.textContent = '현재 선택된 조건에 맞는 맛집이 없습니다!';
@@ -1267,7 +1320,7 @@
         return;
       }
       noticeEl.classList.add('hidden');
-
+ 
       const placeholder = document.getElementById('roulettePlaceholder');
       const content = document.getElementById('rouletteContent');
       const categoryEl = document.getElementById('rouletteCategory');
@@ -1275,16 +1328,16 @@
       const menuEl = document.getElementById('rouletteMenu');
       const startBtn = document.getElementById('btnSpinStart');
       const detailBtn = document.getElementById('btnRouletteDetail');
-
+ 
       placeholder.classList.add('hidden');
       content.classList.remove('hidden');
       detailBtn.classList.add('hidden');
       startBtn.disabled = true;
       startBtn.classList.add('opacity-50');
-
+ 
       let spinCount = 0;
       resultEl.classList.add('roulette-anim');
-
+ 
       clearInterval(rouletteInterval);
       rouletteInterval = setInterval(() => {
         const rand = candidateList[Math.floor(Math.random() * candidateList.length)];
@@ -1292,7 +1345,7 @@
         resultEl.textContent = rand.name;
         menuEl.textContent = rand.menu;
         spinCount++;
-
+ 
         if (spinCount >= 24) {
           clearInterval(rouletteInterval);
           resultEl.classList.remove('roulette-anim');
@@ -1306,14 +1359,14 @@
         }
       }, 70);
     }
-
+ 
     function viewRouletteWinner() {
       if (rouletteWinner) {
         closeModal('rouletteModal');
         openDetail(rouletteWinner);
       }
     }
-
+ 
     function onAddMacroChange() {
       const macroVal = document.getElementById('addMacro').value;
       const microSelect = document.getElementById('addMicro');
@@ -1328,7 +1381,7 @@
         microSelect.appendChild(opt);
       });
     }
-
+ 
     async function geocodeAddress(query, fallbackMacro, fallbackMicro) {
       const baseCoord = defaultRegionCoords[fallbackMicro] || [37.2638, 127.0286];
       return {
@@ -1336,7 +1389,7 @@
         lng: baseCoord[1] + (Math.random() - 0.5) * 0.003
       };
     }
-
+ 
     async function saveCustomRestaurant() {
       const name = document.getElementById('addName').value.trim();
       const cat = document.getElementById('addCategory').value;
@@ -1344,20 +1397,22 @@
       const mic = document.getElementById('addMicro').value || "all";
       const addr = document.getElementById('addAddress').value.trim();
       const menu = document.getElementById('addMenu').value.trim() || '추천 메뉴';
+      const ratingNaverRaw = document.getElementById('addRatingNaver')?.value;
+      const ratingKakaoRaw = document.getElementById('addRatingKakao')?.value;
       const urlPhoto = document.getElementById('addPhotoUrl')?.value?.trim();
       const saveBtn = document.getElementById('btnAddSave');
-
+ 
       if (!name || !addr) { alert('상호명과 주소를 입력해주세요.'); return; }
-
+ 
       let customImg = null;
       if (currentImageTab === 'file' && uploadedImageBase64) customImg = uploadedImageBase64;
       else if (currentImageTab === 'url' && urlPhoto) customImg = urlPhoto;
-
+ 
       saveBtn.disabled = true;
       saveBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-1"></i> 등록 중...';
-
+ 
       const coords = await geocodeAddress(addr, mac, mic);
-
+ 
       const newRest = {
         id: 'C' + Date.now(),
         name,
@@ -1366,33 +1421,39 @@
         micro: mic,
         address: addr,
         menu,
+        ratingNaver: ratingNaverRaw ? parseFloat(ratingNaverRaw) : null,
+        ratingKakao: ratingKakaoRaw ? parseFloat(ratingKakaoRaw) : null,
         image: customImg,
         isUserAdded: true,
         reviews: [],
         lat: coords.lat,
         lng: coords.lng
       };
-
+ 
       restaurants.unshift(newRest);
       saveData();
-
+ 
       saveBtn.disabled = false;
       saveBtn.innerHTML = '지도에 등록하기';
       closeModal('addRestaurantModal');
-
+ 
       document.getElementById('regionMacroSelect').value = mac;
       onMacroRegionChange();
       document.getElementById('regionMicroSelect').value = mic;
       currentCategory = '전체';
       initCategories();
       applyFilters();
-
+ 
+      if (isTopRated(newRest)) {
+        setTimeout(() => { alert(`🎉 "${newRest.name}"이(가) 평점 기준을 충족해 AI 인기 맛집으로 자동 등록되었습니다!`); }, 300);
+      }
+ 
       if (map) {
         map.flyTo([newRest.lat, newRest.lng], 16, { animate: true, duration: 1.2 });
         setTimeout(() => { openDetail(newRest); }, 1300);
       }
     }
-
+ 
     window.onload = initializeApp;
   </script>
 </body>
