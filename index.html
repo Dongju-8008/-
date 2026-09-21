@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta name="google-adsense-account" content="ca-pub-2429123210227554">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>맛지도 (TasteMap) - 전국 권역별 맛집 탐색기</title>
@@ -242,10 +241,13 @@
           </button>
         </div>
  
-        <!-- Master Admin Delete (all restaurants) -->
-        <div class="mt-4">
+        <!-- Master Admin: 주소 수정 / 삭제 (all restaurants) -->
+        <div class="mt-4 grid grid-cols-2 gap-2">
+          <button onclick="promptAdminEditAddress()" class="w-full py-2.5 bg-blue-50 hover:bg-blue-100 text-blue-600 border border-blue-200 rounded-xl font-bold text-xs transition flex items-center justify-center gap-1.5">
+            <i class="fa-solid fa-pen text-[11px]"></i> 주소 수정 (마스터)
+          </button>
           <button onclick="promptAdminDelete()" class="w-full py-2.5 bg-rose-50 hover:bg-rose-100 text-rose-600 border border-rose-200 rounded-xl font-bold text-xs transition flex items-center justify-center gap-1.5">
-            <i class="fa-solid fa-lock text-[11px]"></i> 관리자 삭제 (마스터 전용)
+            <i class="fa-solid fa-lock text-[11px]"></i> 삭제 (마스터)
           </button>
         </div>
  
@@ -1327,24 +1329,65 @@
       openModal('detailModal');
     }
  
-    async function promptAdminDelete() {
-      if (!currentSelectedRestaurant) return;
+    async function verifyAdminPassword() {
       const pass = prompt("마스터 관리자 비밀번호를 입력하세요:");
-      if (pass === null) return;
+      if (pass === null) return false;
       let hash;
       try {
         hash = await sha256Hex(pass);
       } catch (e) {
         alert("이 브라우저 환경에서는 관리자 인증을 사용할 수 없습니다.");
-        return;
+        return false;
       }
-      if (hash === MASTER_ADMIN_HASH) {
-        restaurants = restaurants.filter(x => x.id !== currentSelectedRestaurant.id);
-        saveData();
-        closeModal('detailModal');
-        applyFilters();
-      } else {
+      if (hash !== MASTER_ADMIN_HASH) {
         alert("관리자 비밀번호가 일치하지 않습니다.");
+        return false;
+      }
+      return true;
+    }
+ 
+    async function promptAdminDelete() {
+      if (!currentSelectedRestaurant) return;
+      const ok = await verifyAdminPassword();
+      if (!ok) return;
+      restaurants = restaurants.filter(x => x.id !== currentSelectedRestaurant.id);
+      saveData();
+      closeModal('detailModal');
+      applyFilters();
+    }
+ 
+    async function promptAdminEditAddress() {
+      if (!currentSelectedRestaurant) return;
+      const ok = await verifyAdminPassword();
+      if (!ok) return;
+ 
+      const newAddr = prompt("새 주소를 입력하세요 (도로명 + 건물번호까지 구체적으로 입력할수록 정확합니다):", currentSelectedRestaurant.address || '');
+      if (newAddr === null) return;
+      const trimmed = newAddr.trim();
+      if (!trimmed) { alert("주소를 입력해주세요."); return; }
+ 
+      const coords = await geocodeAddress(trimmed, currentSelectedRestaurant.macro, currentSelectedRestaurant.micro);
+ 
+      currentSelectedRestaurant.address = trimmed;
+      currentSelectedRestaurant.lat = coords.lat;
+      currentSelectedRestaurant.lng = coords.lng;
+ 
+      const idx = restaurants.findIndex(x => x.id === currentSelectedRestaurant.id);
+      if (idx !== -1) restaurants[idx] = currentSelectedRestaurant;
+      saveData();
+ 
+      const addrEl = document.getElementById('detailAddress');
+      if (addrEl) addrEl.textContent = trimmed;
+      applyFilters();
+ 
+      if (coords.geocoded === false) {
+        alert("⚠️ 주소를 정확히 찾지 못해 근처 위치로 대략 표시했습니다. 더 구체적인 주소로 다시 시도해 보세요.");
+      } else {
+        alert("✅ 주소가 수정되고 지도 위치가 업데이트되었습니다.");
+      }
+ 
+      if (map) {
+        map.flyTo([currentSelectedRestaurant.lat, currentSelectedRestaurant.lng], 16, { animate: true, duration: 1.0 });
       }
     }
  
