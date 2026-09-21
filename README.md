@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
+  google.com, pub-2429123210227554, DIRECT, f08c47fec0942fa0
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>맛지도 (TasteMap) - 네이버 & 카카오 평점 기반 맛집 탐색</title>
