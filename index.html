@@ -1601,11 +1601,33 @@
     }
  
     async function geocodeAddress(query, fallbackMacro, fallbackMicro) {
-      const baseCoord = defaultRegionCoords[fallbackMicro] || [37.2638, 127.0286];
-      return {
-        lat: baseCoord[0] + (Math.random() - 0.5) * 0.003,
-        lng: baseCoord[1] + (Math.random() - 0.5) * 0.003
+      const fallback = () => {
+        const baseCoord = defaultRegionCoords[fallbackMicro] || [37.2638, 127.0286];
+        return {
+          lat: baseCoord[0] + (Math.random() - 0.5) * 0.003,
+          lng: baseCoord[1] + (Math.random() - 0.5) * 0.003,
+          geocoded: false
+        };
       };
+ 
+      if (!query) return fallback();
+ 
+      try {
+        const url = `https://nominatim.openstreetmap.org/search?format=json&countrycodes=kr&limit=1&q=${encodeURIComponent(query)}`;
+        const res = await fetch(url, { headers: { 'Accept-Language': 'ko' } });
+        if (!res.ok) return fallback();
+        const data = await res.json();
+        if (Array.isArray(data) && data.length > 0) {
+          const lat = parseFloat(data[0].lat);
+          const lng = parseFloat(data[0].lon);
+          if (!isNaN(lat) && !isNaN(lng)) {
+            return { lat, lng, geocoded: true };
+          }
+        }
+      } catch (e) {
+        // 네트워크 오류, CORS 차단, 오프라인 등 - 아래 폴백으로 이동
+      }
+      return fallback();
     }
  
     async function saveCustomRestaurant() {
@@ -1627,7 +1649,7 @@
       else if (currentImageTab === 'url' && urlPhoto) customImg = urlPhoto;
  
       saveBtn.disabled = true;
-      saveBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-1"></i> 등록 중...';
+      saveBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-1"></i> 주소 확인 중...';
  
       const coords = await geocodeAddress(addr, mac, mic);
  
@@ -1664,6 +1686,8 @@
  
       if (isTopRated(newRest)) {
         setTimeout(() => { alert(`🎉 "${newRest.name}"이(가) 평점 기준을 충족해 AI 인기 맛집으로 자동 등록되었습니다!`); }, 300);
+      } else if (coords.geocoded === false) {
+        setTimeout(() => { alert(`⚠️ 입력하신 주소를 정확히 찾지 못해, 선택하신 세부 권역 중심 근처에 임시로 표시했습니다. 지도 핀 위치가 실제와 다르면 주소를 더 구체적으로(도로명+건물번호) 입력해서 다시 등록해 주세요.`); }, 300);
       }
  
       if (map) {
